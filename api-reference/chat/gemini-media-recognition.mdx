@@ -1,0 +1,106 @@
+---
+title: "Gemini Media Recognition"
+description: "Use Gemini-native multimodal parts to analyze images, audio, video, or mixed media via generateContent"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+This page uses the same `generateContent` operation as [Generate content (Gemini)](/api-reference/chat/generate-content), with the playground above pre-filled for plain text chat. The notes below describe the Gemini-native multimodal fields you can add to `contents[].parts` to analyze images, audio, video, or mixed media in a single request.
+
+<Note>
+Each part can carry inline data (base64-encoded bytes plus a MIME type) alongside text instructions, letting the model reason across modalities in one call.
+</Note>
+
+### Gemini-native request fields
+
+The generic `contents` and `generationConfig` fields shown in the playground accept the following nested shape for multimodal recognition:
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `contents[].role` | string | No | Role of the turn, e.g. `user`. |
+| `contents[].parts` | array | Yes | Ordered list of content parts (text and/or inline media). |
+| `contents[].parts[].text` | string | No | Text instruction or question for the model. |
+| `contents[].parts[].inlineData` | object | No | Inline media payload for image, audio, or video understanding. |
+| `contents[].parts[].inlineData.mimeType` | string | No | MIME type of the inline data, e.g. `image/jpeg`, `audio/mp3`, `video/mp4`. |
+| `contents[].parts[].inlineData.data` | string | No | Base64-encoded media bytes. |
+
+<Tip>
+You can mix multiple parts in a single turn — for example a `text` part with an instruction followed by one or more `inlineData` parts containing the media to analyze.
+</Tip>
+
+### Example: analyzing an image
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Describe what is happening in this image." },
+        {
+          "inlineData": {
+            "mimeType": "image/jpeg",
+            "data": "<base64-encoded-image-bytes>"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Response fields
+
+The response follows the standard `generateContent` shape. The fields most relevant to media recognition are:
+
+<ResponseField name="candidates" type="array">
+  Candidate responses returned by the model.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Generated content object.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Role returned in the generated content block, typically `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Returned content parts, typically text describing the analyzed media.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Finish reason string, e.g. `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Safety evaluation results.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token accounting metadata, including `promptTokenCount`, `candidatesTokenCount`, and `totalTokenCount`. Inline media (images, audio, video) consumes prompt tokens in addition to any text parts.
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          { "text": "The image shows a golden retriever sitting on a grassy lawn." }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 264,
+    "candidatesTokenCount": 18,
+    "totalTokenCount": 282
+  }
+}
+```

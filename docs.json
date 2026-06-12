@@ -1,72 +1,261 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "aspen",
+  "name": "DGrid AI Docs",
+  "description": "Documentation for DGrid AI: The Decentralized Smart Network of AI",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#65A30D",
+    "light": "#A3E635",
+    "dark": "#4D7C0F"
   },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+  "favicon": "/favicon.png",
+  "logo": {
+    "light": "/logo/dgrid-horizontal-black.png",
+    "dark": "/logo/dgrid-horizontal-white.png"
+  },
+  "appearance": {
+    "default": "system"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
+  },
+  "api": {
+    "openapi": "api-reference/openapi.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "python", "javascript", "go", "java"]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
+  "redirects": [
+    {
+      "source": "/ai-gateway/model-api/overview",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/ai-gateway/model-api/chat",
+      "destination": "/api-reference/chat/create-chat-completion"
+    },
+    {
+      "source": "/ai-gateway/model-api/completions",
+      "destination": "/api-reference/completions/create-completion"
+    },
+    {
+      "source": "/ai-gateway/model-api/embeddings",
+      "destination": "/api-reference/embeddings/create-embedding"
+    },
+    {
+      "source": "/ai-gateway/model-api/images",
+      "destination": "/api-reference/images/create-image"
+    },
+    {
+      "source": "/ai-gateway/model-api/audio",
+      "destination": "/api-reference/audio/create-speech"
+    },
+    {
+      "source": "/ai-gateway/model-api/moderations",
+      "destination": "/api-reference/moderations/create-moderation"
+    },
+    {
+      "source": "/ai-gateway/model-api/models",
+      "destination": "/api-reference/models/list-models"
+    }
+  ],
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "https://t.me/dgrid_ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "href": "https://dgrid.ai/overview"
     }
   },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
+  "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "default": true,
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "GET STARTED",
+                "pages": [
+                  "index",
+                  "quickstart"
+                ]
+              },
+              {
+                "group": "CORE CONCEPTS",
+                "pages": [
+                  "what-we-do",
+                  "background",
+                  "dgrid-solution",
+                  "node-operators"
+                ]
+              },
+              {
+                "group": "AI GATEWAY",
+                "pages": [
+                  "ai-gateway/overview",
+                  "ai-gateway/integrations",
+                  "ai-gateway/supported-regions"
+                ]
+              },
+              {
+                "group": "AI ARENA",
+                "pages": [
+                  "ai-arena/overview",
+                  "ai-arena/arena-for-agent"
+                ]
+              },
+              {
+                "group": "ECOSYSTEM",
+                "pages": [
+                  "dori",
+                  "dclaw"
+                ]
+              },
+              {
+                "group": "$DGAI TOKEN",
+                "pages": [
+                  "what-is-dgai",
+                  "core-functions",
+                  "circulation-mechanism",
+                  "token-distribution"
+                ]
+              },
+              {
+                "group": "GENESIS PREMIUM",
+                "pages": [
+                  "premium/program-overview",
+                  "premium/exclusive-benefits",
+                  "premium/purchase-and-activation",
+                  "premium/incentive-mechanism-and-rewards",
+                  "premium/compliance-and-regulatory",
+                  "premium/legal-disclaimer"
+                ]
+              },
+              {
+                "group": "RESOURCES",
+                "pages": [
+                  "roadmap",
+                  "academic-research",
+                  "ai-gateway/terms-of-service"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "GETTING STARTED",
+                "pages": [
+                  "api-reference/introduction"
+                ]
+              },
+              {
+                "group": "MODEL API",
+                "pages": [
+                  {
+                    "group": "Chat",
+                    "pages": [
+                      "api-reference/chat/create-chat-completion",
+                      "api-reference/chat/create-response",
+                      "api-reference/chat/create-message",
+                      "api-reference/chat/generate-content",
+                      "api-reference/chat/gemini-media-recognition"
+                    ]
+                  },
+                  {
+                    "group": "Completions",
+                    "pages": [
+                      "api-reference/completions/create-completion"
+                    ]
+                  },
+                  {
+                    "group": "Embeddings",
+                    "pages": [
+                      "api-reference/embeddings/create-embedding",
+                      "api-reference/embeddings/create-engine-embedding"
+                    ]
+                  },
+                  {
+                    "group": "Images",
+                    "pages": [
+                      "api-reference/images/gemini-native-format",
+                      "api-reference/images/openai-chat-format",
+                      "api-reference/images/create-image",
+                      "api-reference/images/qwen-image-generations",
+                      "api-reference/images/edit-image",
+                      "api-reference/images/qwen-image-edits"
+                    ]
+                  },
+                  {
+                    "group": "Audio",
+                    "pages": [
+                      "api-reference/audio/native-gemini-format",
+                      "api-reference/audio/create-speech",
+                      "api-reference/audio/create-transcription",
+                      "api-reference/audio/create-translation"
+                    ]
+                  },
+                  {
+                    "group": "Moderations",
+                    "pages": [
+                      "api-reference/moderations/create-moderation"
+                    ]
+                  },
+                  {
+                    "group": "Models",
+                    "pages": [
+                      "api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "Realtime",
+                    "pages": [
+                      "ai-gateway/model-api/realtime"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "MANAGEMENT API KEYS",
+                "pages": [
+                  "management-api-keys"
+                ]
+              },
+              {
+                "group": "X402 API",
+                "pages": [
+                  "x402/overview",
+                  "x402/api-reference"
+                ]
+              }
+            ]
+          }
+        ]
+      }
     ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/dgrid_ai",
+      "telegram": "https://t.me/dgrid_ai",
+      "github": "https://github.com/dgridai"
     }
   }
 }

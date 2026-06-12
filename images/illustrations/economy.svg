@@ -1,0 +1,20 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" fill="#F4F7EE"/>
+  <g stroke="#142008" stroke-opacity="0.06" stroke-width="1.5" stroke-dasharray="6 8">
+    <line x1="0" y1="125" x2="800" y2="125"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="375" x2="800" y2="375"/>
+    <line x1="160" y1="0" x2="160" y2="500"/>
+    <line x1="320" y1="0" x2="320" y2="500"/>
+    <line x1="480" y1="0" x2="480" y2="500"/>
+    <line x1="640" y1="0" x2="640" y2="500"/>
+  </g>
+  <circle cx="400" cy="250" r="150" fill="none" stroke="#142008" stroke-width="3" stroke-opacity="0.18"/>
+  <circle cx="400" cy="250" r="105" fill="none" stroke="#142008" stroke-width="3" stroke-opacity="0.1" stroke-dasharray="10 8"/>
+  <path d="M 400 100 A 150 150 0 0 1 530 175" fill="none" stroke="#6B9B1E" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 400 400 A 150 150 0 0 1 270 325" fill="none" stroke="#6B9B1E" stroke-width="8" stroke-linecap="round" stroke-opacity="0.5"/>
+  <circle cx="400" cy="250" r="44" fill="#CCFF33" stroke="#6B9B1E" stroke-width="3"/>
+  <text x="400" y="262" font-family="ui-sans-serif, system-ui, sans-serif" font-size="34" font-weight="700" fill="#1A2E05" text-anchor="middle">$</text>
+  <circle cx="545" cy="355" r="10" fill="#142008" fill-opacity="0.28"/>
+  <circle cx="252" cy="148" r="10" fill="#CCFF33" stroke="#6B9B1E" stroke-width="1.5"/>
+</svg>

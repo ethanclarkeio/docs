@@ -1,0 +1,116 @@
+---
+title: "Native Gemini Format"
+description: "Use Gemini-compatible generateContent requests for multimodal audio understanding and generation"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+This page uses the same `generateContent` operation as [Generate content (Gemini)](/api-reference/chat/generate-content), with the playground above pre-filled for plain text chat. The notes below describe the Gemini-native fields you can add to `generationConfig` to request audio understanding or generation with structured parts.
+
+<Note>
+Set `generationConfig.responseModalities` to `["AUDIO"]` to request audio output, and configure `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` to choose a prebuilt voice for generated speech.
+</Note>
+
+### Gemini-native request fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | Yes | Requested response modalities, e.g. `["AUDIO"]`. |
+| `generationConfig.speechConfig` | object | No | Speech configuration object. |
+| `generationConfig.speechConfig.voiceConfig` | object | No | Voice configuration wrapper. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig` | object | No | Prebuilt voice settings. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` | string | No | Prebuilt voice preset name, e.g. `Kore`. |
+
+<Tip>
+Use a text-to-speech-capable model such as `gemini-2.5-flash-preview-tts` in the `model` path parameter when requesting audio output.
+</Tip>
+
+### Example: requesting speech audio
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Say cheerfully: Have a wonderful day!" }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["AUDIO"],
+    "speechConfig": {
+      "voiceConfig": {
+        "prebuiltVoiceConfig": {
+          "voiceName": "Kore"
+        }
+      }
+    }
+  }
+}
+```
+
+### Response fields
+
+The response follows the standard `generateContent` shape. When audio output is requested, the returned `parts` contain inline audio data instead of text:
+
+<ResponseField name="candidates" type="array">
+  Candidate responses returned by the model.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Generated content object.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Role returned in the generated content block, typically `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Returned parts. For audio output, each part contains an `inlineData` object with `mimeType` (e.g. `audio/L16;codec=pcm;rate=24000`) and base64-encoded `data`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Finish reason string, e.g. `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Safety evaluation results.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token accounting, including `promptTokenCount`, `candidatesTokenCount`, and `totalTokenCount`.
+</ResponseField>
+
+<ResponseField name="promptFeedback" type="object">
+  Prompt blocking feedback when applicable.
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "audio/L16;codec=pcm;rate=24000",
+              "data": "<base64-encoded-audio-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 10,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 10
+  }
+}
+```

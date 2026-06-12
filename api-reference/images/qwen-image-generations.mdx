@@ -1,0 +1,80 @@
+---
+title: "Qwen Image Generations"
+description: "Generate images through the Qwen-compatible OpenAI image endpoint for wanx-v1 style models"
+openapi: "api-reference/openapi.json POST /v1/images/generations"
+---
+
+This page uses the same `images/generations` operation as [Create image](/api-reference/images/create-image), with the playground above pre-filled for the generic OpenAI-style image schema (`prompt`, `model`, `size`, etc.). The notes below describe the Qwen-specific request shape for `wanx-v1` style models.
+
+<Note>
+Qwen image models accept an alternate request shape that wraps your prompt inside `input.messages` rather than a top-level `prompt` field. Provide `model` and `input` together in the playground's request body to use this shape.
+</Note>
+
+### Qwen-specific request fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `model` | string | Yes | Model identifier, such as `wanx-v1`. |
+| `input` | object | Yes | Input wrapper object sent in the request, used instead of a top-level `prompt`. |
+| `input.messages` | array | Yes | Messages array nested under `input`. |
+| `input.messages[].role` | string | Yes | Message role, e.g. `user`. |
+| `input.messages[].content` | string | Yes | Prompt text describing the desired image. |
+
+<Tip>
+Unlike the standard `prompt`/`size`/`quality` fields shown in the playground, Qwen's `wanx-v1` models read the prompt from `input.messages[].content`. Other top-level fields such as `n` and `response_format` are not used by this format.
+</Tip>
+
+### Example: generating an image
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "A serene mountain lake at dawn, photorealistic."
+      }
+    ]
+  }
+}
+```
+
+### Response fields
+
+The response follows the standard image generation shape:
+
+<ResponseField name="created" type="integer">
+  Creation timestamp.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Generated image entries.
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      Image URL.
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Base64 image payload.
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      Revised prompt returned by the model.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/abc123.png",
+      "b64_json": "",
+      "revised_prompt": "A serene mountain lake at dawn with mist rising off the water, photorealistic."
+    }
+  ]
+}
+```

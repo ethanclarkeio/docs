@@ -1,0 +1,22 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" fill="#F4F7EE"/>
+  <g stroke="#142008" stroke-opacity="0.06" stroke-width="1.5" stroke-dasharray="6 8">
+    <line x1="0" y1="125" x2="800" y2="125"/>
+    <line x1="0" y1="250" x2="800" y2="250"/>
+    <line x1="0" y1="375" x2="800" y2="375"/>
+    <line x1="160" y1="0" x2="160" y2="500"/>
+    <line x1="320" y1="0" x2="320" y2="500"/>
+    <line x1="480" y1="0" x2="480" y2="500"/>
+    <line x1="640" y1="0" x2="640" y2="500"/>
+  </g>
+  <rect x="100" y="120" width="260" height="260" rx="16" fill="none" stroke="#6B9B1E" stroke-width="3"/>
+  <circle cx="230" cy="215" r="34" fill="none" stroke="#6B9B1E" stroke-width="3"/>
+  <rect x="150" y="285" width="160" height="14" rx="7" fill="#6B9B1E" fill-opacity="0.45"/>
+  <rect x="170" y="315" width="120" height="14" rx="7" fill="#6B9B1E" fill-opacity="0.25"/>
+  <rect x="440" y="120" width="260" height="260" rx="16" fill="none" stroke="#142008" stroke-width="3" stroke-opacity="0.5"/>
+  <circle cx="570" cy="215" r="34" fill="none" stroke="#142008" stroke-width="3" stroke-opacity="0.5"/>
+  <rect x="490" y="285" width="160" height="14" rx="7" fill="#142008" fill-opacity="0.28"/>
+  <rect x="510" y="315" width="120" height="14" rx="7" fill="#142008" fill-opacity="0.16"/>
+  <circle cx="400" cy="250" r="44" fill="#CCFF33" stroke="#6B9B1E" stroke-width="3"/>
+  <text x="400" y="263" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#1A2E05" text-anchor="middle">VS</text>
+</svg>

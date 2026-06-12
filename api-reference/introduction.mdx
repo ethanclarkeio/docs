@@ -1,0 +1,84 @@
+---
+title: "Introduction"
+description: "Three API surfaces — Model API, Management API Keys, and x402 API"
+---
+
+The DGrid API Reference is organized into three API surfaces, each with its own authentication model and purpose:
+
+<CardGroup cols={3}>
+  <Card title="Model API" icon="brain" href="#model-api">
+    OpenAI-, Claude-, and Gemini-compatible endpoints for chat, completions, embeddings, images, audio, and moderations.
+  </Card>
+  <Card title="Management API Keys" icon="key" href="/management-api-keys">
+    Programmatic lifecycle management for Model API Keys — create, rotate, limit, disable, and revoke.
+  </Card>
+  <Card title="x402 API" icon="credit-card" href="/x402/overview">
+    Pay-per-inference access using the x402 payment protocol, with no pre-funded account balance.
+  </Card>
+</CardGroup>
+
+<Note>
+Every Model API reference page has an interactive playground: fill in your API key and parameters, then press **Send** to test the endpoint live against `https://api.dgrid.ai`.
+</Note>
+
+## Model API
+
+The Model API gives you a single gateway to 200+ leading AI models. Every endpoint is compatible with an ecosystem standard — OpenAI, Claude, or Gemini — so your existing SDKs and tooling work unchanged.
+
+### Base URL
+
+```text
+https://api.dgrid.ai
+```
+
+### Authentication
+
+All Model API endpoints authenticate with a bearer token:
+
+```http
+Authorization: Bearer <DGRID_API_KEY>
+```
+
+The Claude-compatible `POST /v1/messages` endpoint additionally requires:
+
+```http
+anthropic-version: 2023-06-01
+```
+
+Get your key by following the [key creation guide](https://blog.dgrid.ai/posts/2026-01-04/), or use the [Management API Keys](/management-api-keys) surface for programmatic key lifecycle management.
+
+### Model naming
+
+The `model` parameter uses the `provider/model-name` format — for example `openai/gpt-4o` — consistent across all DGrid-supported models. Call [List models](/api-reference/models/list-models) to discover the model IDs available to your key.
+
+### Endpoint families
+
+| Family | Base path | Best for |
+| --- | --- | --- |
+| Chat | `/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/models/{model}:generateContent` | Conversational apps, multimodal assistants, tool calling |
+| Completions | `/v1/completions` | Prompt-only text generation and legacy integrations |
+| Embeddings | `/v1/embeddings`, `/v1/engines/{engine}/embeddings` | Search, clustering, retrieval, ranking |
+| Images | `/v1/images/generations`, `/v1/images/edits` | Image generation and editing across model formats |
+| Audio | `/v1/audio/speech`, `/v1/audio/transcriptions`, `/v1/audio/translations` | Speech synthesis, transcription, translation |
+| Moderations | `/v1/moderations` | Content safety filtering and policy checks |
+| Models | `/v1/models` | Discover available models and supported endpoint types |
+| Realtime | `/v1/realtime` (WebSocket) | Low-latency streaming conversations |
+
+### Best practices
+
+1. Store the DGrid API key on the server side and never expose it in public clients or repositories.
+2. Prefer the OpenAI-compatible format when you want the broadest SDK compatibility with minimal migration effort.
+3. Use provider-native formats only when you need provider-specific payload features such as Gemini multimodal parts or Claude tool payloads.
+4. Keep request and response examples in sync with your target model family, because parameter names differ between OpenAI, Claude, and Gemini styles.
+
+## Management API Keys
+
+Management API Keys are administrative credentials for the full lifecycle of Model API Keys — creation, rotation, usage limits, disabling, and revocation. They are restricted to key management operations and cannot call Model API inference endpoints.
+
+See [Management API Keys](/management-api-keys) for the API surfaces, authentication boundaries, and endpoint reference.
+
+## x402 API
+
+The x402 API is DGrid's pay-per-inference access mode. Instead of creating an account or pre-funding a balance, requests are authorized and settled per call using the x402 payment protocol — well suited to autonomous agents and on-demand integrations.
+
+See [x402 API](/x402/overview) for the payment flow and [x402 API Reference](/x402/api-reference) for endpoint details.

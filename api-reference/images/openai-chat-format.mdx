@@ -1,0 +1,97 @@
+---
+title: "OpenAI Chat Format"
+description: "Request Gemini-backed image generation through the OpenAI-compatible Chat Completions endpoint"
+openapi: "api-reference/openapi.json POST /v1/chat/completions"
+---
+
+This page uses the same `chat/completions` operation as [Create chat completion](/api-reference/chat/create-chat-completion), with the playground above pre-filled for the generic chat schema. The notes below describe how to use this endpoint to request Gemini-backed image generation from an OpenAI-compatible client.
+
+<Note>
+Include an image-generation model in `model` (such as `gemini-2.0-flash-preview-image-generation`), set `stream` as needed, and supply your prompt through `messages`. Optionally include `contents` for additional Gemini-style multimodal context alongside `messages`.
+</Note>
+
+### Provider-specific notes
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `model` | string | Yes | Image-generation model identifier, e.g. `gemini-2.0-flash-preview-image-generation`. |
+| `messages[].content` | string | Yes | Prompt text describing the desired image. |
+| `contents` | array | No | Optional Gemini-style content array for additional multimodal context, not part of the standard OpenAI chat schema. |
+
+<Tip>
+The `contents` field is a DGrid extension layered on top of the standard chat completions schema — it lets you pass Gemini-native `parts` (such as `inlineData`) alongside the OpenAI-style `messages` array when the target model supports it.
+</Tip>
+
+### Example: requesting an image
+
+```json
+{
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Generate an image of a futuristic city skyline at sunset."
+    }
+  ]
+}
+```
+
+### Response fields
+
+The response follows the standard chat completions shape. The generated image is embedded directly in the assistant message content:
+
+<ResponseField name="choices" type="array">
+  Returned choice entries.
+
+  <Expandable title="choice properties">
+    <ResponseField name="index" type="integer">
+      Choice index.
+    </ResponseField>
+    <ResponseField name="message" type="object">
+      Assistant message object.
+
+      <Expandable title="message properties">
+        <ResponseField name="role" type="string">
+          Message role, typically `assistant`.
+        </ResponseField>
+        <ResponseField name="content" type="string">
+          Message content. For image-output models, this is a markdown image reference embedding the generated image as a base64 data URI, e.g. `![generated image](data:image/png;base64,...)`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finish_reason" type="string">
+      Finish reason, e.g. `stop`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usage" type="object">
+  Token usage summary.
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "id": "chatcmpl-abc123",
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "object": "chat.completion",
+  "created": 1719859200,
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "![generated image](data:image/png;base64,<base64-encoded-image-bytes>)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 0,
+    "total_tokens": 12
+  }
+}
+```

@@ -1,0 +1,57 @@
+---
+title: "Circulation Mechanism"
+description: "The closed-loop value cycle of $DGAI"
+---
+
+$DGAI operates within a closed-loop economic system, ensuring transparent value flow among users, node operators, and the broader ecosystem. This mechanism is governed by smart contracts (e.g., Bill Contract) and enforced via DGrid Nodes, eliminating intermediaries and aligning incentive mechanisms with network health.
+
+## Core Cycle: From Payment to Rewards
+
+The circulation of $DGAI follows a structured process that links users' inference demands to node contributions:
+
+1. **Initiation of User Payment**
+   When a user submits an inference request via the user client, the process unfolds as follows:
+
+- The request is routed to a DGrid Node, which calculates the task fee using the following formula:
+  `Cost = Compute Unit (CU) × Base Price × (1 + Latency Penalty Coefficient)`
+
+<Info>
+- **Compute Unit (CU)**: A standardized metric for measuring inference complexity (correlated with model size, number of input tokens, and execution time).
+- **Base Price**: A fixed price per CU (adjustable via governance mechanisms, with an initial value of 0.05 $DGAI).
+- **Latency Penalty Coefficient**: Ranges from 0 to 0.3 (fine-tuned for latency exceeding the target threshold).
+</Info>
+
+- The user's $DGAI is escrowed via the **Bill Contract**—a smart contract deployed on the blockchain—to ensure payment upon task completion.
+
+2. **Distribution of Node Rewards**
+   After inference is completed (verified by Grid Nodes and archived in the AI DA Layer), the escrowed $DGAI is distributed via the Bill Contract.
+
+Recipients include:
+
+- **DGrid Nodes**: Compensation for executing inference tasks (proportional to CU, latency, and uptime).
+- **Treasury**: Used for network maintenance (e.g., AI DA Layer fees, security audits) and developer grants.
+- **Governance Pool**: Incentivizes $DGAI holders to participate in voting (e.g., protocol upgrades, parameter adjustments).
+
+3. **Staking and Lock-Up Requirements**
+   Nodes participating in the network must lock up $DGAI as collateral to ensure accountability.
+4. **Governance and Fee Allocation**
+
+- **Governance Pool**: 5% of task payments (plus 10% of annual treasury funds) are distributed to $DGAI holders who participate in proposal voting (e.g., adjusting base prices, whitelisting new models).
+- **Network Fees**: A 2% processing fee is deducted upfront from all task payments to cover smart contract gas costs and AI DA Layer archiving, ensuring transaction efficiency.
+
+5. **Penalty Mechanisms and Token Burning**
+   Node violations trigger automatic penalties to protect network integrity:
+
+- **Confiscated Tokens**: 5–20% of a node's staked $DGAI will be confiscated for malicious behaviors (e.g., submitting false inference results, downtime exceeding 72 hours).
+- **Burning Mechanism**: All confiscated tokens are permanently burned, reducing the total supply of $DGAI over time and enhancing scarcity.
+
+## Key Processes: Capital Inflows and Outflows
+
+| Inflows (Sources of \$DGAI) | Outflows (Uses of \$DGAI) |
+|----------------------------|--------------------------|
+| Fees paid by users for inference tasks | Rewards for node operators for inference tasks |
+| Weekly rewards for DGrid Nodes | Staking lock-up for node participation |
+| Governance rewards for voting participants | Network fees (gas, AI DA Layer archiving) |
+| Initial distribution (e.g., public sale, airdrops) | Confiscated tokens (burned) |
+
+This mechanism ensures \$DGAI maintains utility as both a medium of exchange and a governance tool, fostering a self-sustaining ecosystem where value is proportional to network participation. By linking payments to contributions and enforcing accountability through staking mechanisms, the circulation of \$DGAI reinforces the decentralization and resilience of DGrid AI.

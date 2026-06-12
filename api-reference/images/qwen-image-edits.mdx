@@ -1,0 +1,80 @@
+---
+title: "Qwen Image Edits"
+description: "Edit images through the Qwen-compatible OpenAI image editing workflow"
+openapi: "api-reference/openapi.json POST /v1/images/edits"
+---
+
+This page uses the same `images/edits` operation as [Edit image](/api-reference/images/edit-image), with the playground above pre-filled for the generic OpenAI-style edit schema (`image`, `mask`, `prompt`, etc.). The notes below describe the Qwen-specific request shape for `wanx-v1` style models.
+
+<Note>
+Qwen image editing models accept an alternate JSON request shape that wraps your editing instructions and source image references inside `input.messages`, rather than uploading `image`/`mask` files via multipart form data. Provide `model` and `input` together in the playground's request body to use this shape.
+</Note>
+
+### Qwen-specific request fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `model` | string | Yes | Model identifier, such as `wanx-v1`. |
+| `input` | object | Yes | Input wrapper object sent in the request body, used instead of multipart `image`/`mask` fields. |
+| `input.messages` | array | Yes | Messages array nested under `input`. |
+| `input.messages[].role` | string | Yes | Message role, e.g. `user`. |
+| `input.messages[].content` | string | Yes | Editing instructions and any referenced source image(s). |
+
+<Tip>
+Source images can be referenced inline within `input.messages[].content` (for example as URLs or embedded references) rather than as separate multipart file uploads.
+</Tip>
+
+### Example: editing an image
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove the background and replace it with a solid white backdrop."
+      }
+    ]
+  }
+}
+```
+
+### Response fields
+
+The response follows the standard image edit shape:
+
+<ResponseField name="created" type="integer">
+  Creation timestamp.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Generated image entries.
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      Image URL.
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Base64 image payload.
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      Revised prompt returned by the model.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/edited-abc123.png",
+      "b64_json": "",
+      "revised_prompt": "The subject with background removed and replaced with a solid white backdrop."
+    }
+  ]
+}
+```

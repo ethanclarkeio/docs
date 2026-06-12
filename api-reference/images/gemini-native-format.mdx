@@ -1,0 +1,108 @@
+---
+title: "Gemini Native Format"
+description: "Generate or edit images through the Gemini native generateContent interface"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+This page uses the same `generateContent` operation as [Generate content (Gemini)](/api-reference/chat/generate-content), with the playground above pre-filled for plain text chat. The notes below describe the Gemini-native fields you can add to `generationConfig` to generate or edit images with provider-specific response controls.
+
+<Note>
+Set `generationConfig.responseModalities` to `["IMAGE"]` to request image output, and use `generationConfig.imageConfig` to control the aspect ratio and output size.
+</Note>
+
+### Gemini-native request fields
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | Yes | Requested modalities array, e.g. `["IMAGE"]`. |
+| `generationConfig.imageConfig` | object | No | Image configuration object. |
+| `generationConfig.imageConfig.aspectRatio` | string | No | Aspect ratio for the generated image, e.g. `1:1`. |
+| `generationConfig.imageConfig.imageSize` | string | No | Output image size, e.g. `1024x1024`. |
+
+<Tip>
+Use an image-generation-capable model such as `gemini-2.0-flash-preview-image-generation` in the `model` path parameter.
+</Tip>
+
+### Example: generating an image
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "A photorealistic image of a corgi wearing sunglasses on a beach." }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["IMAGE"],
+    "imageConfig": {
+      "aspectRatio": "1:1",
+      "imageSize": "1024x1024"
+    }
+  }
+}
+```
+
+### Response fields
+
+The response follows the standard `generateContent` shape. When image output is requested, the returned `parts` contain inline image data:
+
+<ResponseField name="candidates" type="array">
+  Candidate responses returned by the model.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Generated content object.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Role returned in the generated content block, typically `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Returned content parts. For image output, each part contains an `inlineData` object with `mimeType` (e.g. `image/png`) and base64-encoded `data`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Finish reason string, e.g. `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Safety evaluation results.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token usage metadata, including `promptTokenCount`, `candidatesTokenCount`, and `totalTokenCount`.
+</ResponseField>
+
+### Example response
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "<base64-encoded-image-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 14
+  }
+}
+```

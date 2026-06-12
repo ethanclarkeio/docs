@@ -1,47 +1,128 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Find your way into the DGrid ecosystem and make your first API call in under 5 minutes"
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+DGrid is the decentralized smart network for AI — a single ecosystem that spans model access, model discovery, evaluation, and on-chain incentives. Whichever product you start with, every part of DGrid is reachable through one API key.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+## Explore the DGrid ecosystem
 
-## Prerequisites
+<CardGroup cols={2}>
+  <Card title="DGrid AI Gateway" icon="network" href="/ai-gateway/overview">
+    One OpenAI-, Claude-, and Gemini-compatible API for 200+ leading AI models, with Web3-native payments and intelligent routing.
+  </Card>
+  <Card title="AI Arena" icon="trophy" href="/ai-arena/overview">
+    Blind model battles where community votes earn $DGAI airdrop points and feed DGrid's routing intelligence.
+  </Card>
+  <Card title="Dori Find Models" icon="compass" href="/dori">
+    A natural-language advisor that turns your requirements into a shortlist of models, tested and compared for you.
+  </Card>
+  <Card title="Model Marketplace" icon="store" href="/api-reference/models/list-models">
+    The open catalog of 200+ models and providers behind DGrid AI Gateway, browsable and callable through one API.
+  </Card>
+</CardGroup>
 
-Before you begin, you must have:
+## Get started with DGrid AI Gateway
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+DGrid AI Gateway gives you a single, OpenAI-compatible API for 200+ leading models. This section takes you from zero to your first chat completion.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+<Step title="Get your API key">
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+Obtain a valid `DGRID_API_KEY` by following the [key creation guide](https://blog.dgrid.ai/posts/2026-01-04/).
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+<Note>
+Your key secret is shown only once at creation time. Copy it immediately and store it in a secure location such as a secrets manager. Never expose it in client-side code or public repositories.
+</Note>
+
+</Step>
+
+<Step title="Make your first request">
+
+Send a chat completion request to the DGrid AI Gateway endpoint. The `model` parameter uses the `provider/model-name` format (for example `openai/gpt-4o`), consistent across all DGrid-supported models.
+
+<CodeGroup>
+
+```bash cURL
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the meaning of life?"
+      }
+    ]
+  }'
+```
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.dgrid.ai/v1",
+    api_key="<DGRID_API_KEY>",
+)
+
+completion = client.chat.completions.create(
+    model="openai/gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+print(completion.choices[0].message.content)
+```
+
+```typescript TypeScript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: '<DGRID_API_KEY>',
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'openai/gpt-4o',
+  messages: [
+    {
+      role: 'user',
+      content: 'What is the meaning of life?',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+</CodeGroup>
 
 <Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+DGrid is fully compatible with the OpenAI SDK — point `baseURL` at `https://api.dgrid.ai/v1` and your existing code works unchanged. Install it with `pip install openai` or `npm install openai`.
 </Tip>
+
+</Step>
+
+<Step title="Explore what's next">
+
+<CardGroup cols={3}>
+  <Card title="Model API Reference" icon="code" href="/api-reference/introduction">
+    Endpoint-level reference for chat, images, audio, embeddings, and more.
+  </Card>
+  <Card title="Integrations" icon="plug" href="/ai-gateway/integrations">
+    Connect DGrid to Claude Code, Cursor, Moltbot, and other tools.
+  </Card>
+  <Card title="x402 Payments" icon="credit-card" href="/x402/overview">
+    Pay per inference with the x402 protocol — no account balance required.
+  </Card>
+</CardGroup>
+
+</Step>
+
+</Steps>

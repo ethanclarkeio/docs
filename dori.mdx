@@ -1,0 +1,149 @@
+---
+title: "Dori Find Models"
+description: "DGrid's natural-language assistant for discovering and evaluating LLMs"
+---
+
+**Dori Find Models** is DGrid's natural-language–driven assistant for discovering and evaluating large language models (LLMs). Using Dori, you express your requirements in plain English, test shortlisted models with your own workloads, and receive structured reports to support confident, data-backed model choices.
+
+## Role in the DGrid Platform
+
+Dori is one of two tightly integrated capabilities in the DGrid ecosystem:
+
+* **Dori Find Models** – Helps you:
+  * Translate business or product requirements into concrete model candidates
+  * Discover, test, and compare models in a guided, conversational flow
+* **AI Gateway** – Provides:
+  * A single abstraction layer and API over 200+ production-ready LLMs
+  * Configuration-based model choice and switching, without code changes
+
+Together, they enable an end-to-end LLM workflow:
+
+<Tip>
+**Traditional:** Search vendors → create many accounts → test manually → integrate per-vendor
+
+**With DGrid (Dori + AI Gateway with LLM Marketplace):** Describe needs → discover & test in one place → integrate once → swap models via config
+</Tip>
+
+## Key Capabilities
+
+### 1. Natural-Language Requirements Intake
+
+Dori starts from your real-world needs, captured in free-form text. For example:
+
+* "We need a low-latency, cost-efficient model for multilingual customer support (English, Spanish, Portuguese), integrated into our existing chatbot."
+* "We're building a code assistant focusing on Python and TypeScript; strong reasoning and large-context understanding are important."
+* "We want a model optimized for long-document RAG, with stable performance on 10k+ token contexts."
+
+You do **not** need to know exact model names, providers, or benchmark acronyms. Dori interprets your description and translates it into technical selection criteria.
+
+### 2. Intelligent Search Across the LLM Marketplace
+
+Once your requirements are captured, Dori searches across the **DGrid LLM Marketplace**, which aggregates 200+ LLMs behind a single interface.
+
+Dori:
+
+* Filters candidate models by:
+  * **Task fit** (e.g., chat, code, RAG, multi-lingual support)
+  * **Context window** (short vs long context, e.g., 10k+ tokens)
+  * **Latency and cost profiles**
+  * Other relevant operational characteristics
+* Ranks models according to your priorities:
+  * Throughput and latency sensitivity
+  * Quality vs cost tradeoffs
+  * Specific capability needs (e.g., coding, reasoning, multilinguality)
+* Returns a **short, relevant list of recommended models**, so you avoid manually inspecting dozens of vendor pages and benchmark tables.
+
+### 3. Unified, Real-Workload Testing
+
+After Dori proposes a shortlist, it helps you test those models in a **single environment**, within DGrid:
+
+* Run **trials** on candidate models directly in the platform
+* Use **your own prompts, documents, and scenarios** instead of generic examples
+* Evaluate models under a **shared, consistent setup**, making comparisons meaningful
+
+This eliminates the common pattern of:
+
+* Separate vendor playgrounds
+* Ad-hoc scripts for each API
+* Screenshots, notes, and spreadsheets spread across tools
+
+### 4. Structured, Shareable Evaluation
+
+Dori produces clear, structured outputs that you can share and discuss with your team, such as:
+
+* **Example outputs** from each candidate model
+* **Qualitative notes** about behavior and suitability
+* **Latency and performance metrics** observed during tests
+* **Cost estimates** aligned to your expected traffic patterns and load
+
+Instead of "gut-feel" and partial information, teams can rely on a traceable evaluation record when choosing "the best model for our use case."
+
+### 5. Tight Integration with the AI Gateway
+
+Dori is directly coupled with the AI Gateway, so everything you discover and test is immediately available to integrate in production via:
+
+* **One API key**
+* **One unified endpoint**
+* **A single, coherent API interface**
+
+Key consequences:
+
+* You don't need separate auth, SDKs, or endpoints per provider
+* A model you validate with Dori is ready to be used **without adding a new vendor integration**
+* Changing models later becomes a **configuration change**, not a redevelopment project
+
+## Typical Use Cases
+
+### Multilingual Customer Support
+
+* Need: Low-latency, cost-efficient LLM for a multilingual chatbot (e.g., English, Spanish, Portuguese)
+* How Dori helps:
+  * Interprets multilingual and latency requirements
+  * Identifies models well-suited to conversational support across those languages
+  * Lets you test using real customer queries and conversation flows
+
+### Code Assistants and Developer Tools
+
+* Need: A model for code generation, explanation, and refactoring in languages like Python and TypeScript
+* How Dori helps:
+  * Highlights models with strong reasoning and coding capabilities
+  * Emphasizes long-context support for large codebases
+  * Facilitates trials using real repositories, code snippets, or tasks
+
+### Long-Context RAG and Document Applications
+
+* Need: Stable performance for long-document retrieval-augmented generation (RAG) with 10k+ token contexts
+* How Dori helps:
+  * Filters models by context length and RAG suitability
+  * Allows evaluation with your actual documents and retrieval setup
+  * Produces reports capturing both quality and performance under large contexts
+
+## Benefits for Different User Types
+
+### Individual Developers & Startup Teams
+
+* Focus on product and UX rather than:
+  * Chasing vendor docs
+  * Wiring up multiple APIs and SDKs
+* Iterate quickly:
+  * Try several models via Dori
+  * Lock in one (or more) via the Marketplace
+  * Swap later as new, better models arrive
+
+### Enterprises & Large Platforms
+
+* Standardize LLM access across business units using:
+  * A single integration with the LLM Marketplace
+  * Shared evaluation workflows via Dori
+* Reduce long-term maintenance:
+  * Avoid bespoke integrations per vendor
+  * Maintain flexibility to adopt new models as the ecosystem evolves
+
+### Web3 and On-Chain Projects
+
+* Build AI-powered agents, dApps, and protocols whose model backbone can:
+  * Upgrade over time
+  * Diversify across providers
+* Preserve on-chain and off-chain integration logic while:
+  * Changing or augmenting underlying LLMs via configuration
+  * Avoiding breaking changes every time you adopt a new model

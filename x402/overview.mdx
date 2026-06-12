@@ -1,0 +1,82 @@
+---
+title: "x402 API"
+sidebarTitle: "Overview"
+description: "DGrid's pay-per-inference access mode using the x402 payment protocol"
+---
+
+**DGrid x402 API** is DGrid's pay-per-inference access mode for api payments. Instead of creating an account, pre-funding a balance, or managing separate billing flows, developers and autonomous agents can pay LLM inference costs directly through the **x402 payment protocol** as part of the API request lifecycle.
+
+This makes x402 especially useful for:
+
+* **Agents and autonomous workflows** that need to call an LLM and settle payment immediately
+* **Server-side tools and scripts** that should avoid account provisioning and manual top-ups
+* **On-demand integrations** where the simplest path is "request inference, authorize payment, receive the result"
+
+## Why x402 API Matters
+
+Traditional AI billing usually requires:
+
+* Creating an account with the provider
+* Funding a prepaid balance or attaching a billing method
+* Managing API keys, quotas, and billing dashboards
+
+With x402 on DGrid, the flow becomes much more direct:
+
+<Tip>
+Request inference → receive payment requirements → sign once → submit payment and inference together
+</Tip>
+
+For agentic systems, this is a major simplification. The same runtime that decides to use a model can also authorize and settle the cost of that inference call, without switching into a separate account-management workflow.
+
+## Primary Use Case: Agents Paying for Inference
+
+x402 is designed for the case where an **agent** needs to:
+
+1. Choose a model
+2. Call the model API
+3. Pay the inference fee
+4. Continue execution with the result
+
+This is valuable for:
+
+* AI agents operating in backend workflows
+* Web3 agents or protocols that want payment-aware inference
+* Multi-step automations that should treat inference as a directly payable resource
+
+## How the Flow Works
+
+x402 on DGrid uses a **two-step request flow**:
+
+1. **Initial request without `x-payment`**
+   The server returns `402 Payment Required` plus signable payment requirements.
+2. **Client signs and retries**
+   The client generates the `x-payment` payload and sends the same inference request again with the payment header.
+
+This pattern keeps payment authorization explicit while still letting the inference call remain simple and automatable.
+
+## Supported Payment Asset
+
+The current x402 endpoint uses:
+
+* **Protocol**: x402
+* **Network**: `eip155:56` (BSC)
+* **Payment token**: `USD1`
+* **Asset contract**: `0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d`
+
+## Operational Notes
+
+After successful settlement, the service records payment logs into the `x402_payment_logs` table on the backend.
+
+## When to Use x402 vs AI Gateway
+
+Use **AI Gateway** when you want:
+
+* classic API-key access
+* unified account-based model routing
+* long-running product integrations with standard billing workflows
+
+Use **x402** when you want:
+
+* direct per-request payment
+* no pre-funded account balance
+* agent-friendly inference plus payment in one flow
