@@ -20,7 +20,12 @@
     "library": "lucide"
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "api": {
     "openapi": "api-reference/openapi.json",
@@ -28,7 +33,13 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": ["curl", "python", "javascript", "go", "java"]
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "go",
+        "java"
+      ]
     }
   },
   "redirects": [
@@ -67,6 +78,10 @@
   ],
   "navbar": {
     "links": [
+      {
+        "label": "Blog",
+        "href": "https://blog.dgrid.ai/"
+      },
       {
         "label": "Support",
         "href": "https://t.me/dgrid_ai"
@@ -248,6 +263,746 @@
             ]
           }
         ]
+      },
+      {
+        "language": "zh-Hant",
+        "tabs": [
+          {
+            "tab": "文件",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "新手入門",
+                "pages": [
+                  "zh-Hant/index",
+                  "zh-Hant/quickstart"
+                ]
+              },
+              {
+                "group": "核心概念",
+                "pages": [
+                  "zh-Hant/what-we-do",
+                  "zh-Hant/background",
+                  "zh-Hant/dgrid-solution",
+                  "zh-Hant/node-operators"
+                ]
+              },
+              {
+                "group": "AI 閘道",
+                "pages": [
+                  "zh-Hant/ai-gateway/overview",
+                  "zh-Hant/ai-gateway/integrations",
+                  "zh-Hant/ai-gateway/supported-regions"
+                ]
+              },
+              {
+                "group": "AI 競技場",
+                "pages": [
+                  "zh-Hant/ai-arena/overview",
+                  "zh-Hant/ai-arena/arena-for-agent"
+                ]
+              },
+              {
+                "group": "生態系統",
+                "pages": [
+                  "zh-Hant/dori",
+                  "zh-Hant/dclaw"
+                ]
+              },
+              {
+                "group": "$DGAI 代幣",
+                "pages": [
+                  "zh-Hant/what-is-dgai",
+                  "zh-Hant/core-functions",
+                  "zh-Hant/circulation-mechanism",
+                  "zh-Hant/token-distribution"
+                ]
+              },
+              {
+                "group": "GENESIS PREMIUM",
+                "pages": [
+                  "zh-Hant/premium/program-overview",
+                  "zh-Hant/premium/exclusive-benefits",
+                  "zh-Hant/premium/purchase-and-activation",
+                  "zh-Hant/premium/incentive-mechanism-and-rewards",
+                  "zh-Hant/premium/compliance-and-regulatory",
+                  "zh-Hant/premium/legal-disclaimer"
+                ]
+              },
+              {
+                "group": "資源",
+                "pages": [
+                  "zh-Hant/roadmap",
+                  "zh-Hant/academic-research",
+                  "zh-Hant/ai-gateway/terms-of-service"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API 參考",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "新手入門",
+                "pages": [
+                  "zh-Hant/api-reference/introduction"
+                ]
+              },
+              {
+                "group": "模型 API",
+                "pages": [
+                  {
+                    "group": "對話",
+                    "pages": [
+                      "zh-Hant/api-reference/chat/create-chat-completion",
+                      "zh-Hant/api-reference/chat/create-response",
+                      "zh-Hant/api-reference/chat/create-message",
+                      "zh-Hant/api-reference/chat/generate-content",
+                      "zh-Hant/api-reference/chat/gemini-media-recognition"
+                    ]
+                  },
+                  {
+                    "group": "補全",
+                    "pages": [
+                      "zh-Hant/api-reference/completions/create-completion"
+                    ]
+                  },
+                  {
+                    "group": "嵌入",
+                    "pages": [
+                      "zh-Hant/api-reference/embeddings/create-embedding",
+                      "zh-Hant/api-reference/embeddings/create-engine-embedding"
+                    ]
+                  },
+                  {
+                    "group": "圖像",
+                    "pages": [
+                      "zh-Hant/api-reference/images/gemini-native-format",
+                      "zh-Hant/api-reference/images/openai-chat-format",
+                      "zh-Hant/api-reference/images/create-image",
+                      "zh-Hant/api-reference/images/qwen-image-generations",
+                      "zh-Hant/api-reference/images/edit-image",
+                      "zh-Hant/api-reference/images/qwen-image-edits"
+                    ]
+                  },
+                  {
+                    "group": "音訊",
+                    "pages": [
+                      "zh-Hant/api-reference/audio/native-gemini-format",
+                      "zh-Hant/api-reference/audio/create-speech",
+                      "zh-Hant/api-reference/audio/create-transcription",
+                      "zh-Hant/api-reference/audio/create-translation"
+                    ]
+                  },
+                  {
+                    "group": "內容審查",
+                    "pages": [
+                      "zh-Hant/api-reference/moderations/create-moderation"
+                    ]
+                  },
+                  {
+                    "group": "模型",
+                    "pages": [
+                      "zh-Hant/api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "即時",
+                    "pages": [
+                      "zh-Hant/ai-gateway/model-api/realtime"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "管理 API 金鑰",
+                "pages": [
+                  "zh-Hant/management-api-keys"
+                ]
+              },
+              {
+                "group": "X402 API",
+                "pages": [
+                  "zh-Hant/x402/overview",
+                  "zh-Hant/x402/api-reference"
+                ]
+              }
+            ]
+          }
+        ],
+        "navbar": {
+          "links": [
+            {
+              "label": "部落格",
+              "href": "https://blog.dgrid.ai/"
+            },
+            {
+              "label": "支援",
+              "href": "https://t.me/dgrid_ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "儀表板",
+            "href": "https://dgrid.ai/overview"
+          }
+        }
+      },
+      {
+        "language": "ko",
+        "tabs": [
+          {
+            "tab": "문서",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "시작하기",
+                "pages": [
+                  "ko/index",
+                  "ko/quickstart"
+                ]
+              },
+              {
+                "group": "핵심 개념",
+                "pages": [
+                  "ko/what-we-do",
+                  "ko/background",
+                  "ko/dgrid-solution",
+                  "ko/node-operators"
+                ]
+              },
+              {
+                "group": "AI 게이트웨이",
+                "pages": [
+                  "ko/ai-gateway/overview",
+                  "ko/ai-gateway/integrations",
+                  "ko/ai-gateway/supported-regions"
+                ]
+              },
+              {
+                "group": "AI 아레나",
+                "pages": [
+                  "ko/ai-arena/overview",
+                  "ko/ai-arena/arena-for-agent"
+                ]
+              },
+              {
+                "group": "생태계",
+                "pages": [
+                  "ko/dori",
+                  "ko/dclaw"
+                ]
+              },
+              {
+                "group": "$DGAI 토큰",
+                "pages": [
+                  "ko/what-is-dgai",
+                  "ko/core-functions",
+                  "ko/circulation-mechanism",
+                  "ko/token-distribution"
+                ]
+              },
+              {
+                "group": "GENESIS PREMIUM",
+                "pages": [
+                  "ko/premium/program-overview",
+                  "ko/premium/exclusive-benefits",
+                  "ko/premium/purchase-and-activation",
+                  "ko/premium/incentive-mechanism-and-rewards",
+                  "ko/premium/compliance-and-regulatory",
+                  "ko/premium/legal-disclaimer"
+                ]
+              },
+              {
+                "group": "리소스",
+                "pages": [
+                  "ko/roadmap",
+                  "ko/academic-research",
+                  "ko/ai-gateway/terms-of-service"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API 참조",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "시작하기",
+                "pages": [
+                  "ko/api-reference/introduction"
+                ]
+              },
+              {
+                "group": "모델 API",
+                "pages": [
+                  {
+                    "group": "채팅",
+                    "pages": [
+                      "ko/api-reference/chat/create-chat-completion",
+                      "ko/api-reference/chat/create-response",
+                      "ko/api-reference/chat/create-message",
+                      "ko/api-reference/chat/generate-content",
+                      "ko/api-reference/chat/gemini-media-recognition"
+                    ]
+                  },
+                  {
+                    "group": "컴플리션",
+                    "pages": [
+                      "ko/api-reference/completions/create-completion"
+                    ]
+                  },
+                  {
+                    "group": "임베딩",
+                    "pages": [
+                      "ko/api-reference/embeddings/create-embedding",
+                      "ko/api-reference/embeddings/create-engine-embedding"
+                    ]
+                  },
+                  {
+                    "group": "이미지",
+                    "pages": [
+                      "ko/api-reference/images/gemini-native-format",
+                      "ko/api-reference/images/openai-chat-format",
+                      "ko/api-reference/images/create-image",
+                      "ko/api-reference/images/qwen-image-generations",
+                      "ko/api-reference/images/edit-image",
+                      "ko/api-reference/images/qwen-image-edits"
+                    ]
+                  },
+                  {
+                    "group": "오디오",
+                    "pages": [
+                      "ko/api-reference/audio/native-gemini-format",
+                      "ko/api-reference/audio/create-speech",
+                      "ko/api-reference/audio/create-transcription",
+                      "ko/api-reference/audio/create-translation"
+                    ]
+                  },
+                  {
+                    "group": "모더레이션",
+                    "pages": [
+                      "ko/api-reference/moderations/create-moderation"
+                    ]
+                  },
+                  {
+                    "group": "모델",
+                    "pages": [
+                      "ko/api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "실시간",
+                    "pages": [
+                      "ko/ai-gateway/model-api/realtime"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "API 키 관리",
+                "pages": [
+                  "ko/management-api-keys"
+                ]
+              },
+              {
+                "group": "X402 API",
+                "pages": [
+                  "ko/x402/overview",
+                  "ko/x402/api-reference"
+                ]
+              }
+            ]
+          }
+        ],
+        "navbar": {
+          "links": [
+            {
+              "label": "블로그",
+              "href": "https://blog.dgrid.ai/"
+            },
+            {
+              "label": "지원",
+              "href": "https://t.me/dgrid_ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "대시보드",
+            "href": "https://dgrid.ai/overview"
+          }
+        }
+      },
+      {
+        "language": "fr",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "PRISE EN MAIN",
+                "pages": [
+                  "fr/index",
+                  "fr/quickstart"
+                ]
+              },
+              {
+                "group": "CONCEPTS CLÉS",
+                "pages": [
+                  "fr/what-we-do",
+                  "fr/background",
+                  "fr/dgrid-solution",
+                  "fr/node-operators"
+                ]
+              },
+              {
+                "group": "PASSERELLE IA",
+                "pages": [
+                  "fr/ai-gateway/overview",
+                  "fr/ai-gateway/integrations",
+                  "fr/ai-gateway/supported-regions"
+                ]
+              },
+              {
+                "group": "ARÈNE IA",
+                "pages": [
+                  "fr/ai-arena/overview",
+                  "fr/ai-arena/arena-for-agent"
+                ]
+              },
+              {
+                "group": "ÉCOSYSTÈME",
+                "pages": [
+                  "fr/dori",
+                  "fr/dclaw"
+                ]
+              },
+              {
+                "group": "JETON $DGAI",
+                "pages": [
+                  "fr/what-is-dgai",
+                  "fr/core-functions",
+                  "fr/circulation-mechanism",
+                  "fr/token-distribution"
+                ]
+              },
+              {
+                "group": "GENESIS PREMIUM",
+                "pages": [
+                  "fr/premium/program-overview",
+                  "fr/premium/exclusive-benefits",
+                  "fr/premium/purchase-and-activation",
+                  "fr/premium/incentive-mechanism-and-rewards",
+                  "fr/premium/compliance-and-regulatory",
+                  "fr/premium/legal-disclaimer"
+                ]
+              },
+              {
+                "group": "RESSOURCES",
+                "pages": [
+                  "fr/roadmap",
+                  "fr/academic-research",
+                  "fr/ai-gateway/terms-of-service"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Référence API",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "PRISE EN MAIN",
+                "pages": [
+                  "fr/api-reference/introduction"
+                ]
+              },
+              {
+                "group": "API DE MODÈLES",
+                "pages": [
+                  {
+                    "group": "Chat",
+                    "pages": [
+                      "fr/api-reference/chat/create-chat-completion",
+                      "fr/api-reference/chat/create-response",
+                      "fr/api-reference/chat/create-message",
+                      "fr/api-reference/chat/generate-content",
+                      "fr/api-reference/chat/gemini-media-recognition"
+                    ]
+                  },
+                  {
+                    "group": "Complétions",
+                    "pages": [
+                      "fr/api-reference/completions/create-completion"
+                    ]
+                  },
+                  {
+                    "group": "Embeddings",
+                    "pages": [
+                      "fr/api-reference/embeddings/create-embedding",
+                      "fr/api-reference/embeddings/create-engine-embedding"
+                    ]
+                  },
+                  {
+                    "group": "Images",
+                    "pages": [
+                      "fr/api-reference/images/gemini-native-format",
+                      "fr/api-reference/images/openai-chat-format",
+                      "fr/api-reference/images/create-image",
+                      "fr/api-reference/images/qwen-image-generations",
+                      "fr/api-reference/images/edit-image",
+                      "fr/api-reference/images/qwen-image-edits"
+                    ]
+                  },
+                  {
+                    "group": "Audio",
+                    "pages": [
+                      "fr/api-reference/audio/native-gemini-format",
+                      "fr/api-reference/audio/create-speech",
+                      "fr/api-reference/audio/create-transcription",
+                      "fr/api-reference/audio/create-translation"
+                    ]
+                  },
+                  {
+                    "group": "Modération",
+                    "pages": [
+                      "fr/api-reference/moderations/create-moderation"
+                    ]
+                  },
+                  {
+                    "group": "Modèles",
+                    "pages": [
+                      "fr/api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "Temps réel",
+                    "pages": [
+                      "fr/ai-gateway/model-api/realtime"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "CLÉS API DE GESTION",
+                "pages": [
+                  "fr/management-api-keys"
+                ]
+              },
+              {
+                "group": "API X402",
+                "pages": [
+                  "fr/x402/overview",
+                  "fr/x402/api-reference"
+                ]
+              }
+            ]
+          }
+        ],
+        "navbar": {
+          "links": [
+            {
+              "label": "Blog",
+              "href": "https://blog.dgrid.ai/"
+            },
+            {
+              "label": "Assistance",
+              "href": "https://t.me/dgrid_ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "Tableau de bord",
+            "href": "https://dgrid.ai/overview"
+          }
+        }
+      },
+      {
+        "language": "es",
+        "tabs": [
+          {
+            "tab": "Documentación",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "PRIMEROS PASOS",
+                "pages": [
+                  "es/index",
+                  "es/quickstart"
+                ]
+              },
+              {
+                "group": "CONCEPTOS CLAVE",
+                "pages": [
+                  "es/what-we-do",
+                  "es/background",
+                  "es/dgrid-solution",
+                  "es/node-operators"
+                ]
+              },
+              {
+                "group": "PUERTA DE ENLACE IA",
+                "pages": [
+                  "es/ai-gateway/overview",
+                  "es/ai-gateway/integrations",
+                  "es/ai-gateway/supported-regions"
+                ]
+              },
+              {
+                "group": "ARENA DE IA",
+                "pages": [
+                  "es/ai-arena/overview",
+                  "es/ai-arena/arena-for-agent"
+                ]
+              },
+              {
+                "group": "ECOSISTEMA",
+                "pages": [
+                  "es/dori",
+                  "es/dclaw"
+                ]
+              },
+              {
+                "group": "TOKEN $DGAI",
+                "pages": [
+                  "es/what-is-dgai",
+                  "es/core-functions",
+                  "es/circulation-mechanism",
+                  "es/token-distribution"
+                ]
+              },
+              {
+                "group": "GENESIS PREMIUM",
+                "pages": [
+                  "es/premium/program-overview",
+                  "es/premium/exclusive-benefits",
+                  "es/premium/purchase-and-activation",
+                  "es/premium/incentive-mechanism-and-rewards",
+                  "es/premium/compliance-and-regulatory",
+                  "es/premium/legal-disclaimer"
+                ]
+              },
+              {
+                "group": "RECURSOS",
+                "pages": [
+                  "es/roadmap",
+                  "es/academic-research",
+                  "es/ai-gateway/terms-of-service"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Referencia de la API",
+            "icon": "code",
+            "groups": [
+              {
+                "group": "PRIMEROS PASOS",
+                "pages": [
+                  "es/api-reference/introduction"
+                ]
+              },
+              {
+                "group": "API DE MODELOS",
+                "pages": [
+                  {
+                    "group": "Chat",
+                    "pages": [
+                      "es/api-reference/chat/create-chat-completion",
+                      "es/api-reference/chat/create-response",
+                      "es/api-reference/chat/create-message",
+                      "es/api-reference/chat/generate-content",
+                      "es/api-reference/chat/gemini-media-recognition"
+                    ]
+                  },
+                  {
+                    "group": "Completions",
+                    "pages": [
+                      "es/api-reference/completions/create-completion"
+                    ]
+                  },
+                  {
+                    "group": "Embeddings",
+                    "pages": [
+                      "es/api-reference/embeddings/create-embedding",
+                      "es/api-reference/embeddings/create-engine-embedding"
+                    ]
+                  },
+                  {
+                    "group": "Imágenes",
+                    "pages": [
+                      "es/api-reference/images/gemini-native-format",
+                      "es/api-reference/images/openai-chat-format",
+                      "es/api-reference/images/create-image",
+                      "es/api-reference/images/qwen-image-generations",
+                      "es/api-reference/images/edit-image",
+                      "es/api-reference/images/qwen-image-edits"
+                    ]
+                  },
+                  {
+                    "group": "Audio",
+                    "pages": [
+                      "es/api-reference/audio/native-gemini-format",
+                      "es/api-reference/audio/create-speech",
+                      "es/api-reference/audio/create-transcription",
+                      "es/api-reference/audio/create-translation"
+                    ]
+                  },
+                  {
+                    "group": "Moderaciones",
+                    "pages": [
+                      "es/api-reference/moderations/create-moderation"
+                    ]
+                  },
+                  {
+                    "group": "Modelos",
+                    "pages": [
+                      "es/api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "Tiempo real",
+                    "pages": [
+                      "es/ai-gateway/model-api/realtime"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "CLAVES DE API DE GESTIÓN",
+                "pages": [
+                  "es/management-api-keys"
+                ]
+              },
+              {
+                "group": "API X402",
+                "pages": [
+                  "es/x402/overview",
+                  "es/x402/api-reference"
+                ]
+              }
+            ]
+          }
+        ],
+        "navbar": {
+          "links": [
+            {
+              "label": "Blog",
+              "href": "https://blog.dgrid.ai/"
+            },
+            {
+              "label": "Soporte",
+              "href": "https://t.me/dgrid_ai"
+            }
+          ],
+          "primary": {
+            "type": "button",
+            "label": "Panel",
+            "href": "https://dgrid.ai/overview"
+          }
+        }
       }
     ]
   },

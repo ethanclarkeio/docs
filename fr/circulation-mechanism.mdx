@@ -1,0 +1,58 @@
+---
+title: "Mécanisme de circulation"
+sidebarTitle: "Mécanisme de circulation"
+description: "Le cycle de valeur en boucle fermée de $DGAI"
+---
+
+$DGAI fonctionne au sein d'un système économique en boucle fermée, garantissant une circulation transparente de la valeur entre les utilisateurs, les opérateurs de nœuds et l'écosystème dans son ensemble. Ce mécanisme est régi par des contrats intelligents (par exemple, le Bill Contract) et appliqué via les nœuds DGrid, éliminant les intermédiaires et alignant les mécanismes d'incitation sur la santé du réseau.
+
+## Cycle principal : du paiement aux récompenses
+
+La circulation de $DGAI suit un processus structuré qui relie les demandes d'inférence des utilisateurs aux contributions des nœuds :
+
+1. **Initiation du paiement de l'utilisateur**
+   Lorsqu'un utilisateur soumet une demande d'inférence via le client utilisateur, le processus se déroule comme suit :
+
+- La demande est acheminée vers un nœud DGrid, qui calcule les frais de la tâche à l'aide de la formule suivante :
+  `Coût = Unité de calcul (CU) × Prix de base × (1 + Coefficient de pénalité de latence)`
+
+<Info>
+- **Unité de calcul (CU)** : une métrique standardisée mesurant la complexité de l'inférence (corrélée à la taille du modèle, au nombre de tokens en entrée et au temps d'exécution).
+- **Prix de base** : un prix fixe par CU (ajustable via les mécanismes de gouvernance, avec une valeur initiale de 0,05 $DGAI).
+- **Coefficient de pénalité de latence** : varie de 0 à 0,3 (ajusté finement pour une latence dépassant le seuil cible).
+</Info>
+
+- Les $DGAI de l'utilisateur sont placés en dépôt fiduciaire via le **Bill Contract** — un contrat intelligent déployé sur la blockchain — afin de garantir le paiement à l'achèvement de la tâche.
+
+2. **Distribution des récompenses aux nœuds**
+   Une fois l'inférence terminée (vérifiée par les nœuds Grid et archivée dans la couche AI DA), les $DGAI placés en dépôt sont distribués via le Bill Contract.
+
+Les bénéficiaires incluent :
+
+- **Nœuds DGrid** : compensation pour l'exécution des tâches d'inférence (proportionnelle au CU, à la latence et au temps de disponibilité).
+- **Trésorerie** : utilisée pour la maintenance du réseau (par exemple, frais de la couche AI DA, audits de sécurité) et les subventions aux développeurs.
+- **Pool de gouvernance** : incite les détenteurs de $DGAI à participer au vote (par exemple, mises à niveau de protocole, ajustements de paramètres).
+
+3. **Exigences de staking et de blocage**
+   Les nœuds participant au réseau doivent bloquer des $DGAI en garantie afin d'assurer leur responsabilité.
+4. **Gouvernance et répartition des frais**
+
+- **Pool de gouvernance** : 5 % des paiements de tâches (ainsi que 10 % des fonds annuels de la trésorerie) sont distribués aux détenteurs de $DGAI participant au vote des propositions (par exemple, ajustement des prix de base, mise sur liste blanche de nouveaux modèles).
+- **Frais de réseau** : des frais de traitement de 2 % sont déduits en amont de tous les paiements de tâches pour couvrir les coûts de gas des contrats intelligents et l'archivage dans la couche AI DA, garantissant l'efficacité des transactions.
+
+5. **Mécanismes de pénalité et destruction de tokens**
+   Les violations commises par les nœuds déclenchent des pénalités automatiques afin de protéger l'intégrité du réseau :
+
+- **Tokens confisqués** : 5 à 20 % des $DGAI stakés par un nœud seront confisqués en cas de comportements malveillants (par exemple, soumission de faux résultats d'inférence, indisponibilité dépassant 72 heures).
+- **Mécanisme de destruction (burning)** : tous les tokens confisqués sont définitivement détruits, réduisant l'offre totale de $DGAI au fil du temps et renforçant sa rareté.
+
+## Processus clés : entrées et sorties de capitaux
+
+| Entrées (sources de \$DGAI) | Sorties (utilisations de \$DGAI) |
+|----------------------------|--------------------------|
+| Frais payés par les utilisateurs pour les tâches d'inférence | Récompenses des opérateurs de nœuds pour les tâches d'inférence |
+| Récompenses hebdomadaires pour les nœuds DGrid | Blocage de staking pour la participation des nœuds |
+| Récompenses de gouvernance pour les participants au vote | Frais de réseau (gas, archivage de la couche AI DA) |
+| Distribution initiale (par exemple, vente publique, airdrops) | Tokens confisqués (détruits) |
+
+Ce mécanisme garantit que \$DGAI conserve son utilité à la fois comme moyen d'échange et comme outil de gouvernance, favorisant un écosystème autonome où la valeur est proportionnelle à la participation au réseau. En liant les paiements aux contributions et en faisant appliquer la responsabilité via des mécanismes de staking, la circulation de \$DGAI renforce la décentralisation et la résilience de DGrid AI.

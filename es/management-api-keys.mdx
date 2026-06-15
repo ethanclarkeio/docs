@@ -1,0 +1,624 @@
+---
+title: "Claves API de gestión"
+sidebarTitle: "Claves API de gestión"
+description: "Gestione programáticamente el ciclo de vida completo de las claves API de modelo"
+---
+
+Las claves API de gestión proporcionan una forma programática de administrar el ciclo de vida completo de las claves API de modelo. Están diseñadas para equipos empresariales, plataformas SaaS y sistemas de automatización que necesitan crear, distribuir, rotar, habilitar, deshabilitar o revocar claves sin depender de operaciones manuales en la consola.
+
+Las claves API de gestión son credenciales administrativas y están limitadas a operaciones de gestión de claves. No pueden usarse para llamar a endpoints de inferencia o completions de modelos.
+
+## 1. Descripción general
+
+Las claves API de gestión están pensadas para escenarios como:
+
+- Emitir claves API de modelo separadas para distintos clientes, proyectos o entornos
+- Aplicar límites de uso y ciclos automáticos de restablecimiento a claves API de modelo descendentes
+- Rotar, deshabilitar o revocar claves de forma programática
+- Hacer cumplir una gestión de claves con privilegios mínimos en flujos SaaS, multiinquilino y orientados al cumplimiento
+
+Capacidades principales:
+
+- Aislamiento estricto de permisos para operaciones de gestión de claves
+- Automatización completa del ciclo de vida de las claves API de modelo
+- Límites de uso y ciclos de restablecimiento configurables
+- Diseñado para servicios del lado del servidor, herramientas internas y flujos automatizados de aprovisionamiento
+
+## 2. Superficies API y límites de autenticación
+
+La gestión de claves se divide en dos superficies API, cada una con su propio modelo de autenticación:
+
+| Superficie API | Propósito | Autenticación |
+| --- | --- | --- |
+| `/v1/management-keys` | Gestionar claves API de gestión | `JWT` |
+| `/api/v1/model-router/keys` | Gestionar claves API de modelo usando una clave API de gestión | `Authorization: Bearer <management_key>` |
+
+Importante:
+
+- Una `Management API Key` solo puede usarse con `/api/v1/model-router/keys`
+- Una `Management API Key` no puede usarse con `/v1/management-keys`
+- `/v1/management-keys` solo admite autenticación `JWT`
+- El secreto completo solo se devuelve una vez cuando se crea una clave y no puede recuperarse más tarde
+
+## 3. Reglas básicas
+
+- Cada cuenta puede crear hasta `10` claves API de gestión
+- Las claves API de gestión se habilitan inmediatamente después de su creación
+- El secreto completo de la clave API de gestión solo se devuelve una vez
+- Las respuestas posteriores de lista y detalle solo devuelven valores enmascarados de la clave
+- Las claves API de modelo actualmente se eliminan de forma lógica y no permanente
+
+## 4. URL base
+
+La URL base de la API pública es:
+
+```text
+https://api.dgrid.ai
+```
+
+Prefijos de ruta usados en este documento:
+
+```text
+/v1/management-keys
+/api/v1/model-router/keys
+```
+
+## 5. Crear una clave API de gestión
+
+Antes de usar la API de gestión, cree primero una clave API de gestión en la consola de DGrid:
+
+<Steps>
+<Step title="Abra la página de claves API de gestión">
+</Step>
+<Step title="Haga clic en Crear">
+</Step>
+<Step title="Introduzca un nombre para la clave">
+</Step>
+<Step title="Complete la verificación de seguridad requerida">
+</Step>
+<Step title="Copie y guarde la clave de forma segura inmediatamente después de crearla">
+</Step>
+</Steps>
+
+<Note>
+Si expone este flujo en su propia interfaz, informe claramente a los usuarios de que el secreto solo se muestra una vez y debe guardarse de inmediato.
+</Note>
+
+## 6. Autenticación
+
+Este documento cubre dos modos de autenticación:
+
+- Los endpoints bajo `/v1/management-keys` requieren `JWT`
+- Los endpoints bajo `/api/v1/model-router/keys` requieren una clave API de gestión
+
+Use el siguiente encabezado al llamar a los endpoints `/api/v1/model-router/keys`:
+
+```http
+Authorization: Bearer <management_key>
+```
+
+## 7. Endpoints del ciclo de vida de las claves API de gestión
+
+Estos endpoints se usan para crear, ver, actualizar, habilitar, deshabilitar y eliminar claves API de gestión. Todos requieren autenticación `JWT`.
+
+| Operación | Método | Ruta | Notas |
+| --- | --- | --- | --- |
+| Crear clave de gestión | `POST` | `/v1/management-keys` | Devuelve la clave completa solo una vez |
+| Listar claves de gestión | `GET` | `/v1/management-keys` | Admite paginación |
+| Actualizar clave de gestión | `PUT` | `/v1/management-keys/{id}` | Actualmente solo se puede actualizar `name` |
+| Eliminar clave de gestión | `DELETE` | `/v1/management-keys/{id}` | Eliminación lógica |
+| Habilitar clave de gestión | `POST` | `/v1/management-keys/{id}/enablement` | Surte efecto de inmediato |
+| Deshabilitar clave de gestión | `POST` | `/v1/management-keys/{id}/disablement` | Surte efecto de inmediato |
+
+Ejemplo de respuesta de creación:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "3ecf9d8d-9b8f-4df6-9d30-7a693e1f0d1c",
+    "name": "prod-admin",
+    "key": "mk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "keyPreview": "mk-x************************xxxx5",
+    "createdAt": "2026-04-23T10:00:00Z",
+    "status": "Enabled",
+    "enabled": true
+  }
+}
+```
+
+Notas:
+
+- `key` solo se devuelve una vez en el momento de la creación
+- `keyPreview` es el valor enmascarado para visualización
+
+## 8. Gestionar claves API de modelo con una clave API de gestión
+
+Todos los endpoints de esta sección usan:
+
+```http
+Authorization: Bearer <management_key>
+```
+
+### 8.1 Campos de solicitud
+
+La implementación actual admite los siguientes campos al crear o actualizar una clave API de modelo:
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `name` | `string` | Obligatorio al crear | Nombre de la clave |
+| `limit` | `number` | No | Límite de uso |
+| `cycle` | `daily \| weekly \| monthly` | No | Ciclo de restablecimiento del límite |
+| `expiredAt` | `string` | No | Marca de tiempo de expiración en UTC |
+| `groupId` | `string` | No | ID del grupo |
+
+Notas:
+
+- Si conoce `limit_reset` de OpenRouter, el equivalente más cercano en la implementación actual de DGrid es `cycle`
+- `expiredAt` debe usar una marca de tiempo ISO 8601 en UTC, como `2026-12-31T23:59:59Z`
+
+### 8.2 Listar claves
+
+- Método: `GET`
+- Ruta: `/api/v1/model-router/keys`
+- Parámetros de consulta:
+  - `page`: número de página, valor predeterminado `1`
+  - `size`: tamaño de página, valor predeterminado `20`, máximo `100`
+
+Notas de implementación:
+
+- La paginación usa `page` y `size`, no `limit` y `offset`
+- La búsqueda parcial por nombre no está admitida actualmente
+- El filtrado por `disabled` no está admitido actualmente
+
+Ejemplo de solicitud:
+
+```bash
+curl "https://api.dgrid.ai/api/v1/model-router/keys?page=1&size=20" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "total": 2,
+    "page": 1,
+    "items": [
+      {
+        "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+        "name": "prod-key",
+        "key": "sk-a************************f9x2d",
+        "limit": 1000,
+        "usageInCycle": 12.34,
+        "usageInTotal": 98.76,
+        "enabled": true,
+        "cycle": "monthly",
+        "expiredAt": "2026-12-31T23:59:59Z",
+        "groupId": null,
+        "groupName": ""
+      }
+    ]
+  }
+}
+```
+
+Notas sobre campos:
+
+- `key`: valor enmascarado de la clave API
+- `usageInCycle`: uso dentro del ciclo actual
+- `usageInTotal`: uso acumulado
+- `enabled`: estado actual de habilitación
+- `groupName`: nombre del grupo
+
+### 8.3 Crear una clave API de modelo
+
+- Método: `POST`
+- Ruta: `/api/v1/model-router/keys`
+
+Ejemplo de solicitud:
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys" \
+  -H "Authorization: Bearer <management_key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "prod-key",
+    "limit": 1000,
+    "cycle": "monthly",
+    "expiredAt": "2026-12-31T23:59:59Z"
+  }'
+```
+
+Ejemplo de cuerpo de solicitud:
+
+```json
+{
+  "name": "prod-key",
+  "limit": 1000,
+  "cycle": "monthly",
+  "expiredAt": "2026-12-31T23:59:59Z"
+}
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+    "key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  }
+}
+```
+
+Notas:
+
+- `key` es el valor completo de la clave API y solo se devuelve una vez
+- Guárdelo inmediatamente en un sistema seguro de gestión de secretos
+
+### 8.4 Obtener detalles de una clave
+
+- Método: `GET`
+- Ruta: `/api/v1/model-router/keys/{id}`
+
+Nota de implementación:
+
+- La implementación actual usa `id (UUID)`, no `key_hash`
+
+Ejemplo de solicitud:
+
+```bash
+curl "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+Ejemplo de respuesta:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+    "name": "prod-key",
+    "key": "sk-a************************f9x2d",
+    "limit": 1000,
+    "usageInCycle": 12.34,
+    "usageInTotal": 98.76,
+    "enabled": true,
+    "cycle": "monthly",
+    "expiredAt": "2026-12-31T23:59:59Z",
+    "groupId": null,
+    "groupName": ""
+  }
+}
+```
+
+### 8.5 Actualizar una clave API de modelo
+
+- Método: `PUT`
+- Ruta: `/api/v1/model-router/keys/{id}`
+
+Campos de actualización admitidos actualmente:
+
+- `name`
+- `limit`
+- `cycle`
+- `groupId`
+
+Ejemplo de solicitud:
+
+```bash
+curl -X PUT "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "prod-key-v2",
+    "limit": 2000,
+    "cycle": "monthly"
+  }'
+```
+
+Ejemplo de cuerpo de solicitud:
+
+```json
+{
+  "name": "prod-key-v2",
+  "limit": 2000,
+  "cycle": "monthly"
+}
+```
+
+Nota de implementación:
+
+- El método de actualización actual es `PUT`, no `PATCH`
+
+### 8.6 Deshabilitar una clave API de modelo
+
+- Método: `POST`
+- Ruta: `/api/v1/model-router/keys/{id}/disablement`
+
+Ejemplo de solicitud:
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111/disablement" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+Después de deshabilitarla, la clave API ya no podrá usarse para llamadas a modelos.
+
+### 8.7 Habilitar una clave API de modelo
+
+- Método: `POST`
+- Ruta: `/api/v1/model-router/keys/{id}/enablement`
+
+Ejemplo de solicitud:
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111/enablement" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+### 8.8 Eliminar una clave API de modelo
+
+- Método: `DELETE`
+- Ruta: `/api/v1/model-router/keys/{id}`
+
+Ejemplo de solicitud:
+
+```bash
+curl -X DELETE "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+Nota de implementación:
+
+- La eliminación es actualmente lógica y no física
+
+## 9. Ejemplo de uso
+
+<CodeGroup>
+
+```python Python
+import requests
+
+BASE = "https://api.dgrid.ai/api/v1/model-router"
+MANAGEMENT_KEY = "mk-your-management-key"
+
+headers = {
+    "Authorization": f"Bearer {MANAGEMENT_KEY}",
+    "Content-Type": "application/json"
+}
+
+# 1) List keys
+resp = requests.get(
+    f"{BASE}/keys",
+    headers=headers,
+    params={"page": 1, "size": 20}
+)
+print("LIST:", resp.json())
+
+# 2) Create key
+resp = requests.post(
+    f"{BASE}/keys",
+    headers=headers,
+    json={
+        "name": "prod-key",
+        "limit": 1000,
+        "cycle": "monthly",
+        "expiredAt": "2026-12-31T23:59:59Z"
+    }
+)
+create_data = resp.json()
+print("CREATE:", create_data)
+
+key_id = create_data["data"]["id"]
+
+# 3) Get key
+resp = requests.get(f"{BASE}/keys/{key_id}", headers=headers)
+print("GET:", resp.json())
+
+# 4) Update key
+resp = requests.put(
+    f"{BASE}/keys/{key_id}",
+    headers=headers,
+    json={
+        "name": "prod-key-v2",
+        "limit": 2000,
+        "cycle": "monthly"
+    }
+)
+print("UPDATE:", resp.json())
+
+# 5) Disable key
+resp = requests.post(f"{BASE}/keys/{key_id}/disablement", headers=headers)
+print("DISABLE:", resp.json())
+
+# 6) Enable key
+resp = requests.post(f"{BASE}/keys/{key_id}/enablement", headers=headers)
+print("ENABLE:", resp.json())
+
+# 7) Delete key
+resp = requests.delete(f"{BASE}/keys/{key_id}", headers=headers)
+print("DELETE:", resp.json())
+```
+
+```typescript TypeScript
+const BASE = "https://api.dgrid.ai/api/v1/model-router";
+const MANAGEMENT_KEY = "mk-your-management-key";
+
+const headers: HeadersInit = {
+  Authorization: `Bearer ${MANAGEMENT_KEY}`,
+  "Content-Type": "application/json",
+};
+
+async function main() {
+  const listResp = await fetch(`${BASE}/keys?page=1&size=20`, {
+    method: "GET",
+    headers,
+  });
+  console.log("LIST:", await listResp.json());
+
+  const createResp = await fetch(`${BASE}/keys`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key",
+      limit: 1000,
+      cycle: "monthly",
+      expiredAt: "2026-12-31T23:59:59Z",
+    }),
+  });
+  const createData = await createResp.json();
+  console.log("CREATE:", createData);
+
+  const keyId = createData.data.id;
+
+  const getResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "GET",
+    headers,
+  });
+  console.log("GET:", await getResp.json());
+
+  const updateResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key-v2",
+      limit: 2000,
+      cycle: "monthly",
+    }),
+  });
+  console.log("UPDATE:", await updateResp.json());
+
+  const disableResp = await fetch(`${BASE}/keys/${keyId}/disablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("DISABLE:", await disableResp.json());
+
+  const enableResp = await fetch(`${BASE}/keys/${keyId}/enablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("ENABLE:", await enableResp.json());
+
+  const deleteResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "DELETE",
+    headers,
+  });
+  console.log("DELETE:", await deleteResp.json());
+}
+
+main().catch(console.error);
+```
+
+```javascript JavaScript
+const BASE = "https://api.dgrid.ai/api/v1/model-router";
+const MANAGEMENT_KEY = "mk-your-management-key";
+
+const headers = {
+  Authorization: `Bearer ${MANAGEMENT_KEY}`,
+  "Content-Type": "application/json",
+};
+
+async function main() {
+  let resp = await fetch(`${BASE}/keys?page=1&size=20`, {
+    method: "GET",
+    headers,
+  });
+  console.log("LIST:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key",
+      limit: 1000,
+      cycle: "monthly",
+      expiredAt: "2026-12-31T23:59:59Z",
+    }),
+  });
+  const createData = await resp.json();
+  console.log("CREATE:", createData);
+
+  const keyId = createData.data.id;
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "GET",
+    headers,
+  });
+  console.log("GET:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key-v2",
+      limit: 2000,
+      cycle: "monthly",
+    }),
+  });
+  console.log("UPDATE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}/disablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("DISABLE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}/enablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("ENABLE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "DELETE",
+    headers,
+  });
+  console.log("DELETE:", await resp.json());
+}
+
+main().catch(console.error);
+```
+
+</CodeGroup>
+
+## 10. Códigos HTTP y de error
+
+| Estado HTTP | Código de error | Descripción |
+| --- | --- | --- |
+| `400` | `40001` | Parámetros de solicitud no válidos |
+| `401` | `40101` | Falta la clave API de gestión en el encabezado de la solicitud |
+| `401` | `40102` | Clave API de gestión no válida, caducada o deshabilitada |
+| `403` | `40301` | Permisos insuficientes o tipo de clave no válido para este endpoint |
+| `404` | `40401` | No se encontró la clave de destino o no pertenece a la cuenta actual |
+| `429` | `42901` | Límite de velocidad superado |
+| `500` | `50001` | Error interno del servidor |
+
+## 11. Formato de respuesta estándar
+
+Las respuestas correctas usan el siguiente envoltorio:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {}
+}
+```
+
+Notas:
+
+- Las solicitudes correctas devuelven HTTP `200`
+- Las respuestas de creación pueden incluir la clave secreta completa en `data`
+- Los endpoints de lista y detalle suelen devolver valores de clave enmascarados
+- Los secretos completos, tanto de las claves API de gestión como de las claves API de modelo, solo se devuelven una vez

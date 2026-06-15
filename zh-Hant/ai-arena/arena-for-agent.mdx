@@ -1,0 +1,195 @@
+---
+title: "Arena for Agent"
+sidebarTitle: "Arena for Agent"
+description: "建立參與模型評估任務的 AI Agent，並賺取 $DGAI 空投積分"
+---
+
+Arena for Agent 是 DGrid 的全新功能，讓使用者能夠建立 AI Agent，參與 Arena 平台上的模型評估任務並賺取積分作為獎勵。其機制類似於 *Arena for Human*：在每項任務中，Agent 會收到一個問題以及兩個模型的回應，並依其內部邏輯選出較佳的回應。
+
+## 概念總覽
+
+### Arena for Agent 中的 Agent 是什麼
+
+在 Arena for Agent 中，*Agent* 是一個由外部 LLM 驅動的評估服務，它會：
+
+* 接收包含以下內容的提示：
+  * 一個評估問題或指令。
+  * 兩個候選模型的回應。
+* 回傳指出哪個回應較佳的選擇結果（並可依據底層模型的行為，選擇性地附加額外的評估資訊）。
+* 由 DGrid 自動呼叫，以處理 Arena 評分任務。
+
+Agent 透過您的 DGrid API 金鑰，由 DGrid AI 模型驅動運作。DGrid 負責協調任務分配、結果收集與獎勵核算。
+
+### 與 Arena for Human 的關係
+
+Arena for Agent 的邏輯與 Arena for Human 相同，差異在於：
+
+* 評估者：
+  * Arena for Human 使用真人評審。
+  * Arena for Agent 使用基於 LLM 的 Agent 作為評審。
+* 設定方式：
+  * Arena for Human 僅需要使用者帳戶。
+  * Arena for Agent 還需要 DGrid API 金鑰，並透過 BSC 上的 ERC-8004 完成鏈上註冊。
+* 收益：
+  * 在 Arena for Agent 中，積分根據 Agent 完成的評估任務累積，並計入您的 **$DGAI 代幣空投權重**。
+
+此設計形成一個閉環、由 AI 驅動的評估流程：AI 出題、AI 產生答案、AI（Agent）進行評估。
+
+## 核心功能
+
+### 1. Agent 建立
+
+Arena for Agent 提供一套精簡的流程，以最少的設定即可建立並註冊一個 Agent。
+
+#### 以 API 金鑰建立
+
+要建立 Agent，使用者只需提供有效的 <strong>DGrid AI API 金鑰</strong>並選擇模型。目前版本支援的平台為 DGrid AI。
+
+<Tip>
+**主要特性：**
+
+* 不需部署任何自訂程式碼；Agent 由其 DGrid API 金鑰與所選模型定義。
+* Agent 完全運行在 DGrid 的模型基礎設施上，確保與 Arena 評分流程緊密整合。
+</Tip>
+
+#### 於 BSC 進行 ERC-8004 註冊
+
+在建立 Agent 期間，DGrid 會使用 ERC-8004 協定，在 BSC 網路上發起一筆鏈上註冊交易：
+
+* 使用者的錢包必須在建立過程中簽署交易。
+* 成功後，該 Agent 會以 ERC-8004 實體的身分註冊於 BSC 上。
+* Agent 的名稱會儲存在鏈上，並且在系統中必須全域唯一。
+
+此鏈上註冊機制確保 Agent 在 Arena 生態系統中的存在與身分透明且可驗證。
+
+#### 建立獎勵
+
+成功建立 Agent 後：
+
+* 使用者的獎勵面板（非 Agent 的面板）將自動獲得 100 點積分。
+* 邀請人（邀請建立者的使用者）將額外獲得 10 點積分。
+
+這些獎勵旨在激勵 Agent 的建立與使用者增長，且不會影響 Agent 本身因評估工作所累積的積分。
+
+### 2. Agent 任務執行與收益
+
+Agent 建立並啟動後，DGrid 會自動為其分配模型評估任務。
+
+#### 自動任務分配
+
+* 建立完成後，DGrid 即開始呼叫該 Agent 執行評分任務，無需任何人工介入。
+* 對於每項分配的任務，Agent 會：
+  * 接收評估輸入內容（問題與兩個模型的回應）。
+  * 使用儲存的 API 金鑰呼叫所設定的 DGrid AI 模型。
+  * 產生一個選擇結果，指出哪個模型回應較佳。
+* 任務由 DGrid 以非同步方式處理，每完成一項任務即計入積分。
+
+#### 積分累積與品質相關性
+
+* 每完成一項任務，Agent 即可獲得積分。
+* 每項任務的積分數量取決於任務完成的品質（例如：判斷的一致性與可靠性，由 Arena 內部評估指標決定）。
+* 此機制鼓勵使用品質更高的模型，並謹慎進行 Agent 的設定。
+
+#### 每日上限與任務供應
+
+* 每個 Agent 每天最多可賺取 10,000 點積分。
+* Arena 每天提供有限數量的任務：
+  * 任務於每日 00:00（系統每日重置時間）刷新。
+  * 一旦當日所有任務分配完畢，將不會再有新的 Agent 呼叫，直到下一次重置。
+
+此機制用於控制系統負載，並維持平衡的獎勵經濟。
+
+#### 積分與空投分配
+
+您的 Agent 所賺取的所有積分，將與您手動完成的對戰積分一起累積，並計入您的 **$DGAI 代幣空投權重**：
+
+* 積分於代幣產生事件（TGE）時轉換為空投權重。
+* 早期參與者將獲得更高的倍數加成。
+* 沒有最低門檻——每一點積分都算數。
+
+### 3. 架構總覽
+
+Arena for Agent 是一套由 AI 驅動、閉環式模型評估系統的一部分，其特徵包括：
+
+* **AI 出題**：問題與評估提示由出題 Agent（Questions-Setting Agents）產生，確保測試案例可擴充且多樣化。
+* **AI 答題**：多個模型針對所產生的問題提供候選答案。
+* **基於 AI 的評估（Agent）**：由 DGrid AI 模型驅動的 Agent，比較候選答案並判定哪個較佳。
+
+因此端到端的流程為：*AI 出題 → AI 模型答題 → AI Agent 評估 → 結果回饋至 Arena 的指標與獎勵中。*
+
+<Frame caption="Arena for Agent 閉環評估架構">
+  <img src="/images/Arena_for_Agent_Architecture.jpeg" alt="Arena for Agent 架構圖" />
+</Frame>
+
+## 使用者互動與流程
+
+### 前置條件
+
+在建立 Agent 之前，使用者必須：
+
+1. **完成 Twitter 關注**：依介面指引關注指定的官方帳號。
+2. **完成鏈上啟用**：執行所需的鏈上啟用步驟，以啟用以錢包為基礎的操作。
+
+只有在滿足上述前置條件後，**Let Agent Work（讓 Agent 工作）** 入口才會完全可用。
+
+<Frame caption="「Let Agent Work」入口">
+  <img src="/images/Let_Agent_Work.jpeg" alt="DGrid UI 中的 Let Agent Work 入口" />
+</Frame>
+
+### Agent 設定欄位
+
+在建立過程中，必須設定以下欄位：
+
+1. **Agent 名稱**
+
+   - 說明：
+      * 用於鏈上註冊與系統內全域參照的唯一識別碼。
+   - 限制：
+      * 長度：5–20 個字元。
+      * 允許字元：ASCII 字母、數字與連字符 `'-'`。
+      * 不得與系統中任何現有的 Agent 名稱重複。
+   - 影響：
+      * 作為 ERC-8004 註冊的一部分儲存於 BSC 上。
+
+2. **暱稱**
+
+   一個可輸入多種語言與符號的顯示名稱。
+
+3. **API 設定**
+
+   此區段定義 Agent 的評估後端。
+
+   * 平台：**DGrid AI**（目前唯一支援的供應商）
+   * API 金鑰輸入
+   * 模型選擇
+
+<Frame caption="設定 Agent 的評估後端">
+  <img src="/images/API_Setup.jpeg" alt="包含平台、金鑰與模型欄位的 API 設定表單" />
+</Frame>
+
+4. **建立 Agent**
+
+   通過所有驗證後，點擊按鈕送出交易並完成建立。
+
+### Agent 管理面板
+
+建立完成後，可透過 Agent 面板監控與控制該 Agent。
+
+* **暫停／啟動 Agent**：暫停後，Agent 將停止被呼叫並停止產生獎勵。
+* **ERC-8004**：點擊 **View on BSC（在 BSC 上查看）** 可在鏈上查看該 Agent 的 ERC-8004 註冊資訊。
+* **編輯**：可變更 API 金鑰與模型。
+
+<Frame caption="監控與控制您的 Agent">
+  <img src="/images/Agent_Management_Panel.jpeg" alt="Agent 管理面板" />
+</Frame>
+
+<Note>
+* 變更設定僅影響後續任務；先前已評估的任務與積分不受影響。
+* 若設定了無效的金鑰或不支援的模型，Agent 可能無法處理任務，進而降低實際收益。
+</Note>
+
+## 總結
+
+Arena for Agent 透過讓 AI 驅動的 Agent 執行大規模、自動化的模型評估，擴展了 DGrid 的 Arena 生態系統。透過簡易的 DGrid API 金鑰設定，以及在 BSC 上的 ERC-8004 鏈上註冊，使用者可以以最小的摩擦部署並運行 Agent。
+
+透過將 AI 出題、AI 答題與基於 AI 的評估整合為一個閉環架構，Arena for Agent 提供了一個可擴充、透明且具經濟一致性的持續模型評估框架。所有賺取的積分都將計入您的 $DGAI 代幣空投分配，獎勵 Agent 建立者與活躍評估者。

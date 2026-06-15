@@ -1,0 +1,129 @@
+---
+title: "빠른 시작"
+sidebarTitle: "빠른 시작"
+description: "5분 안에 DGrid 생태계를 이해하고 첫 API 호출을 보내는 방법"
+---
+
+DGrid는 AI를 위한 탈중앙 지능형 네트워크입니다. 모델 접근, 모델 탐색, 평가, 온체인 인센티브를 하나의 생태계로 연결합니다. 어떤 제품에서 시작하든 DGrid의 모든 영역은 하나의 API 키로 접근할 수 있습니다.
+
+## DGrid 생태계 둘러보기
+
+<CardGroup cols={2}>
+  <Card title="DGrid AI Gateway" icon="network" href="/ko/ai-gateway/overview">
+    Web3 네이티브 결제와 지능형 라우팅을 갖춘, 200개 이상의 주요 AI 모델을 위한 OpenAI, Claude, Gemini 호환 단일 API입니다.
+  </Card>
+  <Card title="AI Arena" icon="trophy" href="/ko/ai-arena/overview">
+    커뮤니티 투표로 $DGAI 에어드롭 포인트를 얻고 DGrid의 라우팅 인텔리전스에 기여하는 블라인드 모델 배틀입니다.
+  </Card>
+  <Card title="Dori Find Models" icon="compass" href="/ko/dori">
+    요구사항을 자연어로 입력하면 테스트와 비교를 거쳐 적합한 모델 후보를 추천하는 어드바이저입니다.
+  </Card>
+  <Card title="Model Marketplace" icon="store" href="/ko/api-reference/models/list-models">
+    DGrid AI Gateway 뒤에서 동작하는 200개 이상의 모델과 제공자를 한 API로 탐색하고 호출할 수 있는 개방형 카탈로그입니다.
+  </Card>
+</CardGroup>
+
+## DGrid AI Gateway로 시작하기
+
+DGrid AI Gateway는 200개 이상의 주요 모델을 위한 단일 OpenAI 호환 API를 제공합니다. 이 섹션은 처음 상태에서 첫 번째 채팅 완성 호출까지 안내합니다.
+
+<Steps>
+
+<Step title="API 키 받기">
+
+[키 생성 가이드](https://blog.dgrid.ai/posts/2026-01-04/)를 따라 유효한 `DGRID_API_KEY`를 발급받으세요.
+
+<Note>
+키 시크릿은 생성 시 한 번만 표시됩니다. 즉시 복사해 시크릿 매니저 같은 안전한 위치에 보관하세요. 클라이언트 측 코드나 공개 저장소에 절대 노출하지 마세요.
+</Note>
+
+</Step>
+
+<Step title="첫 요청 보내기">
+
+DGrid AI Gateway 엔드포인트로 채팅 완성 요청을 전송하세요. `model` 파라미터는 `provider/model-name` 형식(예: `openai/gpt-4o`)을 사용하며, 모든 DGrid 지원 모델에서 일관됩니다.
+
+<CodeGroup>
+
+```bash cURL
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the meaning of life?"
+      }
+    ]
+  }'
+```
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.dgrid.ai/v1",
+    api_key="<DGRID_API_KEY>",
+)
+
+completion = client.chat.completions.create(
+    model="openai/gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+print(completion.choices[0].message.content)
+```
+
+```typescript TypeScript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: '<DGRID_API_KEY>',
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'openai/gpt-4o',
+  messages: [
+    {
+      role: 'user',
+      content: 'What is the meaning of life?',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+</CodeGroup>
+
+<Tip>
+DGrid는 OpenAI SDK와 완전히 호환됩니다. `baseURL`만 `https://api.dgrid.ai/v1`로 지정하면 기존 코드를 그대로 사용할 수 있습니다. `pip install openai` 또는 `npm install openai`로 설치하세요.
+</Tip>
+
+</Step>
+
+<Step title="다음 단계 살펴보기">
+
+<CardGroup cols={3}>
+  <Card title="Model API Reference" icon="code" href="/ko/api-reference/introduction">
+    채팅, 이미지, 오디오, 임베딩 등 엔드포인트 수준의 참고 문서입니다.
+  </Card>
+  <Card title="Integrations" icon="plug" href="/ko/ai-gateway/integrations">
+    DGrid를 Claude Code, Cursor, Moltbot 등 다양한 도구와 연결하세요.
+  </Card>
+  <Card title="x402 Payments" icon="credit-card" href="/ko/x402/overview">
+    계정 잔액 없이 x402 프로토콜로 호출별 결제를 처리하세요.
+  </Card>
+</CardGroup>
+
+</Step>
+
+</Steps>

@@ -1,0 +1,58 @@
+---
+title: "Mecanismo de circulación"
+sidebarTitle: "Mecanismo de circulación"
+description: "El ciclo de valor de circuito cerrado de $DGAI"
+---
+
+$DGAI opera dentro de un sistema económico de circuito cerrado, garantizando un flujo de valor transparente entre usuarios, operadores de nodos y el ecosistema en general. Este mecanismo está regido por contratos inteligentes (por ejemplo, el Contrato de Facturación) y se aplica a través de los nodos de DGrid, eliminando intermediarios y alineando los mecanismos de incentivos con la salud de la red.
+
+## Ciclo principal: del pago a las recompensas
+
+La circulación de $DGAI sigue un proceso estructurado que vincula las demandas de inferencia de los usuarios con las contribuciones de los nodos:
+
+1. **Inicio del pago del usuario**
+   Cuando un usuario envía una solicitud de inferencia a través del cliente de usuario, el proceso se desarrolla de la siguiente manera:
+
+- La solicitud se enruta a un nodo de DGrid, que calcula la tarifa de la tarea utilizando la siguiente fórmula:
+  `Costo = Unidad de cómputo (CU) × Precio base × (1 + Coeficiente de penalización por latencia)`
+
+<Info>
+- **Unidad de cómputo (CU)**: una métrica estandarizada para medir la complejidad de la inferencia (correlacionada con el tamaño del modelo, el número de tokens de entrada y el tiempo de ejecución).
+- **Precio base**: un precio fijo por CU (ajustable mediante mecanismos de gobernanza, con un valor inicial de 0,05 $DGAI).
+- **Coeficiente de penalización por latencia**: oscila entre 0 y 0,3 (ajustado para latencias que superen el umbral objetivo).
+</Info>
+
+- El $DGAI del usuario se mantiene en depósito en garantía (escrow) mediante el **Contrato de Facturación**, un contrato inteligente desplegado en la blockchain, para garantizar el pago al completar la tarea.
+
+2. **Distribución de las recompensas de los nodos**
+   Una vez completada la inferencia (verificada por los nodos de Grid y archivada en la capa AI DA), el $DGAI en depósito se distribuye a través del Contrato de Facturación.
+
+Los destinatarios incluyen:
+
+- **Nodos de DGrid**: compensación por la ejecución de tareas de inferencia (proporcional a la CU, la latencia y el tiempo de actividad).
+- **Tesoro**: utilizado para el mantenimiento de la red (por ejemplo, tarifas de la capa AI DA, auditorías de seguridad) y subvenciones para desarrolladores.
+- **Fondo de gobernanza**: incentiva a los titulares de $DGAI a participar en las votaciones (por ejemplo, actualizaciones de protocolo, ajustes de parámetros).
+
+3. **Requisitos de staking y bloqueo**
+   Los nodos que participan en la red deben bloquear $DGAI como garantía para asegurar la rendición de cuentas.
+4. **Gobernanza y asignación de tarifas**
+
+- **Fondo de gobernanza**: el 5% de los pagos por tareas (más el 10% de los fondos anuales del tesoro) se distribuyen entre los titulares de $DGAI que participan en la votación de propuestas (por ejemplo, ajustar los precios base, incluir nuevos modelos en la lista blanca).
+- **Tarifas de red**: se deduce por adelantado una tarifa de procesamiento del 2% de todos los pagos por tareas para cubrir los costos de gas de los contratos inteligentes y el archivado en la capa AI DA, garantizando la eficiencia de las transacciones.
+
+5. **Mecanismos de penalización y quema de tokens**
+   Las infracciones de los nodos desencadenan penalizaciones automáticas para proteger la integridad de la red:
+
+- **Tokens confiscados**: se confiscará entre el 5% y el 20% del $DGAI en staking de un nodo por comportamientos maliciosos (por ejemplo, el envío de resultados de inferencia falsos o tiempos de inactividad superiores a 72 horas).
+- **Mecanismo de quema**: todos los tokens confiscados se queman permanentemente, reduciendo el suministro total de $DGAI con el tiempo y aumentando su escasez.
+
+## Procesos clave: entradas y salidas de capital
+
+| Entradas (fuentes de \$DGAI) | Salidas (usos de \$DGAI) |
+|----------------------------|--------------------------|
+| Tarifas pagadas por los usuarios por las tareas de inferencia | Recompensas para los operadores de nodos por las tareas de inferencia |
+| Recompensas semanales para los nodos de DGrid | Bloqueo de staking para la participación de nodos |
+| Recompensas de gobernanza para los participantes en las votaciones | Tarifas de red (gas, archivado en la capa AI DA) |
+| Distribución inicial (por ejemplo, venta pública, airdrops) | Tokens confiscados (quemados) |
+
+Este mecanismo garantiza que \$DGAI mantenga su utilidad tanto como medio de intercambio como herramienta de gobernanza, fomentando un ecosistema autosostenible en el que el valor es proporcional a la participación en la red. Al vincular los pagos con las contribuciones y aplicar la rendición de cuentas mediante mecanismos de staking, la circulación de \$DGAI refuerza la descentralización y la resiliencia de DGrid AI.

@@ -1,0 +1,150 @@
+---
+title: "Dori Find Models"
+sidebarTitle: "Dori Find Models"
+description: "L'assistant en langage naturel de DGrid pour découvrir et évaluer les LLM"
+---
+
+**Dori Find Models** est l'assistant piloté par le langage naturel de DGrid pour découvrir et évaluer des modèles de langage de grande taille (LLM). Avec Dori, vous exprimez vos besoins en langage courant, testez les modèles présélectionnés avec vos propres charges de travail, et recevez des rapports structurés pour soutenir des choix de modèles confiants et fondés sur des données.
+
+## Rôle au sein de la plateforme DGrid
+
+Dori est l'une des deux capacités étroitement intégrées de l'écosystème DGrid :
+
+* **Dori Find Models** – Vous aide à :
+  * Traduire les besoins métier ou produit en candidats de modèles concrets
+  * Découvrir, tester et comparer des modèles dans un flux conversationnel guidé
+* **AI Gateway** – Fournit :
+  * Une couche d'abstraction unique et une API pour plus de 200 LLM prêts pour la production
+  * Le choix et le changement de modèle par configuration, sans modification de code
+
+Ensemble, elles permettent un flux de travail LLM de bout en bout :
+
+<Tip>
+**Approche traditionnelle :** rechercher des fournisseurs → créer de nombreux comptes → tester manuellement → intégrer fournisseur par fournisseur
+
+**Avec DGrid (Dori + AI Gateway avec le LLM Marketplace) :** décrivez vos besoins → découvrez et testez en un seul endroit → intégrez une seule fois → changez de modèle via la configuration
+</Tip>
+
+## Capacités clés
+
+### 1. Saisie des besoins en langage naturel
+
+Dori part de vos besoins réels, exprimés en texte libre. Par exemple :
+
+* « Nous avons besoin d'un modèle à faible latence et rentable pour un support client multilingue (anglais, espagnol, portugais), intégré à notre chatbot existant. »
+* « Nous construisons un assistant de code axé sur Python et TypeScript ; un raisonnement solide et une compréhension de contexte étendu sont importants. »
+* « Nous voulons un modèle optimisé pour le RAG sur des documents longs, avec des performances stables sur des contextes de plus de 10 000 tokens. »
+
+Vous n'avez **pas** besoin de connaître les noms exacts des modèles, les fournisseurs ou les acronymes de benchmarks. Dori interprète votre description et la traduit en critères de sélection techniques.
+
+### 2. Recherche intelligente dans le LLM Marketplace
+
+Une fois vos besoins saisis, Dori effectue une recherche dans le **DGrid LLM Marketplace**, qui agrège plus de 200 LLM derrière une interface unique.
+
+Dori :
+
+* Filtre les modèles candidats selon :
+  * **L'adéquation à la tâche** (par exemple, chat, code, RAG, support multilingue)
+  * **La fenêtre de contexte** (contexte court ou long, par exemple plus de 10 000 tokens)
+  * **Les profils de latence et de coût**
+  * D'autres caractéristiques opérationnelles pertinentes
+* Classe les modèles selon vos priorités :
+  * Sensibilité au débit et à la latence
+  * Compromis entre qualité et coût
+  * Besoins de capacités spécifiques (par exemple, codage, raisonnement, multilinguisme)
+* Renvoie une **liste courte et pertinente de modèles recommandés**, afin que vous évitiez d'examiner manuellement des dizaines de pages de fournisseurs et de tableaux de benchmarks.
+
+### 3. Tests unifiés avec des charges de travail réelles
+
+Une fois que Dori propose une liste restreinte, il vous aide à tester ces modèles dans un **environnement unique**, au sein de DGrid :
+
+* Exécutez des **essais** sur les modèles candidats directement sur la plateforme
+* Utilisez **vos propres prompts, documents et scénarios** plutôt que des exemples génériques
+* Évaluez les modèles dans une **configuration partagée et cohérente**, rendant les comparaisons pertinentes
+
+Cela élimine le schéma habituel :
+
+* Bacs à sable séparés pour chaque fournisseur
+* Scripts ad hoc pour chaque API
+* Captures d'écran, notes et tableurs dispersés entre les outils
+
+### 4. Évaluation structurée et partageable
+
+Dori produit des résultats clairs et structurés que vous pouvez partager et discuter avec votre équipe, tels que :
+
+* Des **exemples de sorties** pour chaque modèle candidat
+* Des **notes qualitatives** sur le comportement et l'adéquation
+* Des **indicateurs de latence et de performance** observés pendant les tests
+* Des **estimations de coûts** alignées sur vos schémas de trafic et charges attendus
+
+Au lieu de se baser sur le « ressenti » et des informations partielles, les équipes peuvent s'appuyer sur un dossier d'évaluation traçable pour choisir « le meilleur modèle pour notre cas d'usage ».
+
+### 5. Intégration étroite avec l'AI Gateway
+
+Dori est directement couplé à l'AI Gateway, de sorte que tout ce que vous découvrez et testez est immédiatement disponible pour une intégration en production via :
+
+* **Une seule clé API**
+* **Un seul point de terminaison unifié**
+* **Une interface API unique et cohérente**
+
+Conséquences clés :
+
+* Vous n'avez pas besoin d'authentifications, de SDK ou de points de terminaison distincts par fournisseur
+* Un modèle que vous validez avec Dori est prêt à être utilisé **sans ajouter de nouvelle intégration de fournisseur**
+* Changer de modèle plus tard devient un **changement de configuration**, et non un projet de redéveloppement
+
+## Cas d'usage typiques
+
+### Support client multilingue
+
+* Besoin : un LLM à faible latence et rentable pour un chatbot multilingue (par exemple, anglais, espagnol, portugais)
+* Comment Dori aide :
+  * Interprète les exigences multilingues et de latence
+  * Identifie les modèles bien adaptés au support conversationnel dans ces langues
+  * Vous permet de tester avec de véritables requêtes clients et flux de conversation
+
+### Assistants de code et outils pour développeurs
+
+* Besoin : un modèle pour la génération, l'explication et le refactoring de code dans des langages comme Python et TypeScript
+* Comment Dori aide :
+  * Met en avant les modèles ayant un raisonnement et des capacités de codage solides
+  * Met l'accent sur le support de contexte étendu pour les grandes bases de code
+  * Facilite les essais avec de véritables dépôts, extraits de code ou tâches
+
+### RAG à contexte étendu et applications documentaires
+
+* Besoin : des performances stables pour la génération augmentée par récupération (RAG) sur documents longs avec des contextes de plus de 10 000 tokens
+* Comment Dori aide :
+  * Filtre les modèles selon la longueur de contexte et l'adéquation au RAG
+  * Permet l'évaluation avec vos propres documents et configuration de récupération
+  * Produit des rapports capturant à la fois la qualité et la performance sur des contextes étendus
+
+## Avantages selon le type d'utilisateur
+
+### Développeurs individuels et équipes de startup
+
+* Se concentrer sur le produit et l'expérience utilisateur plutôt que :
+  * Courir après la documentation des fournisseurs
+  * Connecter plusieurs API et SDK
+* Itérer rapidement :
+  * Essayer plusieurs modèles via Dori
+  * En verrouiller un (ou plusieurs) via le Marketplace
+  * Changer ultérieurement lorsque de nouveaux modèles, meilleurs, apparaissent
+
+### Entreprises et grandes plateformes
+
+* Standardiser l'accès aux LLM entre les unités commerciales grâce à :
+  * Une intégration unique avec le LLM Marketplace
+  * Des flux de travail d'évaluation partagés via Dori
+* Réduire la maintenance à long terme :
+  * Éviter les intégrations sur mesure par fournisseur
+  * Conserver la flexibilité d'adopter de nouveaux modèles à mesure que l'écosystème évolue
+
+### Projets Web3 et on-chain
+
+* Construire des agents, dApps et protocoles pilotés par l'IA dont le socle de modèles peut :
+  * Évoluer au fil du temps
+  * Se diversifier entre fournisseurs
+* Préserver la logique d'intégration on-chain et off-chain tout en :
+  * Changeant ou enrichissant les LLM sous-jacents via la configuration
+  * Évitant les changements cassants chaque fois que vous adoptez un nouveau modèle

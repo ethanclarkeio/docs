@@ -1,0 +1,98 @@
+---
+title: "Formato de chat de OpenAI"
+sidebarTitle: "Formato de chat de OpenAI"
+description: "Solicite generación de imágenes impulsada por Gemini mediante el endpoint Chat Completions compatible con OpenAI"
+openapi: "api-reference/openapi.json POST /v1/chat/completions"
+---
+
+Esta página usa la misma operación `chat/completions` que [Crear finalización de chat](/es/api-reference/chat/create-chat-completion), con el playground de arriba rellenado previamente para el esquema de chat genérico. Las notas a continuación describen cómo usar este endpoint para solicitar generación de imágenes impulsada por Gemini desde un cliente compatible con OpenAI.
+
+<Note>
+Incluya un modelo de generación de imágenes en `model` (como `gemini-2.0-flash-preview-image-generation`), configure `stream` según lo necesite y proporcione su prompt mediante `messages`. Opcionalmente también puede incluir `contents` para añadir contexto multimodal adicional al estilo Gemini junto con `messages`.
+</Note>
+
+### Notas específicas del proveedor
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `model` | string | Sí | Identificador del modelo de generación de imágenes, por ejemplo `gemini-2.0-flash-preview-image-generation`. |
+| `messages[].content` | string | Sí | Texto del prompt que describe la imagen deseada. |
+| `contents` | array | No | Matriz opcional de contenido al estilo Gemini para contexto multimodal adicional; no forma parte del esquema estándar de chat de OpenAI. |
+
+<Tip>
+El campo `contents` es una extensión de DGrid sobre el esquema estándar de chat completions. Le permite pasar `parts` nativas de Gemini (como `inlineData`) junto con la matriz `messages` al estilo OpenAI cuando el modelo de destino lo admite.
+</Tip>
+
+### Ejemplo: solicitar una imagen
+
+```json
+{
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Generate an image of a futuristic city skyline at sunset."
+    }
+  ]
+}
+```
+
+### Campos de respuesta
+
+La respuesta sigue la forma estándar de chat completions. La imagen generada se incrusta directamente en el contenido del mensaje del asistente:
+
+<ResponseField name="choices" type="array">
+  Entradas de elección devueltas.
+
+  <Expandable title="choice properties">
+    <ResponseField name="index" type="integer">
+      Índice de la elección.
+    </ResponseField>
+    <ResponseField name="message" type="object">
+      Objeto de mensaje del asistente.
+
+      <Expandable title="message properties">
+        <ResponseField name="role" type="string">
+          Rol del mensaje, normalmente `assistant`.
+        </ResponseField>
+        <ResponseField name="content" type="string">
+          Contenido del mensaje. Para modelos con salida de imagen, esto es una referencia markdown que incrusta la imagen generada como una URI de datos en base64, por ejemplo `![generated image](data:image/png;base64,...)`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finish_reason" type="string">
+      Motivo de finalización, por ejemplo `stop`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usage" type="object">
+  Resumen del uso de tokens.
+</ResponseField>
+
+### Ejemplo de respuesta
+
+```json 200
+{
+  "id": "chatcmpl-abc123",
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "object": "chat.completion",
+  "created": 1719859200,
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "![generated image](data:image/png;base64,<base64-encoded-image-bytes>)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 0,
+    "total_tokens": 12
+  }
+}
+```

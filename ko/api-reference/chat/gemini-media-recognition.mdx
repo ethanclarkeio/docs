@@ -1,0 +1,107 @@
+---
+title: "Gemini 미디어 인식"
+sidebarTitle: "Gemini 미디어 인식"
+description: "generateContent를 통해 Gemini 네이티브 멀티모달 파트를 사용하여 이미지, 오디오, 비디오 또는 혼합 미디어를 분석하세요"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+이 페이지는 [콘텐츠 생성 (Gemini)](/ko/api-reference/chat/generate-content)과 동일한 `generateContent` 작업을 사용하며, 위의 플레이그라운드에는 일반 텍스트 채팅이 미리 입력되어 있습니다. 아래 내용은 단일 요청에서 이미지, 오디오, 비디오 또는 혼합 미디어를 분석하기 위해 `contents[].parts`에 추가할 수 있는 Gemini 네이티브 멀티모달 필드를 설명합니다.
+
+<Note>
+각 파트는 텍스트 지시와 함께 인라인 데이터(base64로 인코딩된 바이트와 MIME 유형)를 포함할 수 있어, 모델이 한 번의 호출로 여러 모달리티에 걸쳐 추론할 수 있습니다.
+</Note>
+
+### Gemini 네이티브 요청 필드
+
+플레이그라운드에 표시되는 일반적인 `contents` 및 `generationConfig` 필드는 멀티모달 인식을 위해 다음과 같은 중첩 구조를 허용합니다.
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `contents[].role` | string | 아니요 | 턴의 역할입니다 (예: `user`). |
+| `contents[].parts` | array | 예 | 콘텐츠 파트(텍스트 및/또는 인라인 미디어)의 순서가 있는 목록입니다. |
+| `contents[].parts[].text` | string | 아니요 | 모델에 대한 텍스트 지시 또는 질문입니다. |
+| `contents[].parts[].inlineData` | object | 아니요 | 이미지, 오디오 또는 비디오 이해를 위한 인라인 미디어 페이로드입니다. |
+| `contents[].parts[].inlineData.mimeType` | string | 아니요 | 인라인 데이터의 MIME 유형입니다 (예: `image/jpeg`, `audio/mp3`, `video/mp4`). |
+| `contents[].parts[].inlineData.data` | string | 아니요 | base64로 인코딩된 미디어 바이트입니다. |
+
+<Tip>
+하나의 턴에서 여러 파트를 혼합할 수 있습니다 — 예를 들어 지시 사항이 담긴 `text` 파트 다음에 분석할 미디어를 담은 하나 이상의 `inlineData` 파트를 추가할 수 있습니다.
+</Tip>
+
+### 예시: 이미지 분석
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Describe what is happening in this image." },
+        {
+          "inlineData": {
+            "mimeType": "image/jpeg",
+            "data": "<base64-encoded-image-bytes>"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 응답 필드
+
+응답은 표준 `generateContent` 형식을 따릅니다. 미디어 인식과 가장 관련 있는 필드는 다음과 같습니다.
+
+<ResponseField name="candidates" type="array">
+  모델이 반환한 후보 응답입니다.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      생성된 콘텐츠 객체입니다.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          생성된 콘텐츠 블록에서 반환되는 역할로, 일반적으로 `model`입니다.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          반환된 콘텐츠 파트로, 일반적으로 분석된 미디어를 설명하는 텍스트입니다.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      종료 이유 문자열입니다 (예: `STOP`).
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      안전성 평가 결과입니다.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  `promptTokenCount`, `candidatesTokenCount`, `totalTokenCount`를 포함한 토큰 사용 메타데이터입니다. 인라인 미디어(이미지, 오디오, 비디오)는 텍스트 파트와 별도로 추가적인 프롬프트 토큰을 소비합니다.
+</ResponseField>
+
+### 응답 예시
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          { "text": "The image shows a golden retriever sitting on a grassy lawn." }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 264,
+    "candidatesTokenCount": 18,
+    "totalTokenCount": 282
+  }
+}
+```

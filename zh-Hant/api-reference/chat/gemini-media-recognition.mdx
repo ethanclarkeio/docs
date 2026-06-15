@@ -1,0 +1,107 @@
+---
+title: "Gemini 媒體辨識"
+sidebarTitle: "Gemini 媒體辨識"
+description: "透過 generateContent 使用 Gemini 原生多模態 parts 分析圖片、音訊、影片或混合媒體"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+本頁使用與 [生成內容（Gemini）](/zh-Hant/api-reference/chat/generate-content) 相同的 `generateContent` 操作，上方 playground 已預先填入純文字對話範例。以下說明可加入 `contents[].parts` 的 Gemini 原生多模態欄位，讓你在單一請求中分析圖片、音訊、影片或混合媒體。
+
+<Note>
+每個 part 都可以同時攜帶內嵌資料（base64 編碼位元組加上 MIME 類型）與文字指令，讓模型能在一次呼叫中跨模態推理。
+</Note>
+
+### Gemini 原生請求欄位
+
+playground 中顯示的通用 `contents` 與 `generationConfig` 欄位，可接受以下多模態辨識的巢狀結構：
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `contents[].role` | string | 否 | 該輪對話的角色，例如 `user`。 |
+| `contents[].parts` | array | 是 | 有順序的內容 parts 清單（文字與／或內嵌媒體）。 |
+| `contents[].parts[].text` | string | 否 | 提供給模型的文字指令或問題。 |
+| `contents[].parts[].inlineData` | object | 否 | 用於圖片、音訊或影片理解的內嵌媒體負載。 |
+| `contents[].parts[].inlineData.mimeType` | string | 否 | 內嵌資料的 MIME 類型，例如 `image/jpeg`、`audio/mp3`、`video/mp4`。 |
+| `contents[].parts[].inlineData.data` | string | 否 | 以 base64 編碼的媒體位元組。 |
+
+<Tip>
+你可以在單一輪次中混合多個 parts，例如先放一個 `text` 指令，再放一個或多個包含待分析媒體的 `inlineData` parts。
+</Tip>
+
+### 範例：分析圖片
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Describe what is happening in this image." },
+        {
+          "inlineData": {
+            "mimeType": "image/jpeg",
+            "data": "<base64-encoded-image-bytes>"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 回應欄位
+
+回應遵循標準 `generateContent` 結構。與媒體辨識最相關的欄位如下：
+
+<ResponseField name="candidates" type="array">
+  模型回傳的候選回應。
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      生成內容物件。
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          生成內容區塊中回傳的角色，通常為 `model`。
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          回傳的內容 parts，通常是描述分析媒體結果的文字。
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      完成原因字串，例如 `STOP`。
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      安全評估結果。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token 計量中繼資料，包括 `promptTokenCount`、`candidatesTokenCount` 與 `totalTokenCount`。內嵌媒體（圖片、音訊、影片）除了文字 parts 外，也會消耗 prompt tokens。
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          { "text": "The image shows a golden retriever sitting on a grassy lawn." }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 264,
+    "candidatesTokenCount": 18,
+    "totalTokenCount": 282
+  }
+}
+```

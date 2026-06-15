@@ -1,0 +1,109 @@
+---
+title: "Formato nativo de Gemini"
+sidebarTitle: "Formato nativo de Gemini"
+description: "Genere o edite imágenes mediante la interfaz generateContent nativa de Gemini"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+Esta página usa la misma operación `generateContent` que [Generar contenido (Gemini)](/es/api-reference/chat/generate-content), con el playground de arriba rellenado previamente para chat de texto plano. Las notas a continuación describen los campos nativos de Gemini que puede agregar a `generationConfig` para generar o editar imágenes con controles de respuesta específicos del proveedor.
+
+<Note>
+Establezca `generationConfig.responseModalities` en `["IMAGE"]` para solicitar salida de imagen y use `generationConfig.imageConfig` para controlar la relación de aspecto y el tamaño de salida.
+</Note>
+
+### Campos de solicitud nativos de Gemini
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | Sí | Matriz de modalidades solicitadas, por ejemplo `["IMAGE"]`. |
+| `generationConfig.imageConfig` | object | No | Objeto de configuración de imagen. |
+| `generationConfig.imageConfig.aspectRatio` | string | No | Relación de aspecto de la imagen generada, por ejemplo `1:1`. |
+| `generationConfig.imageConfig.imageSize` | string | No | Tamaño de salida de la imagen, por ejemplo `1024x1024`. |
+
+<Tip>
+Use un modelo con capacidad de generación de imágenes como `gemini-2.0-flash-preview-image-generation` en el parámetro de ruta `model`.
+</Tip>
+
+### Ejemplo: generar una imagen
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "A photorealistic image of a corgi wearing sunglasses on a beach." }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["IMAGE"],
+    "imageConfig": {
+      "aspectRatio": "1:1",
+      "imageSize": "1024x1024"
+    }
+  }
+}
+```
+
+### Campos de respuesta
+
+La respuesta sigue la forma estándar de `generateContent`. Cuando se solicita salida de imagen, las `parts` devueltas contienen datos de imagen inline:
+
+<ResponseField name="candidates" type="array">
+  Respuestas candidatas devueltas por el modelo.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Objeto de contenido generado.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Rol devuelto en el bloque de contenido generado, normalmente `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Parts de contenido devueltas. Para salida de imagen, cada part contiene un objeto `inlineData` con `mimeType` (por ejemplo `image/png`) y `data` codificados en base64.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Cadena de motivo de finalización, por ejemplo `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Resultados de evaluación de seguridad.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Metadatos de uso de tokens, incluido `promptTokenCount`, `candidatesTokenCount` y `totalTokenCount`.
+</ResponseField>
+
+### Ejemplo de respuesta
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "<base64-encoded-image-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 14
+  }
+}
+```

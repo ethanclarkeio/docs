@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and package manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+
+# Mintlify/local preview output
+.mintlify/
+mintlify.log
+
+# AI assistant local state and machine-specific settings
+.claude/
+.codex/
+.cursor/
+.continue/
+.windsurf/
+.agents/
+.aider*
+
+# Build and cache output
+dist/
+build/
+.cache/
+.vite/
+
+# Logs
+*.log
+debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

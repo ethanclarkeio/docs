@@ -1,0 +1,109 @@
+---
+title: "Gemini 原生格式"
+sidebarTitle: "Gemini 原生格式"
+description: "透過 Gemini 原生 generateContent 介面生成或編輯圖像"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+本頁使用與 [生成內容（Gemini）](/zh-Hant/api-reference/chat/generate-content) 相同的 `generateContent` 操作，上方 playground 已預先填入純文字對話範例。以下說明可加入 `generationConfig` 的 Gemini 原生欄位，以便透過供應商特定的回應控制來生成或編輯圖像。
+
+<Note>
+請將 `generationConfig.responseModalities` 設為 `["IMAGE"]` 以要求圖像輸出，並使用 `generationConfig.imageConfig` 控制長寬比與輸出尺寸。
+</Note>
+
+### Gemini 原生請求欄位
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | 是 | 要求的模態陣列，例如 `["IMAGE"]`。 |
+| `generationConfig.imageConfig` | object | 否 | 圖像設定物件。 |
+| `generationConfig.imageConfig.aspectRatio` | string | 否 | 生成圖像的長寬比，例如 `1:1`。 |
+| `generationConfig.imageConfig.imageSize` | string | 否 | 輸出圖像尺寸，例如 `1024x1024`。 |
+
+<Tip>
+請在 `model` 路徑參數中使用具備圖像生成能力的模型，例如 `gemini-2.0-flash-preview-image-generation`。
+</Tip>
+
+### 範例：生成圖像
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "A photorealistic image of a corgi wearing sunglasses on a beach." }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["IMAGE"],
+    "imageConfig": {
+      "aspectRatio": "1:1",
+      "imageSize": "1024x1024"
+    }
+  }
+}
+```
+
+### 回應欄位
+
+回應遵循標準 `generateContent` 結構。當要求圖像輸出時，回傳的 `parts` 會包含內嵌圖像資料：
+
+<ResponseField name="candidates" type="array">
+  模型回傳的候選回應。
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      生成內容物件。
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          生成內容區塊中回傳的角色，通常為 `model`。
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          回傳的內容 parts。對於圖像輸出，每個 part 都會包含 `inlineData` 物件，其中含有 `mimeType`（例如 `image/png`）與 base64 編碼的 `data`。
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      完成原因字串，例如 `STOP`。
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      安全評估結果。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token 使用中繼資料，包括 `promptTokenCount`、`candidatesTokenCount` 與 `totalTokenCount`。
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "<base64-encoded-image-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 14
+  }
+}
+```

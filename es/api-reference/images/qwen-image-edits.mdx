@@ -1,0 +1,81 @@
+---
+title: "Edición de imágenes Qwen"
+sidebarTitle: "Edición de imágenes Qwen"
+description: "Edite imágenes mediante el flujo de edición de imágenes OpenAI compatible con Qwen"
+openapi: "api-reference/openapi.json POST /v1/images/edits"
+---
+
+Esta página usa la misma operación `images/edits` que [Editar imagen](/es/api-reference/images/edit-image), con el playground de arriba rellenado previamente para el esquema genérico de edición al estilo OpenAI (`image`, `mask`, `prompt`, etc.). Las notas a continuación describen la forma de solicitud específica de Qwen para modelos de estilo `wanx-v1`.
+
+<Note>
+Los modelos de edición de imágenes de Qwen aceptan una forma alternativa de solicitud JSON que envuelve las instrucciones de edición y las referencias de imagen de origen dentro de `input.messages`, en lugar de cargar archivos `image` / `mask` mediante datos de formulario multipart. Proporcione `model` e `input` juntos en el cuerpo de la solicitud del playground para usar esta forma.
+</Note>
+
+### Campos de solicitud específicos de Qwen
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `model` | string | Sí | Identificador del modelo, como `wanx-v1`. |
+| `input` | object | Sí | Objeto contenedor enviado en el cuerpo de la solicitud, usado en lugar de los campos multipart `image` / `mask`. |
+| `input.messages` | array | Sí | Matriz de mensajes anidada dentro de `input`. |
+| `input.messages[].role` | string | Sí | Rol del mensaje, por ejemplo `user`. |
+| `input.messages[].content` | string | Sí | Instrucciones de edición y cualquier imagen de origen referenciada. |
+
+<Tip>
+Las imágenes de origen pueden referenciarse inline dentro de `input.messages[].content` (por ejemplo, como URL o referencias incrustadas) en lugar de cargarse como archivos multipart separados.
+</Tip>
+
+### Ejemplo: editar una imagen
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove the background and replace it with a solid white backdrop."
+      }
+    ]
+  }
+}
+```
+
+### Campos de respuesta
+
+La respuesta sigue la forma estándar de edición de imágenes:
+
+<ResponseField name="created" type="integer">
+  Marca de tiempo de creación.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Entradas de imagen generadas.
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      URL de la imagen.
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Carga útil de imagen en base64.
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      Prompt revisado devuelto por el modelo.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Ejemplo de respuesta
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/edited-abc123.png",
+      "b64_json": "",
+      "revised_prompt": "The subject with background removed and replaced with a solid white backdrop."
+    }
+  ]
+}
+```

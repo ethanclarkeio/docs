@@ -1,0 +1,109 @@
+---
+title: "네이티브 Gemini 형식"
+sidebarTitle: "네이티브 Gemini 형식"
+description: "Gemini 네이티브 generateContent 인터페이스를 통해 이미지를 생성하거나 편집하세요"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+이 페이지는 [콘텐츠 생성 (Gemini)](/ko/api-reference/chat/generate-content)과 동일한 `generateContent` 작업을 사용하며, 위의 플레이그라운드에는 일반 텍스트 채팅이 미리 입력되어 있습니다. 아래 내용은 제공자별 응답 제어를 통해 이미지를 생성하거나 편집하기 위해 `generationConfig`에 추가할 수 있는 Gemini 네이티브 필드를 설명합니다.
+
+<Note>
+이미지 출력을 요청하려면 `generationConfig.responseModalities`를 `["IMAGE"]`로 설정하고, 종횡비와 출력 크기를 제어하려면 `generationConfig.imageConfig`를 사용하세요.
+</Note>
+
+### Gemini 네이티브 요청 필드
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | 예 | 요청할 모달리티 배열입니다 (예: `["IMAGE"]`). |
+| `generationConfig.imageConfig` | object | 아니요 | 이미지 설정 객체입니다. |
+| `generationConfig.imageConfig.aspectRatio` | string | 아니요 | 생성할 이미지의 종횡비입니다 (예: `1:1`). |
+| `generationConfig.imageConfig.imageSize` | string | 아니요 | 출력 이미지 크기입니다 (예: `1024x1024`). |
+
+<Tip>
+`model` 경로 매개변수에 `gemini-2.0-flash-preview-image-generation`과 같은 이미지 생성이 가능한 모델을 사용하세요.
+</Tip>
+
+### 예시: 이미지 생성
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "A photorealistic image of a corgi wearing sunglasses on a beach." }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["IMAGE"],
+    "imageConfig": {
+      "aspectRatio": "1:1",
+      "imageSize": "1024x1024"
+    }
+  }
+}
+```
+
+### 응답 필드
+
+응답은 표준 `generateContent` 형식을 따릅니다. 이미지 출력을 요청한 경우, 반환되는 `parts`에는 인라인 이미지 데이터가 포함됩니다.
+
+<ResponseField name="candidates" type="array">
+  모델이 반환한 후보 응답입니다.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      생성된 콘텐츠 객체입니다.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          생성된 콘텐츠 블록에서 반환되는 역할로, 일반적으로 `model`입니다.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          반환된 콘텐츠 파트입니다. 이미지 출력의 경우, 각 파트는 `mimeType`(예: `image/png`)과 base64로 인코딩된 `data`를 포함하는 `inlineData` 객체를 포함합니다.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      종료 이유 문자열입니다 (예: `STOP`).
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      안전성 평가 결과입니다.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  `promptTokenCount`, `candidatesTokenCount`, `totalTokenCount`를 포함한 토큰 사용 메타데이터입니다.
+</ResponseField>
+
+### 응답 예시
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": "<base64-encoded-image-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 14,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 14
+  }
+}
+```

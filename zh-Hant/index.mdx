@@ -1,0 +1,189 @@
+---
+title: "DGrid AI 文件"
+sidebarTitle: "首頁"
+description: "透過一個 Web3 原生的閘道，存取 200 多個領先的 AI 模型。探索使用指南、API 參考文件，以及 $DGAI 經濟體系。"
+mode: "wide"
+---
+
+<div className="flex flex-col md:flex-row items-center gap-8 mt-2 not-prose">
+  <div className="flex-1 flex flex-col gap-4">
+    <div className="leading-tight">
+      <div className="text-3xl md:text-5xl font-extrabold text-primary-dark dark:text-primary-light">DGrid AI</div>
+      <div className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100">去中心化<br />AI 智慧網路</div>
+    </div>
+    <div className="flex flex-row flex-wrap gap-3 mt-2">
+      <a href="https://dgrid.ai/">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 shadow-sm text-white dark:text-gray-900 bg-primary-dark dark:bg-primary-light hover:opacity-[0.9] justify-center">
+          官方網站
+        </button>
+      </a>
+      <a href="/zh-Hant/what-we-do">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          什麼是 DGrid AI？
+        </button>
+      </a>
+      <a href="/zh-Hant/dgrid-solution">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          DGrid 解決方案
+        </button>
+      </a>
+    </div>
+  </div>
+  <div className="flex-shrink-0">
+    <img src="/favicon.png" alt="DGrid AI" className="w-32 h-32 md:w-44 md:h-44 rounded-3xl" />
+  </div>
+</div>
+
+<div className="divide-y divide-gray-100 dark:divide-white/10 mt-10">
+  <div className="flex flex-col w-full pb-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">探索平台</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      了解構成 DGrid 生態系統的旗艦產品。
+    </p>
+
+    <CardGroup cols={3}>
+      <Card title="AI Gateway" img="/images/illustrations/gateway.svg" href="https://dgrid.ai/ai-gateway">
+        透過 Web3 原生支付與智慧路由，以一個 API 存取 200 多個模型。
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ 個模型</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">相容 OpenAI</span>
+        </div>
+      </Card>
+      <Card title="AI Arena" img="/images/illustrations/arena.svg" href="https://dgrid.ai/arena">
+        盲測模型對戰，將社群投票轉化為路由智慧。
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">AI 對戰</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">$DGAI 積分</span>
+        </div>
+      </Card>
+      <Card title="Model Marketplace" img="/images/illustrations/marketplace.svg" href="https://dgrid.ai/models">
+        DGrid AI Gateway 背後 200 多個模型與供應商的開放目錄，可瀏覽並透過一個 API 呼叫。
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ 個模型</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">開放目錄</span>
+        </div>
+      </Card>
+    </CardGroup>
+  </div>
+
+  <div className="flex flex-col w-full py-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">與 DGrid 一起建構</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      不僅是 API——還有驅動 DGrid 生態系統的經濟體系、計畫與 Agent 層。
+    </p>
+
+    <Tabs>
+      <Tab title="$DGAI 經濟體系">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/zh-Hant/what-is-dgai" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">什麼是 $DGAI</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">支撐價值交換、激勵與治理的實用代幣</span>
+            </a>
+            <a href="/zh-Hant/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">核心功能</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">質押、支付、激勵與治理——$DGAI 的四維引擎</span>
+            </a>
+            <a href="/zh-Hant/circulation-mechanism" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">流通機制</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">$DGAI 如何在使用者、節點運營商與網路之間流動</span>
+            </a>
+            <a href="/zh-Hant/token-distribution" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">代幣分配</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">10 億枚代幣供應量如何在生態系統中分配</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/economy.svg" alt="$DGAI 經濟體系" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="Genesis Premium">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/zh-Hant/premium/program-overview" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">計畫總覽</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Genesis Pass NFT：DGrid 網路早期參與者的專屬憑證</span>
+            </a>
+            <a href="/zh-Hant/premium/exclusive-benefits" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">專屬權益</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">會員專屬的資源存取、治理權與生態系統分潤</span>
+            </a>
+            <a href="/zh-Hant/premium/purchase-and-activation" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">購買與啟用</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">如何取得並啟用您的 Genesis Pass</span>
+            </a>
+            <a href="/zh-Hant/premium/incentive-mechanism-and-rewards" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">激勵機制與獎勵</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">根據您的貢獻賺取 $DGAI 與生態系統獎勵</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/premium.svg" alt="Genesis Premium" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="DClaw">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/zh-Hant/dclaw" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">DClaw 的功能</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">一鍵部署基於 CoPaw 的持久化、使用者自有 AI Agent</span>
+            </a>
+            <a href="/zh-Hant/dclaw#why-dclaw-matters" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">為何 DClaw 重要</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">在單一工作流程中整合 DGrid API 存取、模型、頻道、記憶與技能</span>
+            </a>
+            <a href="/zh-Hant/dori" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Dori 尋找模型</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">自然語言顧問，為每個 Agent 挑選最佳模型</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/dclaw.svg" alt="DClaw" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="質押">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <div className="flex flex-row items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">即將推出</span>
+            </div>
+            <a href="/zh-Hant/core-functions" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">質押與存取權</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">質押 $DGAI 以取得網路流量、建立信譽並保護網路安全</span>
+            </a>
+            <a href="/zh-Hant/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">節點運營商</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">依節點效能與穩定性分級的質押要求</span>
+            </a>
+            <a href="/zh-Hant/what-is-dgai" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">$DGAI 代幣</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">您將質押的代幣——了解它如何驅動今日的 DGrid 經濟體系</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/staking.svg" alt="質押" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+    </Tabs>
+  </div>
+
+  <div className="flex flex-col w-full pt-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl mb-4">資源</div>
+
+    <Columns cols={3}>
+      <Card title="官方網站" icon="globe" href="https://dgrid.ai/">
+        於 dgrid.ai 探索正式平台
+      </Card>
+      <Card title="關注 X" icon="twitter" href="https://x.com/dgrid_ai">
+        產品更新與公告
+      </Card>
+      <Card title="Telegram 社群" icon="send" href="https://t.me/dgrid_ai">
+        取得協助並認識其他開發者
+      </Card>
+    </Columns>
+  </div>
+</div>

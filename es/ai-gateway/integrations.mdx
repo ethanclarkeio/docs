@@ -1,0 +1,57 @@
+---
+title: "Tutoriales de integración"
+sidebarTitle: "Tutoriales de integración"
+description: "Tutoriales prácticos de integración para usar DGrid AI Gateway en herramientas y SDK de desarrollo comunes"
+---
+
+Esta página recopila tutoriales prácticos de integración para usar **DGrid AI Gateway** en herramientas y SDK de desarrollo comunes.
+
+## Cursor (sobrescribir la URL base de OpenAI)
+
+1. Obtenga su `DGRID_API_KEY` (consulte el requisito previo en [AI Gateway](/es/ai-gateway/overview)).
+2. Abra **Cursor Settings** → **Models**.
+3. En **API Keys**, habilite **Override OpenAI Base URL**.
+4. Configure la URL base como:
+   - `https://api.dgrid.ai/v1`
+5. Pegue su `DGRID_API_KEY` en **OpenAI API Key**.
+6. Elija cualquier nombre de modelo compatible utilizando el formato de DGrid (por ejemplo: `openai/gpt-4o`).
+
+<Frame caption="Sobrescribir la URL base de OpenAI en la configuración de Cursor">
+  <img src="/images/2_SJd0fdj09dfjKLDFk.png" alt="Ejemplo de configuración de Cursor" />
+</Frame>
+
+Tutorial completo: [How to Configure and Use DGrid AI Gateway in Cursor](https://blog.dgrid.ai/posts/2026-02-18/)
+
+## SDK de OpenAI (Node.js / Python)
+
+- Consulte: [Inicio rápido de AI Gateway](/es/ai-gateway/overview#quickstart)
+
+## OpenClaw
+
+Puede configurar OpenClaw para enrutar las solicitudes a través de **DGrid AI Gateway** utilizando el endpoint compatible con OpenAI.
+
+1. Abra la configuración de modelo/proveedor de OpenClaw.
+2. Configure la URL base de la API como `https://api.dgrid.ai/v1`.
+3. Pegue su `DGRID_API_KEY` en el campo de clave de API.
+4. Seleccione un ID de modelo de DGrid compatible.
+5. Guarde la configuración y ejecute una solicitud de prueba rápida.
+
+<video controls preload="metadata" style={{ width: "100%", borderRadius: "12px", marginTop: "12px" }}>
+  <source src="/images/dgrid-openclaw-demo.mp4" type="video/mp4" />
+  Su navegador no admite la etiqueta de video.
+</video>
+
+## Tutoriales de integración del blog (recopilados)
+
+- **AI as Workspace (AIaW)**: [Step-by-Step Guide: Configure DGrid AI Gateway in AI as Workspace (AIaW)](https://blog.dgrid.ai/posts/2026-03-10/)
+- **AnythingLLM**: [Tutorial: Using DGrid AI Gateway with AnythingLLM](https://blog.dgrid.ai/posts/2026-01-30/)
+- **Chatbox**: [Step-by-Step Guide: Configure DGrid AI Gateway in Chatbox](https://blog.dgrid.ai/posts/2026-03-09/)
+- **Claude Code**: [Use Claude Code with DGrid](https://blog.dgrid.ai/posts/2026-03-12/)
+- **Codex CLI**: [Using Codex CLI with DGrid: A Complete Guide](https://blog.dgrid.ai/posts/2026-03-23/)
+- **Junie CLI**: [Step-by-Step Guide: Integrate DGrid with Junie CLI](https://blog.dgrid.ai/posts/2026-04-13/)
+- **LibreChat**: [Using DGrid with LibreChat: A Step-by-Step Guide](https://blog.dgrid.ai/posts/2026-01-28/)
+- **LobeChat**: [Configuring and Utilizing DGrid AI Gateway in LobeChat: A Full Guide](https://blog.dgrid.ai/posts/2026-02-09/)
+- **Open WebUI**: [Using DGrid AI Gateway with Open WebUI: A Comprehensive Guide](https://blog.dgrid.ai/posts/2026-01-22_2/)
+- **OpenClaw (agent platform)**: [Supercharging OpenClaw with DGrid: The Ultimate AI Agent Setup](https://blog.dgrid.ai/posts/2026-02-02/)
+- **OpenClaw (no-code)**: [Step-by-Step Guide: OpenClaw Installation & DGrid AI Gateway Setup (No Code Required)](https://blog.dgrid.ai/posts/2026-02-27/)
+- **Vercel AI SDK**: [How to Use DGrid AI Gateway with the Vercel AI SDK](https://blog.dgrid.ai/posts/2026-03-26/)

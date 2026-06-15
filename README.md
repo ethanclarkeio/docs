@@ -1,55 +1,90 @@
-# Mintlify Starter Kit
+# DGrid AI Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+This repository contains the Mintlify documentation site for **DGrid AI**, a decentralized AI network that connects AI model supply, developer demand, routing, verification, and on-chain settlement.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+The docs cover DGrid AI Gateway, model API usage, AI Arena, Dori, DClaw, the `$DGAI` token, Genesis Premium, x402 payments, and ecosystem resources.
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+## Documentation Languages
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+| Locale | Path | Notes |
+| --- | --- | --- |
+| English | `/` | Default source language |
+| 繁體中文（台灣） | `/zh-Hant` | Traditional Chinese localization |
+| 한국어 | `/ko` | Korean localization |
+| Français | `/fr` | French localization |
+| Español | `/es` | Spanish localization |
 
-## AI-assisted writing
+Navigation, localized labels, and page groups are configured in [`docs.json`](./docs.json).
 
-Set up your AI coding tool to work with Mintlify:
+## Project Structure
+
+```text
+.
+├── docs.json                 # Mintlify site configuration and navigation
+├── *.mdx                     # English documentation pages
+├── ai-gateway/               # AI Gateway guides
+├── api-reference/            # Model API reference pages and OpenAPI config
+├── ai-arena/                 # AI Arena documentation
+├── premium/                  # Genesis Premium documentation
+├── x402/                     # x402 payment documentation
+├── zh-Hant/                  # Traditional Chinese docs
+├── ko/                       # Korean docs
+├── fr/                       # French docs
+└── es/                       # Spanish docs
+```
+
+Each page is an MDX file with YAML frontmatter. Most pages should include `title`, `sidebarTitle`, and `description`.
+
+## Local Development
+
+Install the Mintlify CLI:
 
 ```bash
-npx skills add https://mintlify.com/docs
+npm install -g mint
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+Run the local preview from the repository root:
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
+```bash
 mint dev
 ```
 
-View your local preview at `http://localhost:3000`.
+Open `http://localhost:3000` to preview the docs.
 
-## Publishing changes
+If the preview behaves unexpectedly, update the CLI:
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+```bash
+mint update
+```
 
-## Need help?
+## Contribution Guidelines
 
-### Troubleshooting
+- Keep English pages as the source of truth unless a change is localization-only.
+- When adding or renaming a page, update `docs.json` for every affected locale.
+- Keep localized page paths aligned with the English source path.
+- Preserve Mintlify components such as `<Info>`, `<Frame>`, `<Card>`, `<Tabs>`, and API playground blocks.
+- Use concise, active documentation language.
+- Bold UI labels with Markdown or `<strong>`, and use backticks for file names, commands, paths, parameters, and code.
+- In CJK and Korean prose, prefer `<strong>...</strong>` when bold text touches surrounding characters. This avoids raw `**` being rendered in some MDX contexts.
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+## Pull Request Checklist
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+Before opening a PR:
+
+- Run `mint dev` and spot-check changed pages locally.
+- Check that navigation labels and sidebar titles render correctly in each changed locale.
+- Confirm no local AI assistant files, caches, secrets, or preview output are included.
+- For localization changes, compare the translated page against the English source for missing sections, broken links, and untranslated navigation text.
+
+## 中文快速指南
+
+這是 DGrid AI 的 Mintlify 文件倉庫，包含英文預設文件，以及繁體中文（台灣）、韓語、法語和西班牙語本地化內容。
+
+常用指令：
+
+```bash
+npm install -g mint
+mint dev
+```
+
+本機預覽網址是 `http://localhost:3000`。提交 PR 前，請確認 `docs.json` 中的導覽、各語言目錄下的頁面、頁首和側邊欄標題都已同步更新。

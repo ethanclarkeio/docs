@@ -1,0 +1,173 @@
+---
+title: "Référence API"
+sidebarTitle: "Référence API"
+description: "Détails des points de terminaison spécifiques à x402 pour les requêtes d'inférence payée à l'usage de DGrid"
+---
+
+Cette page documente les détails des points de terminaison spécifiques à x402 pour les requêtes d'inférence payée à l'usage de DGrid.
+
+Si vous recherchez des modèles de requête de type fournisseur tels que les charges utiles **compatibles OpenAI** ou **compatibles Claude**, consultez [Model API](/fr/api-reference/introduction). Ces références restent la meilleure source d'exemples d'invocation spécifiques aux fournisseurs. Cette page se concentre sur le flux de paiement x402 ainsi que sur les champs d'inférence partagés exposés au point de terminaison x402.
+
+## x402 AI Inference API
+
+Appelez l'inférence DGrid avec les exigences de paiement x402. La première requête renvoie les instructions de paiement ; la seconde requête inclut un en-tête x-payment signé et exécute l'inférence.
+
+```http
+POST /x402/v1
+```
+
+| | |
+| --- | --- |
+| **URL de base** | `https://api.dgrid.ai` |
+| **Authorization** | `Content-Type: application/json; x-payment: <x402-payment-payload>` |
+| **Requête** | `application/json` |
+| **Réponse** | `402 / 200 · application/json or text/event-stream` |
+
+### Paiement et authentification
+
+Ce point de terminaison utilise le **protocole de paiement x402** au lieu d'un flux basé sur un solde de compte.
+
+En-têtes de requête requis pour la requête payée :
+
+```http
+Content-Type: application/json
+x-payment: <x402-payment-payload>
+```
+
+### Corps de la requête
+
+| Champ | Type | Requis | Par défaut | Description |
+| --- | --- | --- | --- | --- |
+| `messages` | array | Oui | - | Tableau `UIMessage` contenant `role` et `content`. |
+| `model` | string | Non | `anthropic/claude-opus-4.5` | Nom du modèle cible. |
+| `stream` | boolean | Non | `true` | Indique si une réponse en flux continu doit être renvoyée. |
+| `temperature` | number | Non | `1` | Température d'échantillonnage. |
+| `topP` | number | Non | `1` | Paramètre d'échantillonnage top-p. |
+| `topK` | number | Non | `40` | Paramètre d'échantillonnage top-k. |
+
+### Modes de réponse
+
+#### `stream = true` (par défaut)
+
+Renvoie un **UIMessageStream** SSE (`text/event-stream`) utilisant les événements de type `UIMessageChunk` du style AI SDK. Les types d'événements courants incluent :
+
+* `start`
+* `text-start`
+* `text-delta`
+* `text-end`
+* `finish`
+
+L'événement final `finish` inclut un `messageMetadata` tel que :
+
+* `totalTokens`
+* `allowanceLeft`
+* `calculatedPriceWei`
+* `realPriceWei`
+
+#### `stream = false`
+
+Renvoie une seule réponse JSON dans le format de complétion standard de DGrid, avec `choices` et `usage`.
+
+### Erreurs
+
+| Statut | Signification |
+| --- | --- |
+| `402` | Échec de la validation du paiement, généralement parce que la première requête a omis `x-payment` ou que la signature de paiement était invalide |
+| `400` | Requête invalide ou erreur de validation en amont |
+| `500` | Erreur côté serveur ou du fournisseur en amont |
+
+### Remarques sur le règlement
+
+* Le point de terminaison effectue le règlement en fonction de l'usage réel.
+* Si le coût réel dépasse le plafond autorisé, le règlement est limité à cette limite autorisée.
+
+<RequestExample>
+
+```bash Step 1: Trigger 402
+curl -i 'https://api.dgrid.ai/x402/v1/responses' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+```bash Step 2: Retry with x-payment
+curl -i 'https://api.dgrid.ai/x402/v1' \
+  -H 'Content-Type: application/json' \
+  -H 'x-payment: <x402-payment-payload>' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```http 402 Response
+HTTP/1.1 402 Payment Required
+Content-Type: application/json
+X-PAYMENT-RESPONSE: <base64>
+
+{
+  "x402Version": 1,
+  "error": "Payment required",
+  "accepts": [
+    {
+      "scheme": "upto",
+      "network": "eip155:56",
+      "maxAmountRequired": "990000000000000000",
+      "resource": "https://api.dgrid.ai/x402/v1",
+      "payTo": "0x...",
+      "asset": "0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d",
+      "maxTimeoutSeconds": 86400
+    }
+  ]
+}
+```
+
+```text Streaming Response
+data: {"type":"start"}
+
+data: {"type":"text-start","id":"..."}
+
+data: {"type":"text-delta","id":"...","delta":"Hello"}
+
+data: {"type":"text-end","id":"..."}
+
+data: {"type":"finish","finishReason":"stop","messageMetadata":{"totalTokens":123,"allowanceLeft":"990000000000000000","calculatedPriceWei":"1230000000000000","realPriceWei":"1230000000000000"}}
+```
+
+```json Non-Streaming Response
+{
+  "id": "chatcmpl-xxxx",
+  "object": "chat.completion",
+  "created": 1773823863,
+  "model": "grok-4-fast",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "xxxxx"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 11,
+    "completion_tokens": 323,
+    "total_tokens": 334
+  }
+}
+```
+
+</ResponseExample>

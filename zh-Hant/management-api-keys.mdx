@@ -1,0 +1,624 @@
+---
+title: "管理 API 金鑰"
+sidebarTitle: "管理 API 金鑰"
+description: "以程式化方式管理模型 API 金鑰的完整生命週期"
+---
+
+管理 API 金鑰提供一種以程式化方式管理模型 API 金鑰完整生命週期的方法。它專為企業團隊、SaaS 平台與自動化系統設計，使其無需依賴手動控制台操作即可建立、分發、輪換、啟用、停用或撤銷金鑰。
+
+管理 API 金鑰是管理憑證，僅限於金鑰管理操作。它們無法用於呼叫模型推論或補全端點。
+
+## 1. 概覽
+
+管理 API 金鑰適用於以下情境：
+
+- 為不同的客戶、專案或環境發行各自獨立的模型 API 金鑰
+- 對下游的模型 API 金鑰套用使用限制與自動重置週期
+- 以程式化方式輪換、停用或撤銷金鑰
+- 在 SaaS、多租戶與注重合規的工作流程中，強制實施最小權限的金鑰管理
+
+核心能力：
+
+- 對金鑰管理操作進行嚴格的權限隔離
+- 模型 API 金鑰的完整生命週期自動化
+- 可設定的使用限制與重置週期
+- 專為伺服器端服務、內部工具與自動化佈建工作流程設計
+
+## 2. API 介面與驗證邊界
+
+金鑰管理分為兩個 API 介面，各自擁有獨立的驗證模式：
+
+| API 介面 | 用途 | 驗證方式 |
+| --- | --- | --- |
+| `/v1/management-keys` | 管理「管理 API 金鑰」 | `JWT` |
+| `/api/v1/model-router/keys` | 使用「管理 API 金鑰」來管理「模型 API 金鑰」 | `Authorization: Bearer <management_key>` |
+
+重要事項：
+
+- `管理 API 金鑰`僅可用於 `/api/v1/model-router/keys`
+- `管理 API 金鑰`無法用於 `/v1/management-keys`
+- `/v1/management-keys` 僅支援 `JWT` 驗證
+- 完整的金鑰密鑰僅在建立時回傳一次，之後無法再次取得
+
+## 3. 基本規則
+
+- 每個帳戶最多可建立 `10` 個管理 API 金鑰
+- 管理 API 金鑰建立後即立即啟用
+- 完整的管理 API 金鑰密鑰僅回傳一次
+- 後續的列表與詳細資料回應僅會回傳遮蔽後的金鑰值
+- 模型 API 金鑰目前採用軟刪除而非永久刪除
+
+## 4. 基礎網址
+
+公開 API 的基礎網址為：
+
+```text
+https://api.dgrid.ai
+```
+
+本文件中使用的路由前綴：
+
+```text
+/v1/management-keys
+/api/v1/model-router/keys
+```
+
+## 5. 建立管理 API 金鑰
+
+在使用管理 API 之前，請先在 DGrid 控制台中建立一個管理 API 金鑰：
+
+<Steps>
+<Step title="開啟「管理 API 金鑰」頁面">
+</Step>
+<Step title="點擊「建立」">
+</Step>
+<Step title="輸入金鑰名稱">
+</Step>
+<Step title="完成所需的安全驗證">
+</Step>
+<Step title="建立後立即複製並安全儲存金鑰">
+</Step>
+</Steps>
+
+<Note>
+若您在自己的介面中提供此流程，請明確告知使用者該密鑰僅顯示一次，應立即儲存。
+</Note>
+
+## 6. 身分驗證
+
+本文件涵蓋兩種驗證模式：
+
+- `/v1/management-keys` 下的端點需要 `JWT`
+- `/api/v1/model-router/keys` 下的端點需要管理 API 金鑰
+
+呼叫 `/api/v1/model-router/keys` 端點時請使用以下標頭：
+
+```http
+Authorization: Bearer <management_key>
+```
+
+## 7. 管理 API 金鑰生命週期端點
+
+以下端點用於建立、檢視、更新、啟用、停用與刪除管理 API 金鑰。所有端點皆需要 `JWT` 驗證。
+
+| 操作 | 方法 | 路徑 | 備註 |
+| --- | --- | --- | --- |
+| 建立管理金鑰 | `POST` | `/v1/management-keys` | 完整金鑰僅回傳一次 |
+| 列出管理金鑰 | `GET` | `/v1/management-keys` | 支援分頁 |
+| 更新管理金鑰 | `PUT` | `/v1/management-keys/{id}` | 目前僅可更新 `name` |
+| 刪除管理金鑰 | `DELETE` | `/v1/management-keys/{id}` | 軟刪除 |
+| 啟用管理金鑰 | `POST` | `/v1/management-keys/{id}/enablement` | 立即生效 |
+| 停用管理金鑰 | `POST` | `/v1/management-keys/{id}/disablement` | 立即生效 |
+
+建立回應範例：
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "3ecf9d8d-9b8f-4df6-9d30-7a693e1f0d1c",
+    "name": "prod-admin",
+    "key": "mk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "keyPreview": "mk-x************************xxxx5",
+    "createdAt": "2026-04-23T10:00:00Z",
+    "status": "Enabled",
+    "enabled": true
+  }
+}
+```
+
+備註：
+
+- `key` 僅在建立時回傳一次
+- `keyPreview` 為遮蔽後的顯示值
+
+## 8. 使用管理 API 金鑰管理模型 API 金鑰
+
+本節中的所有端點皆使用：
+
+```http
+Authorization: Bearer <management_key>
+```
+
+### 8.1 請求欄位
+
+目前實作支援在建立或更新模型 API 金鑰時使用以下欄位：
+
+| 欄位 | 類型 | 是否必填 | 說明 |
+| --- | --- | --- | --- |
+| `name` | `string` | 建立時必填 | 金鑰名稱 |
+| `limit` | `number` | 否 | 使用限制 |
+| `cycle` | `daily \| weekly \| monthly` | 否 | 限制的重置週期 |
+| `expiredAt` | `string` | 否 | UTC 時間格式的到期時間戳 |
+| `groupId` | `string` | 否 | 群組 ID |
+
+備註：
+
+- 若您熟悉 OpenRouter 的 `limit_reset`，在目前 DGrid 實作中最接近的等效欄位是 `cycle`
+- `expiredAt` 應使用 ISO 8601 UTC 時間戳格式，例如 `2026-12-31T23:59:59Z`
+
+### 8.2 列出金鑰
+
+- 方法：`GET`
+- 路徑：`/api/v1/model-router/keys`
+- 查詢參數：
+  - `page`：頁碼，預設為 `1`
+  - `size`：每頁數量，預設為 `20`，最大為 `100`
+
+實作備註：
+
+- 分頁使用 `page` 與 `size`，而非 `limit` 與 `offset`
+- 目前不支援名稱的部分匹配搜尋
+- 目前不支援 `disabled` 篩選
+
+請求範例：
+
+```bash
+curl "https://api.dgrid.ai/api/v1/model-router/keys?page=1&size=20" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+回應範例：
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "total": 2,
+    "page": 1,
+    "items": [
+      {
+        "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+        "name": "prod-key",
+        "key": "sk-a************************f9x2d",
+        "limit": 1000,
+        "usageInCycle": 12.34,
+        "usageInTotal": 98.76,
+        "enabled": true,
+        "cycle": "monthly",
+        "expiredAt": "2026-12-31T23:59:59Z",
+        "groupId": null,
+        "groupName": ""
+      }
+    ]
+  }
+}
+```
+
+欄位說明：
+
+- `key`：遮蔽後的 API 金鑰值
+- `usageInCycle`：本週期內的使用量
+- `usageInTotal`：累計使用量
+- `enabled`：目前的啟用狀態
+- `groupName`：群組名稱
+
+### 8.3 建立模型 API 金鑰
+
+- 方法：`POST`
+- 路徑：`/api/v1/model-router/keys`
+
+請求範例：
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys" \
+  -H "Authorization: Bearer <management_key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "prod-key",
+    "limit": 1000,
+    "cycle": "monthly",
+    "expiredAt": "2026-12-31T23:59:59Z"
+  }'
+```
+
+請求內容範例：
+
+```json
+{
+  "name": "prod-key",
+  "limit": 1000,
+  "cycle": "monthly",
+  "expiredAt": "2026-12-31T23:59:59Z"
+}
+```
+
+回應範例：
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+    "key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  }
+}
+```
+
+備註：
+
+- `key` 是完整的 API 金鑰值，僅回傳一次
+- 請立即將其儲存在安全的密鑰管理系統中
+
+### 8.4 取得金鑰詳細資料
+
+- 方法：`GET`
+- 路徑：`/api/v1/model-router/keys/{id}`
+
+實作備註：
+
+- 目前實作使用 `id（UUID）`，而非 `key_hash`
+
+請求範例：
+
+```bash
+curl "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+回應範例：
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "id": "e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111",
+    "name": "prod-key",
+    "key": "sk-a************************f9x2d",
+    "limit": 1000,
+    "usageInCycle": 12.34,
+    "usageInTotal": 98.76,
+    "enabled": true,
+    "cycle": "monthly",
+    "expiredAt": "2026-12-31T23:59:59Z",
+    "groupId": null,
+    "groupName": ""
+  }
+}
+```
+
+### 8.5 更新模型 API 金鑰
+
+- 方法：`PUT`
+- 路徑：`/api/v1/model-router/keys/{id}`
+
+目前支援更新的欄位：
+
+- `name`
+- `limit`
+- `cycle`
+- `groupId`
+
+請求範例：
+
+```bash
+curl -X PUT "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "prod-key-v2",
+    "limit": 2000,
+    "cycle": "monthly"
+  }'
+```
+
+請求內容範例：
+
+```json
+{
+  "name": "prod-key-v2",
+  "limit": 2000,
+  "cycle": "monthly"
+}
+```
+
+實作備註：
+
+- 目前的更新方法為 `PUT`，而非 `PATCH`
+
+### 8.6 停用模型 API 金鑰
+
+- 方法：`POST`
+- 路徑：`/api/v1/model-router/keys/{id}/disablement`
+
+請求範例：
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111/disablement" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+停用後，該 API 金鑰將無法再用於模型呼叫。
+
+### 8.7 啟用模型 API 金鑰
+
+- 方法：`POST`
+- 路徑：`/api/v1/model-router/keys/{id}/enablement`
+
+請求範例：
+
+```bash
+curl -X POST "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111/enablement" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+### 8.8 刪除模型 API 金鑰
+
+- 方法：`DELETE`
+- 路徑：`/api/v1/model-router/keys/{id}`
+
+請求範例：
+
+```bash
+curl -X DELETE "https://api.dgrid.ai/api/v1/model-router/keys/e8f9c547-4f0c-4d8b-8e1b-8ef9b0aa1111" \
+  -H "Authorization: Bearer <management_key>"
+```
+
+實作備註：
+
+- 目前的刪除為軟刪除，而非實體刪除
+
+## 9. 範例用法
+
+<CodeGroup>
+
+```python Python
+import requests
+
+BASE = "https://api.dgrid.ai/api/v1/model-router"
+MANAGEMENT_KEY = "mk-your-management-key"
+
+headers = {
+    "Authorization": f"Bearer {MANAGEMENT_KEY}",
+    "Content-Type": "application/json"
+}
+
+# 1) List keys
+resp = requests.get(
+    f"{BASE}/keys",
+    headers=headers,
+    params={"page": 1, "size": 20}
+)
+print("LIST:", resp.json())
+
+# 2) Create key
+resp = requests.post(
+    f"{BASE}/keys",
+    headers=headers,
+    json={
+        "name": "prod-key",
+        "limit": 1000,
+        "cycle": "monthly",
+        "expiredAt": "2026-12-31T23:59:59Z"
+    }
+)
+create_data = resp.json()
+print("CREATE:", create_data)
+
+key_id = create_data["data"]["id"]
+
+# 3) Get key
+resp = requests.get(f"{BASE}/keys/{key_id}", headers=headers)
+print("GET:", resp.json())
+
+# 4) Update key
+resp = requests.put(
+    f"{BASE}/keys/{key_id}",
+    headers=headers,
+    json={
+        "name": "prod-key-v2",
+        "limit": 2000,
+        "cycle": "monthly"
+    }
+)
+print("UPDATE:", resp.json())
+
+# 5) Disable key
+resp = requests.post(f"{BASE}/keys/{key_id}/disablement", headers=headers)
+print("DISABLE:", resp.json())
+
+# 6) Enable key
+resp = requests.post(f"{BASE}/keys/{key_id}/enablement", headers=headers)
+print("ENABLE:", resp.json())
+
+# 7) Delete key
+resp = requests.delete(f"{BASE}/keys/{key_id}", headers=headers)
+print("DELETE:", resp.json())
+```
+
+```typescript TypeScript
+const BASE = "https://api.dgrid.ai/api/v1/model-router";
+const MANAGEMENT_KEY = "mk-your-management-key";
+
+const headers: HeadersInit = {
+  Authorization: `Bearer ${MANAGEMENT_KEY}`,
+  "Content-Type": "application/json",
+};
+
+async function main() {
+  const listResp = await fetch(`${BASE}/keys?page=1&size=20`, {
+    method: "GET",
+    headers,
+  });
+  console.log("LIST:", await listResp.json());
+
+  const createResp = await fetch(`${BASE}/keys`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key",
+      limit: 1000,
+      cycle: "monthly",
+      expiredAt: "2026-12-31T23:59:59Z",
+    }),
+  });
+  const createData = await createResp.json();
+  console.log("CREATE:", createData);
+
+  const keyId = createData.data.id;
+
+  const getResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "GET",
+    headers,
+  });
+  console.log("GET:", await getResp.json());
+
+  const updateResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key-v2",
+      limit: 2000,
+      cycle: "monthly",
+    }),
+  });
+  console.log("UPDATE:", await updateResp.json());
+
+  const disableResp = await fetch(`${BASE}/keys/${keyId}/disablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("DISABLE:", await disableResp.json());
+
+  const enableResp = await fetch(`${BASE}/keys/${keyId}/enablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("ENABLE:", await enableResp.json());
+
+  const deleteResp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "DELETE",
+    headers,
+  });
+  console.log("DELETE:", await deleteResp.json());
+}
+
+main().catch(console.error);
+```
+
+```javascript JavaScript
+const BASE = "https://api.dgrid.ai/api/v1/model-router";
+const MANAGEMENT_KEY = "mk-your-management-key";
+
+const headers = {
+  Authorization: `Bearer ${MANAGEMENT_KEY}`,
+  "Content-Type": "application/json",
+};
+
+async function main() {
+  let resp = await fetch(`${BASE}/keys?page=1&size=20`, {
+    method: "GET",
+    headers,
+  });
+  console.log("LIST:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key",
+      limit: 1000,
+      cycle: "monthly",
+      expiredAt: "2026-12-31T23:59:59Z",
+    }),
+  });
+  const createData = await resp.json();
+  console.log("CREATE:", createData);
+
+  const keyId = createData.data.id;
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "GET",
+    headers,
+  });
+  console.log("GET:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({
+      name: "prod-key-v2",
+      limit: 2000,
+      cycle: "monthly",
+    }),
+  });
+  console.log("UPDATE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}/disablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("DISABLE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}/enablement`, {
+    method: "POST",
+    headers,
+  });
+  console.log("ENABLE:", await resp.json());
+
+  resp = await fetch(`${BASE}/keys/${keyId}`, {
+    method: "DELETE",
+    headers,
+  });
+  console.log("DELETE:", await resp.json());
+}
+
+main().catch(console.error);
+```
+
+</CodeGroup>
+
+## 10. HTTP 狀態碼與錯誤碼
+
+| HTTP 狀態碼 | 錯誤碼 | 說明 |
+| --- | --- | --- |
+| `400` | `40001` | 無效的請求參數 |
+| `401` | `40101` | 請求標頭中缺少管理 API 金鑰 |
+| `401` | `40102` | 管理 API 金鑰無效、已過期或已停用 |
+| `403` | `40301` | 權限不足，或此端點的金鑰類型無效 |
+| `404` | `40401` | 找不到目標金鑰，或該金鑰不屬於目前帳戶 |
+| `429` | `42901` | 超過速率限制 |
+| `500` | `50001` | 伺服器內部錯誤 |
+
+## 11. 標準回應格式
+
+成功的回應使用以下格式：
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "data": {}
+}
+```
+
+備註：
+
+- 成功的請求會回傳 HTTP `200`
+- 建立操作的回應可能在 `data` 中包含完整的密鑰
+- 列表與詳細資料端點通常回傳遮蔽後的金鑰值
+- 管理 API 金鑰與模型 API 金鑰的完整密鑰皆僅回傳一次

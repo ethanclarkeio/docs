@@ -1,0 +1,81 @@
+---
+title: "Qwen 圖像生成"
+sidebarTitle: "Qwen 圖像生成"
+description: "透過相容 Qwen 的 OpenAI 圖像端點為 wanx-v1 類模型生成圖像"
+openapi: "api-reference/openapi.json POST /v1/images/generations"
+---
+
+本頁使用與 [建立圖像](/zh-Hant/api-reference/images/create-image) 相同的 `images/generations` 操作，上方 playground 已預先填入通用的 OpenAI 風格圖像結構（`prompt`、`model`、`size` 等）。以下說明 `wanx-v1` 類模型的 Qwen 專用請求格式。
+
+<Note>
+Qwen 圖像模型接受另一種請求格式：將 prompt 包在 `input.messages` 中，而不是使用頂層 `prompt` 欄位。若要使用這種格式，請在 playground 的請求本文中同時提供 `model` 與 `input`。
+</Note>
+
+### Qwen 專用請求欄位
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `model` | string | 是 | 模型識別碼，例如 `wanx-v1`。 |
+| `input` | object | 是 | 請求中傳送的輸入包裝物件，用來取代頂層 `prompt`。 |
+| `input.messages` | array | 是 | 巢狀於 `input` 之下的 messages 陣列。 |
+| `input.messages[].role` | string | 是 | 訊息角色，例如 `user`。 |
+| `input.messages[].content` | string | 是 | 描述目標圖像的 prompt 文字。 |
+
+<Tip>
+與 playground 中顯示的標準 `prompt`、`size`、`quality` 欄位不同，Qwen 的 `wanx-v1` 模型會從 `input.messages[].content` 讀取 prompt。像 `n` 與 `response_format` 這類其他頂層欄位，並不適用於此格式。
+</Tip>
+
+### 範例：生成圖像
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "A serene mountain lake at dawn, photorealistic."
+      }
+    ]
+  }
+}
+```
+
+### 回應欄位
+
+回應遵循標準圖像生成結構：
+
+<ResponseField name="created" type="integer">
+  建立時間戳。
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  生成圖像條目。
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      圖像 URL。
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Base64 圖像負載。
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      模型回傳的修訂 prompt。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/abc123.png",
+      "b64_json": "",
+      "revised_prompt": "A serene mountain lake at dawn with mist rising off the water, photorealistic."
+    }
+  ]
+}
+```

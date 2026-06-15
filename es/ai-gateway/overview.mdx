@@ -1,0 +1,134 @@
+---
+title: "AI Gateway"
+sidebarTitle: "Descripción general"
+description: "Una API única y unificada para acceder a más de 200 modelos de IA líderes"
+---
+
+DGrid AI Gateway ofrece una API única y unificada para acceder a más de 200 modelos de IA líderes. Los usuarios pueden conectar directamente sus propias claves de API a herramientas como Claude Code, Codex y Moltbot (Clawdbot), lo que reduce drásticamente la complejidad de integración y los costos operativos.
+
+## Inicio rápido
+
+DGrid AI Gateway unifica las interfaces de cientos de modelos de IA. No necesita manejar adaptaciones de compatibilidad para diferentes modelos en su código; con un único endpoint de API y un formato de solicitud estandarizado, puede cambiar y acceder libremente a todos los cientos de modelos que ofrece DGrid.
+
+<Tip>
+¿Busca guías específicas para herramientas (OpenClaw / Cursor / SDK / etc.)? Consulte [Tutoriales de integración](/es/ai-gateway/integrations).
+</Tip>
+
+<Tip>
+¿Busca la referencia de API a nivel de endpoint? Consulte [Model API](/es/api-reference/introduction).
+</Tip>
+
+<Note>
+El SDK oficial de DGrid se encuentra actualmente en desarrollo activo; permanezca atento a su lanzamiento. A continuación se muestran los métodos de solicitud temporales disponibles para interactuar con DGrid AI Gateway.
+</Note>
+
+### Requisitos previos
+
+Antes de comenzar, necesita:
+
+1. Obtener una `DGRID_API_KEY` válida ([Guía](https://blog.dgrid.ai/posts/2026-01-04/)).
+2. Asegurarse de que su entorno de desarrollo tenga acceso de red a `https://api.dgrid.ai/v1`.
+3. Para el uso del SDK, instalar el paquete correspondiente del SDK de OpenAI en su proyecto.
+
+### Solicitud directa a la API mediante cURL
+
+Puede enviar una solicitud HTTP POST directa al endpoint de DGrid AI Gateway utilizando cURL.
+
+```bash
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+  "model": "openai/gpt-4o",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is the meaning of life?"
+    }
+  ]
+}'
+```
+
+### Uso del SDK de OpenAI (compatible con DGrid)
+
+DGrid AI Gateway es totalmente compatible con la especificación del SDK de OpenAI. Solo necesita modificar `baseURL` (y completar `DGRID_API_KEY`) para migrar o integrar rápidamente.
+
+#### Requisito previo: instale el SDK de OpenAI
+
+Primero, instale el SDK de OpenAI en su proyecto:
+
+```bash
+# Para TypeScript/Node.js
+npm install openai
+
+# Para Python
+pip install openai
+```
+
+#### Implementación en TypeScript
+
+```typescript
+import OpenAI from 'openai';
+
+// Inicialice el cliente de OpenAI con la configuración de DGrid AI Gateway
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1', // Apunte al endpoint de DGrid AI Gateway
+  apiKey: '<DGRID_API_KEY>', // Reemplace con su clave de API de DGrid válida
+  defaultHeaders: {
+    'HTTP-Referer': '<YOUR_SITE_URL>', // Opcional: la URL del sitio de su aplicación
+    'X-Title': '<YOUR_SITE_NAME>', // Opcional: el nombre de su aplicación
+  },
+});
+
+// Función asíncrona para enviar una solicitud de finalización de chat
+async function getChatCompletion() {
+  const completion = await openai.chat.completions.create({
+    model: 'openai/gpt-4o', // Especifique el modelo de destino (formato compatible con DGrid)
+    messages: [
+      {
+        role: 'user',
+        content: 'What is the meaning of life?',
+      },
+    ],
+  });
+
+  // Imprima el resultado de la respuesta
+  console.log(completion.choices[0].message);
+}
+
+getChatCompletion();
+```
+
+#### Implementación en Python
+
+```python
+from openai import OpenAI
+
+# Inicialice el cliente de OpenAI con la configuración de DGrid AI Gateway
+client = OpenAI(
+  base_url="https://api.dgrid.ai/v1", # Apunte al endpoint de DGrid AI Gateway
+  api_key="<DGRID_API_KEY>", # Reemplace con su clave de API de DGrid válida
+)
+completion = client.chat.completions.create(
+    extra_headers={
+        "HTTP-Referer": "<YOUR_SITE_URL>", # Opcional: la URL del sitio de su aplicación
+        "X-Title": "<YOUR_SITE_NAME>", # Opcional: el nombre de su aplicación
+    },
+    model="openai/gpt-4o", # Especifique el modelo de destino (formato compatible con DGrid)
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+# Imprima el contenido de la respuesta
+print(completion.choices[0].message.content)
+```
+
+### Notas adicionales
+
+1. **Encabezados opcionales**: los encabezados `HTTP-Referer` y `X-Title` son opcionales, pero completarlos ayuda a DGrid a identificar mejor su aplicación y proporcionar un soporte de servicio más optimizado.
+2. **Formato de nomenclatura de modelos**: el parámetro model utiliza el formato `[provider]/[model-name]` (por ejemplo, `openai/gpt-4o`), que es consistente en todos los modelos compatibles con DGrid para facilitar el cambio.
+3. **Actualización del desarrollo del SDK**: el SDK oficial de DGrid está en desarrollo y proporcionará funciones más nativas y un rendimiento optimizado; preste atención a las actualizaciones de la documentación oficial de DGrid para obtener información sobre su lanzamiento.

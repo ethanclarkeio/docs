@@ -1,0 +1,117 @@
+---
+title: "Gemini 原生格式"
+sidebarTitle: "Gemini 原生格式"
+description: "使用相容 Gemini 的 generateContent 請求進行多模態音訊理解與生成"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+本頁使用與 [生成內容（Gemini）](/zh-Hant/api-reference/chat/generate-content) 相同的 `generateContent` 操作，上方 playground 已預先填入純文字對話範例。以下說明可加入 `generationConfig` 的 Gemini 原生欄位，以便透過結構化 parts 請求音訊理解或音訊生成。
+
+<Note>
+請將 `generationConfig.responseModalities` 設為 `["AUDIO"]` 以要求音訊輸出，並設定 `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` 來選擇生成語音時要使用的預建聲音。
+</Note>
+
+### Gemini 原生請求欄位
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | 是 | 要求的回應模態，例如 `["AUDIO"]`。 |
+| `generationConfig.speechConfig` | object | 否 | 語音設定物件。 |
+| `generationConfig.speechConfig.voiceConfig` | object | 否 | 聲音設定包裝物件。 |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig` | object | 否 | 預建聲音設定。 |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` | string | 否 | 預建聲音名稱，例如 `Kore`。 |
+
+<Tip>
+當你需要音訊輸出時，請在 `model` 路徑參數中使用具備文字轉語音能力的模型，例如 `gemini-2.5-flash-preview-tts`。
+</Tip>
+
+### 範例：請求語音音訊
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Say cheerfully: Have a wonderful day!" }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["AUDIO"],
+    "speechConfig": {
+      "voiceConfig": {
+        "prebuiltVoiceConfig": {
+          "voiceName": "Kore"
+        }
+      }
+    }
+  }
+}
+```
+
+### 回應欄位
+
+回應遵循標準 `generateContent` 結構。當要求音訊輸出時，回傳的 `parts` 會包含內嵌音訊資料而非文字：
+
+<ResponseField name="candidates" type="array">
+  模型回傳的候選回應。
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      生成內容物件。
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          生成內容區塊中回傳的角色，通常為 `model`。
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          回傳的 parts。若為音訊輸出，每個 part 都會包含 `inlineData` 物件，其中含有 `mimeType`（例如 `audio/L16;codec=pcm;rate=24000`）與 base64 編碼的 `data`。
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      完成原因字串，例如 `STOP`。
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      安全評估結果。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Token 計量資訊，包括 `promptTokenCount`、`candidatesTokenCount` 與 `totalTokenCount`。
+</ResponseField>
+
+<ResponseField name="promptFeedback" type="object">
+  在適用情況下的 prompt 阻擋回饋資訊。
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "audio/L16;codec=pcm;rate=24000",
+              "data": "<base64-encoded-audio-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 10,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 10
+  }
+}
+```

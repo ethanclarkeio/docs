@@ -1,0 +1,285 @@
+---
+title: "실시간"
+sidebarTitle: "실시간"
+description: "웹소켓을 통한 OpenAI 호환 저지연 텍스트 및 오디오 대화"
+---
+
+Realtime API는 웹소켓 세션과 단기 클라이언트 토큰을 위한 HTTP 엔드포인트를 통해 OpenAI 호환 저지연 텍스트 및 오디오 대화를 제공합니다.
+
+## 웹소켓 연결
+
+백엔드에서 DGrid API 키를 안전하게 보관할 수 있는 경우, 실시간 웹소켓 세션을 직접 엽니다.
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **Request** | `websocket` |
+| **Response** | `websocket events` |
+
+### 쿼리 매개변수
+
+| 매개변수 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `model` | string | 예 | `gpt-4o-realtime-preview`와 같은 실시간 모델 ID입니다. |
+
+### 클라이언트 이벤트
+
+| 이벤트 유형 | 설명 |
+| --- | --- |
+| `session.update` | 세션 수준 옵션을 업데이트합니다. |
+| `input_audio_buffer.append` | 오디오 청크를 서버로 스트리밍합니다. |
+| `input_audio_buffer.commit` | 현재 버퍼링된 오디오를 커밋합니다. |
+| `response.create` | 새로운 어시스턴트 응답을 트리거합니다. |
+| `conversation.item.create` | 대화 항목을 삽입합니다. |
+
+### 서버 이벤트
+
+| 이벤트 유형 | 설명 |
+| --- | --- |
+| `session.created` | 세션이 성공적으로 생성되었습니다. |
+| `session.updated` | 세션 설정이 업데이트되었습니다. |
+| `response.text.delta` | 스트리밍된 텍스트 토큰 델타입니다. |
+| `response.audio.delta` | 스트리밍된 오디오 청크 델타입니다. |
+| `response.done` | 응답이 완료되었습니다. |
+| `error` | 오류 페이로드입니다. |
+
+<RequestExample>
+
+```javascript JavaScript Example
+const ws = new WebSocket(
+  'wss://api.dgrid.ai/v1/realtime?model=gpt-4o-realtime-preview',
+  [],
+  {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'OpenAI-Beta': 'realtime=v1'
+    }
+  }
+)
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'session.update',
+    session: {
+      modalities: ['text', 'audio'],
+      voice: 'alloy'
+    }
+  }))
+}
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data)
+  console.log('received event:', data)
+}
+```
+
+```http Realtime Notes
+Authorization: Bearer <DGRID_API_KEY>
+OpenAI-Beta: realtime=v1
+```
+
+</RequestExample>
+
+## 실시간 세션 토큰 생성
+
+실시간 HTTP 엔트리포인트에 대해 인증된 GET 요청이 필요한 경우 아래에 표시된 실시간 엔드포인트 예제를 사용하세요.
+
+```http
+GET /v1/realtime
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>` |
+| **Request** | `none` |
+| **Response** | `101 · application/json` |
+
+### 요청 헤더
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `Authorization` | string | 예 | 실시간 요청을 인증하기 위한 Bearer 토큰입니다. |
+
+### 응답 본문
+
+| 필드 | 유형 | 설명 |
+| --- | --- | --- |
+| `101` | text | JSON 본문이 없는 성공적인 업그레이드 응답입니다. |
+| `error` | object | 요청이 실패할 때 반환되는 오류 페이로드입니다. |
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.dgrid.ai/v1/realtime" \
+  -H "Authorization: Bearer "
+```
+
+```javascript JavaScript
+fetch("https://api.dgrid.ai/v1/realtime", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer "
+  }
+})
+```
+
+```go Go
+package main
+
+import (
+  "fmt"
+  "net/http"
+  "io/ioutil"
+)
+
+func main() {
+  url := "https://api.dgrid.ai/v1/realtime"
+
+  req, _ := http.NewRequest("GET", url, nil)
+  req.Header.Add("Authorization", "Bearer ")
+  res, _ := http.DefaultClient.Do(req)
+  defer res.Body.Close()
+  body, _ := ioutil.ReadAll(res.Body)
+
+  fmt.Println(res)
+  fmt.Println(string(body))
+}
+```
+
+```python Python
+import requests
+
+url = "https://api.dgrid.ai/v1/realtime"
+
+response = requests.request("GET", url, headers = {
+  "Authorization": "Bearer "
+})
+
+print(response.text)
+```
+
+```java Java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
+
+HttpClient client = HttpClient.newBuilder()
+  .connectTimeout(Duration.ofSeconds(10))
+  .build();
+
+HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+  .uri(URI.create("https://api.dgrid.ai/v1/realtime"))
+  .header("Authorization", "Bearer ")
+  .GET()
+  .build();
+
+try {
+  HttpResponse<String> response = client.send(requestBuilder.build(), BodyHandlers.ofString());
+  System.out.println("Status code: " + response.statusCode());
+  System.out.println("Response body: " + response.body());
+} catch (Exception e) {
+  e.printStackTrace();
+}
+```
+
+```csharp C#
+using System;
+using System.Net.Http;
+using System.Text;
+
+var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer ");
+var response = await client.GetAsync("https://api.dgrid.ai/v1/realtime");
+var responseBody = await response.Content.ReadAsStringAsync();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```text 101
+Empty
+```
+
+```json 400
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "param": "string",
+    "code": "string"
+  }
+}
+```
+
+</ResponseExample>
+
+## 웹소켓 이벤트
+
+저지연 대화형 스트리밍을 위해 소수의 요청 및 응답 이벤트 유형을 기준으로 클라이언트를 설계하세요.
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **Request** | `websocket` |
+| **Response** | `event stream` |
+
+### 핵심 클라이언트 이벤트
+
+| 이벤트 유형 | 설명 |
+| --- | --- |
+| `session.update` | 모달리티, 음성 또는 기타 세션 설정을 업데이트합니다. |
+| `input_audio_buffer.append` | 인코딩된 오디오 조각을 전송합니다. |
+| `input_audio_buffer.commit` | 버퍼링된 오디오가 준비되었음을 표시합니다. |
+| `response.create` | 서버가 응답 생성을 시작하도록 요청합니다. |
+| `conversation.item.create` | 대화 턴 또는 도구 결과를 추가합니다. |
+
+### 핵심 서버 이벤트
+
+| 이벤트 유형 | 설명 |
+| --- | --- |
+| `session.created` | 웹소켓 세션이 존재한다는 초기 확인입니다. |
+| `session.updated` | 세션 설정이 변경되었음을 확인합니다. |
+| `response.text.delta` | 증분 텍스트 출력입니다. |
+| `response.audio.delta` | 증분 오디오 출력입니다. |
+| `response.done` | 완료된 응답에 대한 최종 이벤트입니다. |
+| `error` | 복구 가능하거나 치명적인 오류 페이로드입니다. |
+
+### 통합 가이드
+
+1. 클라이언트 측 오디오를 작은 청크 단위로 버퍼링하고, `input_audio_buffer.commit`을 사용하여 턴의 경계를 알립니다.
+2. 세션이 멀티모달 출력을 지원하는 경우 `response.text.delta`와 `response.audio.delta`를 모두 수신 대기합니다.
+3. 장기적으로 사용되는 API 키가 클라이언트에 노출되지 않도록, 브라우저 클라이언트에는 HTTP 세션 토큰 엔드포인트를 사용합니다.
+
+<ResponseExample>
+
+```json response.text.delta
+{
+  "type": "response.text.delta",
+  "response_id": "resp_123",
+  "delta": "Hello"
+}
+```
+
+```json response.done
+{
+  "type": "response.done",
+  "response": {
+    "id": "resp_123",
+    "status": "completed"
+  }
+}
+```
+
+</ResponseExample>

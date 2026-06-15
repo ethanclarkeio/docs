@@ -1,0 +1,35 @@
+---
+title: "Fonctions principales"
+sidebarTitle: "Fonctions principales"
+description: "Le moteur à quatre dimensions de $DGAI : staking, paiement, incitations et gouvernance"
+---
+
+En tant que token natif du réseau, $DGAI assume quatre fonctions principales — staking, paiement, incitations et gouvernance — construisant un cycle écologique positif et pilotant chaque interaction clé au sein de l'écosystème DGrid AI.
+
+## Staking et accès
+
+Les nœuds et les fournisseurs de services IA doivent staker des \$DGAI pour obtenir du trafic réseau, établir un système de réputation et garantir la sécurité du réseau. Les exigences de staking sont échelonnées selon le type de nœud (performance du nœud), et les tokens stakés servent de garantie en cas de comportements en violation (par exemple, soumission de faux résultats d'inférence, indisponibilité dépassant 72 heures). Les nœuds malveillants s'exposeront à la confiscation de 5 à 20 % de leurs \$DGAI stakés ou à une désactivation temporaire ; ces mesures sont appliquées automatiquement par des contrats intelligents.
+
+## Paiement des tâches d'inférence
+
+Les utilisateurs paient en $DGAI via les nœuds DGrid pour accéder aux services d'inférence de modèles de langage de grande taille (LLM) et d'Agents. Les frais sont calculés dynamiquement en fonction des facteurs suivants :
+
+- **Unité de calcul (CU)** : une métrique standardisée mesurant la complexité de l'inférence (liée à la taille du modèle, au nombre de tokens en entrée et au temps d'exécution).
+- **Latence** : ajustée en fonction de la vitesse d'exécution des tâches (une exécution plus rapide rapporte des récompenses, tandis que la latence entraîne de légères pénalités).
+
+Les paiements sont automatiquement traités via le **Bill Contract**, un contrat intelligent déployé sur la blockchain. Ce contrat déduit les $DGAI des comptes utilisateurs et distribue les fonds aux opérateurs de nœuds, fournisseurs de services, etc., garantissant la transparence et l'immuabilité des transactions.
+
+## Récompenses pour les opérateurs de nœuds
+
+Le réseau récompense en \$DGAI les nœuds et fournisseurs de services IA de haute qualité en fonction de la qualité du service, du volume d'utilisation et des évaluations des utilisateurs, afin de stimuler l'enthousiasme pour les contributions. Les opérateurs gagnent des \$DGAI en fonction de leurs contributions aux tâches d'inférence (par exemple, nombre de CU traités, faible latence et temps de disponibilité). Les récompenses sont proportionnelles à la performance — les nœuds hébergeant des modèles de grande taille (plus de 13 milliards de paramètres) ou traitant des requêtes hautement prioritaires reçoivent des récompenses plus élevées. Les récompenses sont distribuées chaque semaine via le Bill Contract, avec des registres détaillés archivés dans la couche AI DA afin de garantir l'auditabilité.
+
+## Gouvernance du réseau
+
+$DGAI est un token de gouvernance ; les détenteurs de tokens ont le droit de voter sur les questions clés relatives au développement du réseau, garantissant que les décisions s'alignent sur les intérêts des participants actifs du réseau. Les propositions incluent :
+
+- Ajuster la structure des frais (par exemple, la tarification de base par CU, les pénalités de latence).
+- Ajouter de nouveaux modèles de langage de grande taille (LLM) à la liste blanche pour le support du réseau.
+- Mettre à niveau les protocoles de base (par exemple, DGrid AI Gateway) ou les règles de règlement.
+- Allouer les fonds de la trésorerie pour favoriser la croissance de l'écosystème (par exemple, subventions aux développeurs, audits de sécurité).
+
+Le pouvoir de vote est proportionnel aux $DGAI stakés, garantissant que les décisions s'alignent sur les intérêts des participants actifs du réseau.

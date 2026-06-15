@@ -1,0 +1,85 @@
+---
+title: "Introduction"
+sidebarTitle: "Introduction"
+description: "Trois surfaces API — Model API, clés API de gestion et x402 API"
+---
+
+La référence API de DGrid est organisée en trois surfaces API, chacune avec son propre modèle d'authentification et son propre objectif :
+
+<CardGroup cols={3}>
+  <Card title="Model API" icon="brain" href="#model-api">
+    Points de terminaison compatibles OpenAI, Claude et Gemini pour le chat, les complétions, les embeddings, les images, l'audio et les modérations.
+  </Card>
+  <Card title="Clés API de gestion" icon="key" href="/fr/management-api-keys">
+    Gestion programmatique du cycle de vie des clés API de modèle — création, rotation, limitation, désactivation et révocation.
+  </Card>
+  <Card title="x402 API" icon="credit-card" href="/fr/x402/overview">
+    Accès à l'inférence payée à l'usage utilisant le protocole de paiement x402, sans solde de compte pré-approvisionné.
+  </Card>
+</CardGroup>
+
+<Note>
+Chaque page de référence Model API dispose d'un terrain de jeu interactif : renseignez votre clé API et vos paramètres, puis appuyez sur **Send** pour tester le point de terminaison en direct sur `https://api.dgrid.ai`.
+</Note>
+
+## Model API
+
+La Model API vous offre une passerelle unique vers plus de 200 modèles d'IA de premier plan. Chaque point de terminaison est compatible avec une norme d'écosystème — OpenAI, Claude ou Gemini — afin que vos SDK et outils existants fonctionnent sans modification.
+
+### URL de base
+
+```text
+https://api.dgrid.ai
+```
+
+### Authentification
+
+Tous les points de terminaison de la Model API s'authentifient avec un jeton Bearer :
+
+```http
+Authorization: Bearer <DGRID_API_KEY>
+```
+
+Le point de terminaison compatible Claude `POST /v1/messages` nécessite en outre :
+
+```http
+anthropic-version: 2023-06-01
+```
+
+Obtenez votre clé en suivant le [guide de création de clé](https://blog.dgrid.ai/posts/2026-01-04/), ou utilisez la surface [Clés API de gestion](/fr/management-api-keys) pour une gestion programmatique du cycle de vie des clés.
+
+### Nommage des modèles
+
+Le paramètre `model` utilise le format `provider/model-name` — par exemple `openai/gpt-4o` — cohérent pour tous les modèles pris en charge par DGrid. Appelez [Lister les modèles](/fr/api-reference/models/list-models) pour découvrir les identifiants de modèles disponibles pour votre clé.
+
+### Familles de points de terminaison
+
+| Famille | Chemin de base | Idéal pour |
+| --- | --- | --- |
+| Chat | `/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/models/{model}:generateContent` | Applications conversationnelles, assistants multimodaux, appel d'outils |
+| Complétions | `/v1/completions` | Génération de texte basée uniquement sur un prompt et intégrations héritées |
+| Embeddings | `/v1/embeddings`, `/v1/engines/{engine}/embeddings` | Recherche, clustering, récupération, classement |
+| Images | `/v1/images/generations`, `/v1/images/edits` | Génération et édition d'images selon différents formats de modèles |
+| Audio | `/v1/audio/speech`, `/v1/audio/transcriptions`, `/v1/audio/translations` | Synthèse vocale, transcription, traduction |
+| Modérations | `/v1/moderations` | Filtrage de sécurité du contenu et vérifications de politique |
+| Modèles | `/v1/models` | Découvrir les modèles disponibles et les types de points de terminaison pris en charge |
+| Realtime | `/v1/realtime` (WebSocket) | Conversations en flux continu à faible latence |
+
+### Bonnes pratiques
+
+1. Stockez la clé API DGrid côté serveur et ne l'exposez jamais dans des clients publics ou des dépôts.
+2. Privilégiez le format compatible OpenAI lorsque vous souhaitez la plus large compatibilité SDK avec un effort de migration minimal.
+3. N'utilisez les formats natifs des fournisseurs que lorsque vous avez besoin de fonctionnalités de charge utile spécifiques au fournisseur, telles que les parties multimodales de Gemini ou les charges utiles d'outils de Claude.
+4. Maintenez les exemples de requêtes et de réponses synchronisés avec votre famille de modèles cible, car les noms de paramètres diffèrent entre les styles OpenAI, Claude et Gemini.
+
+## Clés API de gestion
+
+Les clés API de gestion sont des identifiants administratifs pour l'ensemble du cycle de vie des clés API de modèle — création, rotation, limites d'utilisation, désactivation et révocation. Elles sont limitées aux opérations de gestion de clés et ne peuvent pas appeler les points de terminaison d'inférence de la Model API.
+
+Consultez [Clés API de gestion](/fr/management-api-keys) pour les surfaces API, les limites d'authentification et la référence des points de terminaison.
+
+## x402 API
+
+La x402 API est le mode d'accès à l'inférence payée à l'usage de DGrid. Plutôt que de créer un compte ou de pré-approvisionner un solde, les requêtes sont autorisées et réglées par appel à l'aide du protocole de paiement x402 — bien adapté aux agents autonomes et aux intégrations à la demande.
+
+Consultez [x402 API](/fr/x402/overview) pour le flux de paiement et [Référence x402 API](/fr/x402/api-reference) pour les détails des points de terminaison.

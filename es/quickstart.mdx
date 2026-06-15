@@ -1,0 +1,129 @@
+---
+title: "Inicio rápido"
+sidebarTitle: "Inicio rápido"
+description: "Encuentre su camino dentro del ecosistema DGrid y realice su primera llamada a la API en menos de 5 minutos"
+---
+
+DGrid es la red inteligente descentralizada para IA: un ecosistema único que abarca el acceso a modelos, el descubrimiento de modelos, la evaluación y los incentivos en cadena. Sea cual sea el producto con el que comience, cada parte de DGrid es accesible a través de una sola clave de API.
+
+## Explore el ecosistema DGrid
+
+<CardGroup cols={2}>
+  <Card title="DGrid AI Gateway" icon="network" href="/es/ai-gateway/overview">
+    Una API compatible con OpenAI, Claude y Gemini para más de 200 modelos de IA líderes, con pagos nativos de Web3 y enrutamiento inteligente.
+  </Card>
+  <Card title="AI Arena" icon="trophy" href="/es/ai-arena/overview">
+    Batallas de modelos a ciegas donde los votos de la comunidad ganan puntos de airdrop $DGAI y alimentan la inteligencia de enrutamiento de DGrid.
+  </Card>
+  <Card title="Dori Find Models" icon="compass" href="/es/dori">
+    Un asesor en lenguaje natural que convierte sus requisitos en una lista preseleccionada de modelos, probados y comparados para usted.
+  </Card>
+  <Card title="Model Marketplace" icon="store" href="/es/api-reference/models/list-models">
+    El catálogo abierto de más de 200 modelos y proveedores detrás de DGrid AI Gateway, navegable y accesible a través de una sola API.
+  </Card>
+</CardGroup>
+
+## Comience con DGrid AI Gateway
+
+DGrid AI Gateway le ofrece una API única, compatible con OpenAI, para más de 200 modelos líderes. Esta sección lo lleva desde cero hasta su primera finalización de chat.
+
+<Steps>
+
+<Step title="Obtenga su clave de API">
+
+Obtenga una `DGRID_API_KEY` válida siguiendo la [guía de creación de claves](https://blog.dgrid.ai/posts/2026-01-04/).
+
+<Note>
+El secreto de su clave se muestra solo una vez en el momento de la creación. Cópielo de inmediato y guárdelo en un lugar seguro, como un gestor de secretos. Nunca lo expone en código del lado del cliente ni en repositorios públicos.
+</Note>
+
+</Step>
+
+<Step title="Realice su primera solicitud">
+
+Envíe una solicitud de finalización de chat al endpoint de DGrid AI Gateway. El parámetro `model` utiliza el formato `provider/model-name` (por ejemplo, `openai/gpt-4o`), consistente en todos los modelos compatibles con DGrid.
+
+<CodeGroup>
+
+```bash cURL
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the meaning of life?"
+      }
+    ]
+  }'
+```
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.dgrid.ai/v1",
+    api_key="<DGRID_API_KEY>",
+)
+
+completion = client.chat.completions.create(
+    model="openai/gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+print(completion.choices[0].message.content)
+```
+
+```typescript TypeScript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: '<DGRID_API_KEY>',
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'openai/gpt-4o',
+  messages: [
+    {
+      role: 'user',
+      content: 'What is the meaning of life?',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+</CodeGroup>
+
+<Tip>
+DGrid es totalmente compatible con el SDK de OpenAI: apunte `baseURL` a `https://api.dgrid.ai/v1` y su código existente funcionará sin cambios. Instálelo con `pip install openai` o `npm install openai`.
+</Tip>
+
+</Step>
+
+<Step title="Explore los próximos pasos">
+
+<CardGroup cols={3}>
+  <Card title="Referencia de la API de modelos" icon="code" href="/es/api-reference/introduction">
+    Referencia a nivel de endpoint para chat, imágenes, audio, embeddings y más.
+  </Card>
+  <Card title="Integraciones" icon="plug" href="/es/ai-gateway/integrations">
+    Conecte DGrid con Claude Code, Cursor, Moltbot y otras herramientas.
+  </Card>
+  <Card title="Pagos x402" icon="credit-card" href="/es/x402/overview">
+    Pague por inferencia con el protocolo x402, sin necesidad de saldo en cuenta.
+  </Card>
+</CardGroup>
+
+</Step>
+
+</Steps>

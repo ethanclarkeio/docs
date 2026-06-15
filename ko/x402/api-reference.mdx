@@ -1,0 +1,173 @@
+---
+title: "API 참조"
+sidebarTitle: "API 참조"
+description: "DGrid 추론당 결제 요청을 위한 x402 전용 엔드포인트 세부 정보"
+---
+
+이 페이지는 DGrid의 추론당 결제 요청에 대한 x402 전용 엔드포인트 세부 정보를 설명합니다.
+
+**OpenAI 호환** 또는 **Claude 호환** 페이로드처럼 공급자 스타일 요청 패턴을 찾고 있다면 [Model API](/ko/api-reference/introduction)를 참고하세요. 공급자별 호출 예시는 해당 참조 문서가 가장 좋은 출처입니다. 이 페이지는 x402 결제 흐름과 x402 엔드포인트에서 노출되는 공통 추론 필드에 초점을 맞춥니다.
+
+## x402 AI 추론 API
+
+x402 결제 요구사항과 함께 DGrid 추론을 호출합니다. 첫 번째 요청은 결제 지침을 반환하고, 두 번째 요청은 서명된 `x-payment` 헤더를 포함해 실제 추론을 실행합니다.
+
+```http
+POST /x402/v1
+```
+
+| | |
+| --- | --- |
+| **기본 URL** | `https://api.dgrid.ai` |
+| **Authorization** | `Content-Type: application/json; x-payment: <x402-payment-payload>` |
+| **요청** | `application/json` |
+| **응답** | `402 / 200 · application/json or text/event-stream` |
+
+### 결제 및 인증
+
+이 엔드포인트는 계정 잔액 방식 대신 <strong>x402 결제 프로토콜</strong>을 사용합니다.
+
+유료 요청에 필요한 헤더:
+
+```http
+Content-Type: application/json
+x-payment: <x402-payment-payload>
+```
+
+### 요청 본문
+
+| 필드 | 타입 | 필수 | 기본값 | 설명 |
+| --- | --- | --- | --- | --- |
+| `messages` | array | 예 | - | `role` 과 `content` 를 포함한 `UIMessage` 배열입니다. |
+| `model` | string | 아니오 | `anthropic/claude-opus-4.5` | 대상 모델 이름입니다. |
+| `stream` | boolean | 아니오 | `true` | 스트리밍 응답 반환 여부입니다. |
+| `temperature` | number | 아니오 | `1` | 샘플링 온도입니다. |
+| `topP` | number | 아니오 | `1` | Top-p 샘플링 파라미터입니다. |
+| `topK` | number | 아니오 | `40` | Top-k 샘플링 파라미터입니다. |
+
+### 응답 모드
+
+#### `stream = true` (기본값)
+
+AI SDK 스타일 `UIMessageChunk` 이벤트를 사용하는 **UIMessageStream** SSE (`text/event-stream`)를 반환합니다. 일반적인 이벤트 유형은 다음과 같습니다.
+
+* `start`
+* `text-start`
+* `text-delta`
+* `text-end`
+* `finish`
+
+최종 `finish` 이벤트에는 다음과 같은 `messageMetadata`가 포함됩니다.
+
+* `totalTokens`
+* `allowanceLeft`
+* `calculatedPriceWei`
+* `realPriceWei`
+
+#### `stream = false`
+
+`choices` 와 `usage` 를 포함하는 DGrid 표준 완료 형식의 단일 JSON 응답을 반환합니다.
+
+### 오류
+
+| 상태 | 의미 |
+| --- | --- |
+| `402` | 결제 검증 실패. 보통 첫 요청에 `x-payment` 가 없었거나 결제 서명이 유효하지 않은 경우입니다. |
+| `400` | 잘못된 요청 또는 업스트림 검증 오류 |
+| `500` | 서버 측 또는 업스트림 제공자 오류 |
+
+### 정산 참고
+
+* 엔드포인트는 실제 사용량을 기준으로 정산합니다.
+* 실제 비용이 승인된 상한을 초과하면 정산은 그 승인 한도에서 상한 처리됩니다.
+
+<RequestExample>
+
+```bash Step 1: Trigger 402
+curl -i 'https://api.dgrid.ai/x402/v1/responses' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+```bash Step 2: Retry with x-payment
+curl -i 'https://api.dgrid.ai/x402/v1' \
+  -H 'Content-Type: application/json' \
+  -H 'x-payment: <x402-payment-payload>' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```http 402 Response
+HTTP/1.1 402 Payment Required
+Content-Type: application/json
+X-PAYMENT-RESPONSE: <base64>
+
+{
+  "x402Version": 1,
+  "error": "Payment required",
+  "accepts": [
+    {
+      "scheme": "upto",
+      "network": "eip155:56",
+      "maxAmountRequired": "990000000000000000",
+      "resource": "https://api.dgrid.ai/x402/v1",
+      "payTo": "0x...",
+      "asset": "0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d",
+      "maxTimeoutSeconds": 86400
+    }
+  ]
+}
+```
+
+```text Streaming Response
+data: {"type":"start"}
+
+data: {"type":"text-start","id":"..."}
+
+data: {"type":"text-delta","id":"...","delta":"Hello"}
+
+data: {"type":"text-end","id":"..."}
+
+data: {"type":"finish","finishReason":"stop","messageMetadata":{"totalTokens":123,"allowanceLeft":"990000000000000000","calculatedPriceWei":"1230000000000000","realPriceWei":"1230000000000000"}}
+```
+
+```json Non-Streaming Response
+{
+  "id": "chatcmpl-xxxx",
+  "object": "chat.completion",
+  "created": 1773823863,
+  "model": "grok-4-fast",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "xxxxx"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 11,
+    "completion_tokens": 323,
+    "total_tokens": 334
+  }
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,173 @@
+---
+title: "API 參考"
+sidebarTitle: "API 參考"
+description: "DGrid 按次推論付款請求的 x402 專屬端點細節"
+---
+
+本頁說明 DGrid 按次推論付款請求的 x402 專屬端點細節。
+
+若你正在尋找 **相容 OpenAI** 或 **相容 Claude** 這類供應商風格的請求模式，請參考 [Model API](/zh-Hant/api-reference/introduction)。這些參考文件仍是供應商特定呼叫範例的最佳來源。本頁重點在於 x402 支付流程，以及 x402 端點提供的共用推論欄位。
+
+## x402 AI 推論 API
+
+使用 x402 付款要求呼叫 DGrid 推論。第一次請求會返回付款指示；第二次請求則加入已簽署的 `x-payment` 標頭並實際執行推論。
+
+```http
+POST /x402/v1
+```
+
+| | |
+| --- | --- |
+| **基礎網址** | `https://api.dgrid.ai` |
+| **Authorization** | `Content-Type: application/json; x-payment: <x402-payment-payload>` |
+| **請求** | `application/json` |
+| **回應** | `402 / 200 · application/json or text/event-stream` |
+
+### 付款與驗證
+
+此端點使用 **x402 支付協議**，而非帳戶餘額式工作流程。
+
+付費請求所需的標頭：
+
+```http
+Content-Type: application/json
+x-payment: <x402-payment-payload>
+```
+
+### 請求本文
+
+| 欄位 | 類型 | 必填 | 預設值 | 說明 |
+| --- | --- | --- | --- | --- |
+| `messages` | array | 是 | - | 包含 `role` 與 `content` 的 `UIMessage` 陣列。 |
+| `model` | string | 否 | `anthropic/claude-opus-4.5` | 目標模型名稱。 |
+| `stream` | boolean | 否 | `true` | 是否回傳串流回應。 |
+| `temperature` | number | 否 | `1` | 取樣溫度。 |
+| `topP` | number | 否 | `1` | Top-p 取樣參數。 |
+| `topK` | number | 否 | `40` | Top-k 取樣參數。 |
+
+### 回應模式
+
+#### `stream = true`（預設）
+
+回傳使用 AI SDK 風格 `UIMessageChunk` 事件的 **UIMessageStream** SSE（`text/event-stream`）。常見事件類型包括：
+
+* `start`
+* `text-start`
+* `text-delta`
+* `text-end`
+* `finish`
+
+最後的 `finish` 事件會包含下列 `messageMetadata`：
+
+* `totalTokens`
+* `allowanceLeft`
+* `calculatedPriceWei`
+* `realPriceWei`
+
+#### `stream = false`
+
+回傳單一 JSON 回應，格式為 DGrid 標準 completion 結構，包含 `choices` 與 `usage`。
+
+### 錯誤
+
+| 狀態 | 含義 |
+| --- | --- |
+| `402` | 付款驗證失敗，通常是因為第一次請求未帶 `x-payment`，或付款簽章無效 |
+| `400` | 請求無效或上游驗證錯誤 |
+| `500` | 伺服器端或上游供應商錯誤 |
+
+### 結算說明
+
+* 端點依實際使用量進行結算。
+* 若實際成本超過已授權的上限，結算金額會以該授權上限為封頂。
+
+<RequestExample>
+
+```bash Step 1: Trigger 402
+curl -i 'https://api.dgrid.ai/x402/v1/responses' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+```bash Step 2: Retry with x-payment
+curl -i 'https://api.dgrid.ai/x402/v1' \
+  -H 'Content-Type: application/json' \
+  -H 'x-payment: <x402-payment-payload>' \
+  --data-raw '{
+    "model": "anthropic/claude-opus-4.5",
+    "stream": true,
+    "messages": [
+      { "role": "user", "content": "Hello" }
+    ]
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```http 402 Response
+HTTP/1.1 402 Payment Required
+Content-Type: application/json
+X-PAYMENT-RESPONSE: <base64>
+
+{
+  "x402Version": 1,
+  "error": "Payment required",
+  "accepts": [
+    {
+      "scheme": "upto",
+      "network": "eip155:56",
+      "maxAmountRequired": "990000000000000000",
+      "resource": "https://api.dgrid.ai/x402/v1",
+      "payTo": "0x...",
+      "asset": "0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d",
+      "maxTimeoutSeconds": 86400
+    }
+  ]
+}
+```
+
+```text Streaming Response
+data: {"type":"start"}
+
+data: {"type":"text-start","id":"..."}
+
+data: {"type":"text-delta","id":"...","delta":"Hello"}
+
+data: {"type":"text-end","id":"..."}
+
+data: {"type":"finish","finishReason":"stop","messageMetadata":{"totalTokens":123,"allowanceLeft":"990000000000000000","calculatedPriceWei":"1230000000000000","realPriceWei":"1230000000000000"}}
+```
+
+```json Non-Streaming Response
+{
+  "id": "chatcmpl-xxxx",
+  "object": "chat.completion",
+  "created": 1773823863,
+  "model": "grok-4-fast",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "xxxxx"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 11,
+    "completion_tokens": 323,
+    "total_tokens": 334
+  }
+}
+```
+
+</ResponseExample>

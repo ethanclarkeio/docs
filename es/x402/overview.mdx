@@ -1,0 +1,82 @@
+---
+title: "x402 API"
+sidebarTitle: "Descripción general"
+description: "Modo de acceso de DGrid con pago por inferencia usando el protocolo de pago x402"
+---
+
+**DGrid x402 API** es el modo de acceso de DGrid con pago por inferencia para pagos de API. En lugar de crear una cuenta, precargar un saldo o gestionar flujos de facturación separados, los desarrolladores y agentes autónomos pueden pagar los costos de inferencia de LLM directamente mediante el **protocolo de pago x402** como parte del ciclo de vida de la solicitud API.
+
+Esto hace que x402 sea especialmente útil para:
+
+* **Agentes y flujos autónomos** que necesitan llamar a un LLM y liquidar el pago de inmediato
+* **Herramientas y scripts del lado del servidor** que deben evitar el aprovisionamiento de cuentas y las recargas manuales
+* **Integraciones bajo demanda** donde la ruta más sencilla es "solicitar inferencia, autorizar pago, recibir el resultado"
+
+## Por qué importa x402 API
+
+La facturación tradicional de IA suele requerir:
+
+* Crear una cuenta con el proveedor
+* Cargar un saldo prepago o adjuntar un método de facturación
+* Gestionar claves API, cuotas y paneles de facturación
+
+Con x402 en DGrid, el flujo se vuelve mucho más directo:
+
+<Tip>
+Solicitar inferencia → recibir requisitos de pago → firmar una vez → enviar pago e inferencia juntos
+</Tip>
+
+Para los sistemas agentic, esto supone una gran simplificación. El mismo runtime que decide usar un modelo también puede autorizar y liquidar el coste de esa llamada de inferencia, sin pasar a un flujo independiente de gestión de cuentas.
+
+## Caso de uso principal: agentes que pagan la inferencia
+
+x402 está diseñado para el caso en que un **agente** necesita:
+
+1. Elegir un modelo
+2. Llamar a la API del modelo
+3. Pagar la tarifa de inferencia
+4. Continuar la ejecución con el resultado
+
+Esto resulta valioso para:
+
+* Agentes de IA que operan en flujos backend
+* Agentes o protocolos Web3 que desean inferencia con reconocimiento de pagos
+* Automatizaciones de varios pasos que deben tratar la inferencia como un recurso pagable directamente
+
+## Cómo funciona el flujo
+
+x402 en DGrid utiliza un **flujo de solicitud de dos pasos**:
+
+1. **Solicitud inicial sin `x-payment`**
+   El servidor devuelve `402 Payment Required` junto con los requisitos de pago firmables.
+2. **El cliente firma y reintenta**
+   El cliente genera la carga `x-payment` y vuelve a enviar la misma solicitud de inferencia con el encabezado de pago.
+
+Este patrón mantiene explícita la autorización del pago y al mismo tiempo permite que la llamada de inferencia siga siendo simple y automatizable.
+
+## Activo de pago compatible
+
+El endpoint actual de x402 usa:
+
+* **Protocolo**: x402
+* **Red**: `eip155:56` (BSC)
+* **Token de pago**: `USD1`
+* **Contrato del activo**: `0x8d0D000Ee44948FC98c9B98A4FA4921476f08B0d`
+
+## Notas operativas
+
+Tras una liquidación correcta, el servicio registra los logs de pago en la tabla `x402_payment_logs` del backend.
+
+## Cuándo usar x402 frente a AI Gateway
+
+Use **AI Gateway** cuando quiera:
+
+* acceso clásico con clave API
+* enrutamiento unificado de modelos basado en cuentas
+* integraciones de producto a largo plazo con flujos de facturación estándar
+
+Use **x402** cuando quiera:
+
+* pago directo por solicitud
+* sin saldo de cuenta prefinanciado
+* inferencia y pago en un solo flujo orientado a agentes

@@ -1,0 +1,117 @@
+---
+title: "Format Gemini natif"
+sidebarTitle: "Format Gemini natif"
+description: "Utilisez des requêtes generateContent compatibles Gemini pour la compréhension et la génération audio multimodales"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+Cette page utilise la même opération `generateContent` que [Générer du contenu (Gemini)](/fr/api-reference/chat/generate-content), avec le playground ci-dessus prérempli pour un chat en texte brut. Les notes ci-dessous décrivent les champs natifs Gemini que vous pouvez ajouter à `generationConfig` pour demander une compréhension ou une génération audio à l'aide de parts structurées.
+
+<Note>
+Définissez `generationConfig.responseModalities` sur `["AUDIO"]` pour demander une sortie audio, puis configurez `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` afin de choisir une voix prédéfinie pour la synthèse vocale.
+</Note>
+
+### Champs de requête natifs Gemini
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | Oui | Modalités de réponse demandées, par exemple `["AUDIO"]`. |
+| `generationConfig.speechConfig` | object | Non | Objet de configuration de la parole. |
+| `generationConfig.speechConfig.voiceConfig` | object | Non | Conteneur de configuration vocale. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig` | object | Non | Paramètres de voix prédéfinie. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` | string | Non | Nom du préréglage de voix, par exemple `Kore`. |
+
+<Tip>
+Utilisez un modèle capable de synthèse vocale, tel que `gemini-2.5-flash-preview-tts`, dans le paramètre de chemin `model` lorsque vous demandez une sortie audio.
+</Tip>
+
+### Exemple : demander un audio de synthèse vocale
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Say cheerfully: Have a wonderful day!" }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["AUDIO"],
+    "speechConfig": {
+      "voiceConfig": {
+        "prebuiltVoiceConfig": {
+          "voiceName": "Kore"
+        }
+      }
+    }
+  }
+}
+```
+
+### Champs de réponse
+
+La réponse suit la forme standard `generateContent`. Lorsqu'une sortie audio est demandée, les `parts` renvoyés contiennent des données audio inline plutôt que du texte :
+
+<ResponseField name="candidates" type="array">
+  Réponses candidates renvoyées par le modèle.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Objet de contenu généré.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Rôle renvoyé dans le bloc de contenu généré, généralement `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Parts renvoyées. Pour une sortie audio, chaque part contient un objet `inlineData` avec `mimeType` (par exemple `audio/L16;codec=pcm;rate=24000`) et `data` encodé en base64.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Chaîne indiquant la raison de fin, par exemple `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Résultats d'évaluation de sécurité.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Comptabilité des tokens, notamment `promptTokenCount`, `candidatesTokenCount` et `totalTokenCount`.
+</ResponseField>
+
+<ResponseField name="promptFeedback" type="object">
+  Informations de blocage du prompt lorsque cela s'applique.
+</ResponseField>
+
+### Exemple de réponse
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "audio/L16;codec=pcm;rate=24000",
+              "data": "<base64-encoded-audio-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 10,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 10
+  }
+}
+```

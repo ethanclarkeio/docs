@@ -1,0 +1,285 @@
+---
+title: "Realtime"
+sidebarTitle: "Realtime"
+description: "透過 WebSocket 進行相容 OpenAI 的低延遲文字與語音對話"
+---
+
+Realtime API 透過 WebSocket 連線提供相容 OpenAI 的低延遲文字與語音對話，並另外提供一個 HTTP 端點用於取得短期有效的客戶端權杖。
+
+## WebSocket 連線
+
+當您的後端可以安全保存 DGrid API 金鑰時，可直接開啟一個 Realtime WebSocket 連線。
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **請求** | `websocket` |
+| **回應** | `websocket events` |
+
+### 查詢參數
+
+| 參數 | 類型 | 是否必填 | 說明 |
+| --- | --- | --- | --- |
+| `model` | string | 是 | Realtime 模型 ID，例如 `gpt-4o-realtime-preview`。 |
+
+### 客戶端事件
+
+| 事件類型 | 說明 |
+| --- | --- |
+| `session.update` | 更新會話層級的選項。 |
+| `input_audio_buffer.append` | 將音訊區塊串流至伺服器。 |
+| `input_audio_buffer.commit` | 提交目前緩衝的音訊。 |
+| `response.create` | 觸發新的助手回應。 |
+| `conversation.item.create` | 插入一個對話項目。 |
+
+### 伺服器事件
+
+| 事件類型 | 說明 |
+| --- | --- |
+| `session.created` | 會話已成功建立。 |
+| `session.updated` | 會話設定已更新。 |
+| `response.text.delta` | 串流的文字 token 差量。 |
+| `response.audio.delta` | 串流的音訊區塊差量。 |
+| `response.done` | 回應已完成。 |
+| `error` | 錯誤回應內容。 |
+
+<RequestExample>
+
+```javascript JavaScript Example
+const ws = new WebSocket(
+  'wss://api.dgrid.ai/v1/realtime?model=gpt-4o-realtime-preview',
+  [],
+  {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'OpenAI-Beta': 'realtime=v1'
+    }
+  }
+)
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'session.update',
+    session: {
+      modalities: ['text', 'audio'],
+      voice: 'alloy'
+    }
+  }))
+}
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data)
+  console.log('received event:', data)
+}
+```
+
+```http Realtime Notes
+Authorization: Bearer <DGRID_API_KEY>
+OpenAI-Beta: realtime=v1
+```
+
+</RequestExample>
+
+## 建立 Realtime 會話權杖
+
+當您需要對 Realtime HTTP 入口發送已驗證的 GET 請求時，請使用以下 Realtime 端點範例。
+
+```http
+GET /v1/realtime
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>` |
+| **請求** | `none` |
+| **回應** | `101 · application/json` |
+
+### 請求標頭
+
+| 欄位 | 類型 | 是否必填 | 說明 |
+| --- | --- | --- | --- |
+| `Authorization` | string | 是 | 用於驗證 Realtime 請求的 Bearer 權杖。 |
+
+### 回應內容
+
+| 欄位 | 類型 | 說明 |
+| --- | --- | --- |
+| `101` | text | 成功升級的回應，不含 JSON 內容。 |
+| `error` | object | 請求失敗時回傳的錯誤內容。 |
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.dgrid.ai/v1/realtime" \
+  -H "Authorization: Bearer "
+```
+
+```javascript JavaScript
+fetch("https://api.dgrid.ai/v1/realtime", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer "
+  }
+})
+```
+
+```go Go
+package main
+
+import (
+  "fmt"
+  "net/http"
+  "io/ioutil"
+)
+
+func main() {
+  url := "https://api.dgrid.ai/v1/realtime"
+
+  req, _ := http.NewRequest("GET", url, nil)
+  req.Header.Add("Authorization", "Bearer ")
+  res, _ := http.DefaultClient.Do(req)
+  defer res.Body.Close()
+  body, _ := ioutil.ReadAll(res.Body)
+
+  fmt.Println(res)
+  fmt.Println(string(body))
+}
+```
+
+```python Python
+import requests
+
+url = "https://api.dgrid.ai/v1/realtime"
+
+response = requests.request("GET", url, headers = {
+  "Authorization": "Bearer "
+})
+
+print(response.text)
+```
+
+```java Java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
+
+HttpClient client = HttpClient.newBuilder()
+  .connectTimeout(Duration.ofSeconds(10))
+  .build();
+
+HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+  .uri(URI.create("https://api.dgrid.ai/v1/realtime"))
+  .header("Authorization", "Bearer ")
+  .GET()
+  .build();
+
+try {
+  HttpResponse<String> response = client.send(requestBuilder.build(), BodyHandlers.ofString());
+  System.out.println("Status code: " + response.statusCode());
+  System.out.println("Response body: " + response.body());
+} catch (Exception e) {
+  e.printStackTrace();
+}
+```
+
+```csharp C#
+using System;
+using System.Net.Http;
+using System.Text;
+
+var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer ");
+var response = await client.GetAsync("https://api.dgrid.ai/v1/realtime");
+var responseBody = await response.Content.ReadAsStringAsync();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```text 101
+Empty
+```
+
+```json 400
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "param": "string",
+    "code": "string"
+  }
+}
+```
+
+</ResponseExample>
+
+## WebSocket 事件
+
+請依據一組精簡的請求與回應事件類型來規劃您的客戶端，以實現低延遲的對話串流。
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **請求** | `websocket` |
+| **回應** | `event stream` |
+
+### 核心客戶端事件
+
+| 事件類型 | 說明 |
+| --- | --- |
+| `session.update` | 更新模態（modalities）、語音或其他會話偏好設定。 |
+| `input_audio_buffer.append` | 傳送已編碼的音訊片段。 |
+| `input_audio_buffer.commit` | 將緩衝的音訊標記為就緒。 |
+| `response.create` | 要求伺服器開始產生回應。 |
+| `conversation.item.create` | 新增一個對話回合或工具結果。 |
+
+### 核心伺服器事件
+
+| 事件類型 | 說明 |
+| --- | --- |
+| `session.created` | 確認 WebSocket 會話已建立的初始事件。 |
+| `session.updated` | 確認會話設定已變更。 |
+| `response.text.delta` | 增量的文字輸出。 |
+| `response.audio.delta` | 增量的音訊輸出。 |
+| `response.done` | 已完成回應的最終事件。 |
+| `error` | 可恢復或致命的錯誤內容。 |
+
+### 整合指南
+
+1. 將客戶端音訊以小區塊方式緩衝，並使用 `input_audio_buffer.commit` 來標示對話輪次的邊界。
+2. 若會話支援多模態輸出，請同時監聽 `response.text.delta` 與 `response.audio.delta`。
+3. 對於瀏覽器客戶端，請使用 HTTP 會話權杖端點，以避免長期有效的 API 金鑰直接暴露於客戶端。
+
+<ResponseExample>
+
+```json response.text.delta
+{
+  "type": "response.text.delta",
+  "response_id": "resp_123",
+  "delta": "Hello"
+}
+```
+
+```json response.done
+{
+  "type": "response.done",
+  "response": {
+    "id": "resp_123",
+    "status": "completed"
+  }
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,189 @@
+---
+title: "DGrid AI 문서"
+sidebarTitle: "홈"
+description: "하나의 Web3 네이티브 게이트웨이를 통해 200개 이상의 주요 AI 모델에 접근하세요. 가이드, API 참조, $DGAI 경제를 살펴보세요."
+mode: "wide"
+---
+
+<div className="flex flex-col md:flex-row items-center gap-8 mt-2 not-prose">
+  <div className="flex-1 flex flex-col gap-4">
+    <div className="leading-tight">
+      <div className="text-3xl md:text-5xl font-extrabold text-primary-dark dark:text-primary-light">DGrid AI</div>
+      <div className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100">The Decentralized<br />Smart Network of AI</div>
+    </div>
+    <div className="flex flex-row flex-wrap gap-3 mt-2">
+      <a href="https://dgrid.ai/">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 shadow-sm text-white dark:text-gray-900 bg-primary-dark dark:bg-primary-light hover:opacity-[0.9] justify-center">
+          공식 웹사이트
+        </button>
+      </a>
+      <a href="/ko/what-we-do">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          DGrid AI란 무엇인가요?
+        </button>
+      </a>
+      <a href="/ko/dgrid-solution">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          DGrid의 솔루션
+        </button>
+      </a>
+    </div>
+  </div>
+  <div className="flex-shrink-0">
+    <img src="/favicon.png" alt="DGrid AI" className="w-32 h-32 md:w-44 md:h-44 rounded-3xl" />
+  </div>
+</div>
+
+<div className="divide-y divide-gray-100 dark:divide-white/10 mt-10">
+  <div className="flex flex-col w-full pb-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">플랫폼 살펴보기</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      DGrid 생태계를 구성하는 주요 제품들을 확인해 보세요.
+    </p>
+
+    <CardGroup cols={3}>
+      <Card title="AI Gateway" img="/images/illustrations/gateway.svg" href="https://dgrid.ai/ai-gateway">
+        Web3 네이티브 결제와 지능형 라우팅을 갖춘 200개 이상의 모델을 위한 하나의 API입니다.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ Models</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">OpenAI-compatible</span>
+        </div>
+      </Card>
+      <Card title="AI Arena" img="/images/illustrations/arena.svg" href="https://dgrid.ai/arena">
+        커뮤니티의 투표를 라우팅 인텔리전스로 전환하는 익명 모델 대결입니다.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">AI Battle</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">$DGAI Points</span>
+        </div>
+      </Card>
+      <Card title="Model Marketplace" img="/images/illustrations/marketplace.svg" href="https://dgrid.ai/models">
+        DGrid AI Gateway를 뒷받침하는 200개 이상의 모델 및 제공자에 대한 개방형 카탈로그로, 하나의 API로 탐색하고 호출할 수 있습니다.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ Models</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">Open Catalog</span>
+        </div>
+      </Card>
+    </CardGroup>
+  </div>
+
+  <div className="flex flex-col w-full py-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">DGrid로 빌드하기</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      API를 넘어서 — DGrid 생태계를 움직이는 경제, 프로그램, 에이전트 레이어입니다.
+    </p>
+
+    <Tabs>
+      <Tab title="$DGAI 경제">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/ko/what-is-dgai" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">$DGAI란 무엇인가</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">가치 교환, 인센티브, 거버넌스를 뒷받침하는 유틸리티 토큰</span>
+            </a>
+            <a href="/ko/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">핵심 기능</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">스테이킹, 결제, 인센티브, 거버넌스 — $DGAI의 4차원 엔진</span>
+            </a>
+            <a href="/ko/circulation-mechanism" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">순환 메커니즘</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">사용자, 노드 운영자, 네트워크 간에 $DGAI가 흐르는 방식</span>
+            </a>
+            <a href="/ko/token-distribution" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">토큰 분배</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">10억 개의 토큰 공급량이 생태계 전반에 배분되는 방식</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/economy.svg" alt="$DGAI Economy" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="Genesis Premium">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/ko/premium/program-overview" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">프로그램 개요</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Genesis Pass NFT: DGrid 네트워크의 초기 참여자를 위한 자격 증명</span>
+            </a>
+            <a href="/ko/premium/exclusive-benefits" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">독점 혜택</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">멤버를 위한 리소스 접근, 거버넌스 권한, 생태계 배당</span>
+            </a>
+            <a href="/ko/premium/purchase-and-activation" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">구매 및 활성화</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Genesis Pass를 획득하고 활성화하는 방법</span>
+            </a>
+            <a href="/ko/premium/incentive-mechanism-and-rewards" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">인센티브 메커니즘 및 보상</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">기여도에 따라 $DGAI와 생태계 보상을 획득하세요</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/premium.svg" alt="Genesis Premium" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="DClaw">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/ko/dclaw" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">DClaw가 하는 일</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">CoPaw를 기반으로 한 지속적이고 사용자 소유의 AI 에이전트를 위한 원클릭 배포</span>
+            </a>
+            <a href="/ko/dclaw#why-dclaw-matters" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">DClaw가 중요한 이유</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">통합된 DGrid API 접근, 모델, 채널, 메모리, 스킬을 하나의 워크플로에서</span>
+            </a>
+            <a href="/ko/dori" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Dori Find Models</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">모든 에이전트에 최적의 모델을 선택해 주는 자연어 어드바이저</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/dclaw.svg" alt="DClaw" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="스테이킹">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <div className="flex flex-row items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">출시 예정</span>
+            </div>
+            <a href="/ko/core-functions" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">스테이킹과 접근</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">$DGAI를 스테이킹하여 네트워크 트래픽을 확보하고, 평판을 쌓고, 네트워크를 보호하세요</span>
+            </a>
+            <a href="/ko/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">노드 운영자</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">노드 성능 및 신뢰성에 따른 등급별 스테이킹 요건</span>
+            </a>
+            <a href="/ko/what-is-dgai" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">$DGAI 토큰</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">스테이킹할 토큰 — 오늘날 DGrid 경제를 움직이는 방식을 알아보세요</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/staking.svg" alt="Staking" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+    </Tabs>
+  </div>
+
+  <div className="flex flex-col w-full pt-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl mb-4">리소스</div>
+
+    <Columns cols={3}>
+      <Card title="공식 웹사이트" icon="globe" href="https://dgrid.ai/">
+        dgrid.ai에서 실제 플랫폼을 살펴보세요
+      </Card>
+      <Card title="X 팔로우" icon="twitter" href="https://x.com/dgrid_ai">
+        제품 업데이트 및 공지
+      </Card>
+      <Card title="Telegram 커뮤니티" icon="send" href="https://t.me/dgrid_ai">
+        도움을 받고 다른 빌더들을 만나보세요
+      </Card>
+    </Columns>
+  </div>
+</div>

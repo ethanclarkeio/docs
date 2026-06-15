@@ -1,0 +1,81 @@
+---
+title: "Qwen 이미지 편집"
+sidebarTitle: "Qwen 이미지 편집"
+description: "Qwen 호환 OpenAI 이미지 편집 워크플로를 통해 이미지를 편집하세요"
+openapi: "api-reference/openapi.json POST /v1/images/edits"
+---
+
+이 페이지는 [이미지 편집](/ko/api-reference/images/edit-image)과 동일한 `images/edits` 작업을 사용하며, 위의 플레이그라운드에는 일반적인 OpenAI 스타일 편집 스키마(`image`, `mask`, `prompt` 등)가 미리 입력되어 있습니다. 아래 내용은 `wanx-v1` 스타일 모델을 위한 Qwen 전용 요청 형식을 설명합니다.
+
+<Note>
+Qwen 이미지 편집 모델은 멀티파트 폼 데이터로 `image`/`mask` 파일을 업로드하는 대신, 편집 지시 사항과 원본 이미지 참조를 `input.messages` 안에 포함하는 대체 JSON 요청 형식을 사용합니다. 이 형식을 사용하려면 플레이그라운드의 요청 본문에 `model`과 `input`을 함께 제공하세요.
+</Note>
+
+### Qwen 전용 요청 필드
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `model` | string | 예 | `wanx-v1`과 같은 모델 식별자입니다. |
+| `input` | object | 예 | 멀티파트 `image`/`mask` 필드 대신 요청 본문에 전달되는 입력 래퍼 객체입니다. |
+| `input.messages` | array | 예 | `input` 하위에 중첩된 메시지 배열입니다. |
+| `input.messages[].role` | string | 예 | 메시지 역할입니다 (예: `user`). |
+| `input.messages[].content` | string | 예 | 편집 지시 사항 및 참조하는 원본 이미지입니다. |
+
+<Tip>
+원본 이미지는 별도의 멀티파트 파일 업로드 대신, `input.messages[].content` 내에 (예: URL 또는 임베디드 참조로) 인라인으로 참조할 수 있습니다.
+</Tip>
+
+### 예시: 이미지 편집
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove the background and replace it with a solid white backdrop."
+      }
+    ]
+  }
+}
+```
+
+### 응답 필드
+
+응답은 표준 이미지 편집 형식을 따릅니다.
+
+<ResponseField name="created" type="integer">
+  생성 타임스탬프입니다.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  생성된 이미지 항목입니다.
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      이미지 URL입니다.
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Base64 이미지 페이로드입니다.
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      모델이 반환한 수정된 프롬프트입니다.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### 응답 예시
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/edited-abc123.png",
+      "b64_json": "",
+      "revised_prompt": "The subject with background removed and replaced with a solid white backdrop."
+    }
+  ]
+}
+```

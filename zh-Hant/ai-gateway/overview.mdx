@@ -1,0 +1,134 @@
+---
+title: "AI Gateway"
+sidebarTitle: "總覽"
+description: "存取 200 多個領先 AI 模型的單一統一 API"
+---
+
+DGrid AI Gateway 提供一個單一、統一的 API，可存取 200 多個領先的 AI 模型。使用者可以直接將自己的 API 金鑰套用至 Claude Code、Codex、Moltbot（Clawdbot）等工具，大幅降低整合複雜度與運營成本。
+
+## 快速入門
+
+DGrid AI Gateway 統一了數百個 AI 模型的介面。您不需要在程式碼中處理不同模型之間的相容性調整——透過單一 API 端點與標準化的 API 請求格式，即可自由切換並存取 DGrid 提供的數百個模型。
+
+<Tip>
+正在尋找特定工具的整合指南（OpenClaw / Cursor / SDK 等）？請參閱[整合教學](/zh-Hant/ai-gateway/integrations)。
+</Tip>
+
+<Tip>
+正在尋找端點層級的 API 參考文件？請參閱[模型 API](/zh-Hant/api-reference/introduction)。
+</Tip>
+
+<Note>
+DGrid 官方 SDK 目前正在積極開發中——敬請期待其發布。以下是目前可用於與 DGrid AI Gateway 互動的臨時請求方式。
+</Note>
+
+### 前置需求
+
+開始之前，您需要：
+
+1. 取得有效的 `DGRID_API_KEY`（[指南](https://blog.dgrid.ai/posts/2026-01-04/)）。
+2. 確保您的開發環境可存取 `https://api.dgrid.ai/v1`。
+3. 若使用 SDK，請在您的專案中安裝對應的 OpenAI SDK 套件。
+
+### 透過 cURL 直接發送 API 請求
+
+您可以使用 cURL 直接向 DGrid AI Gateway 端點發送 HTTP POST 請求。
+
+```bash
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+  "model": "openai/gpt-4o",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is the meaning of life?"
+    }
+  ]
+}'
+```
+
+### 使用 OpenAI SDK（DGrid 相容）
+
+DGrid AI Gateway 與 OpenAI SDK 規範完全相容。您只需要修改 `baseURL`（並填入 `DGRID_API_KEY`），即可快速完成遷移或整合。
+
+#### 前置需求：安裝 OpenAI SDK
+
+首先，在您的專案中安裝 OpenAI SDK：
+
+```bash
+# 適用於 TypeScript/Node.js
+npm install openai
+
+# 適用於 Python
+pip install openai
+```
+
+#### TypeScript 實作
+
+```typescript
+import OpenAI from 'openai';
+
+// 使用 DGrid AI Gateway 設定初始化 OpenAI 客戶端
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1', // 指向 DGrid AI Gateway 端點
+  apiKey: '<DGRID_API_KEY>', // 替換為您的有效 DGrid API 金鑰
+  defaultHeaders: {
+    'HTTP-Referer': '<YOUR_SITE_URL>', // 選填：您應用程式的網站網址
+    'X-Title': '<YOUR_SITE_NAME>', // 選填：您應用程式的名稱
+  },
+});
+
+// 發送聊天補全請求的非同步函式
+async function getChatCompletion() {
+  const completion = await openai.chat.completions.create({
+    model: 'openai/gpt-4o', // 指定目標模型（DGrid 支援的格式）
+    messages: [
+      {
+        role: 'user',
+        content: 'What is the meaning of life?',
+      },
+    ],
+  });
+
+  // 印出回應結果
+  console.log(completion.choices[0].message);
+}
+
+getChatCompletion();
+```
+
+#### Python 實作
+
+```python
+from openai import OpenAI
+
+# 使用 DGrid AI Gateway 設定初始化 OpenAI 客戶端
+client = OpenAI(
+  base_url="https://api.dgrid.ai/v1", # 指向 DGrid AI Gateway 端點
+  api_key="<DGRID_API_KEY>", # 替換為您的有效 DGrid API 金鑰
+)
+completion = client.chat.completions.create(
+    extra_headers={
+        "HTTP-Referer": "<YOUR_SITE_URL>", # 選填：您應用程式的網站網址
+        "X-Title": "<YOUR_SITE_NAME>", # 選填：您應用程式的名稱
+    },
+    model="openai/gpt-4o", # 指定目標模型（DGrid 支援的格式）
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+# 印出回應內容
+print(completion.choices[0].message.content)
+```
+
+### 補充說明
+
+1. **選填標頭**：`HTTP-Referer` 與 `X-Title` 標頭為選填項目，但填寫後有助於 DGrid 更好地識別您的應用程式，並提供更優化的服務支援。
+2. **模型命名格式**：model 參數使用 `[provider]/[model-name]` 格式（例如 `openai/gpt-4o`），此格式在所有 DGrid 支援的模型中皆一致，方便切換使用。
+3. **SDK 開發進度**：DGrid 官方 SDK 正在開發中，未來將提供更原生的功能與更優化的效能——請持續關注 DGrid 官方文件的更新資訊。

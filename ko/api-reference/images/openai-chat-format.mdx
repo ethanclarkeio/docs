@@ -1,0 +1,98 @@
+---
+title: "OpenAI 채팅 형식"
+sidebarTitle: "OpenAI 채팅 형식"
+description: "OpenAI 호환 Chat Completions 엔드포인트를 통해 Gemini 기반 이미지 생성을 요청하세요"
+openapi: "api-reference/openapi.json POST /v1/chat/completions"
+---
+
+이 페이지는 [채팅 완성 생성](/ko/api-reference/chat/create-chat-completion)과 동일한 `chat/completions` 작업을 사용하며, 위의 플레이그라운드에는 일반적인 채팅 스키마가 미리 입력되어 있습니다. 아래 내용은 OpenAI 호환 클라이언트에서 이 엔드포인트를 사용하여 Gemini 기반 이미지 생성을 요청하는 방법을 설명합니다.
+
+<Note>
+`model`에 이미지 생성 모델(예: `gemini-2.0-flash-preview-image-generation`)을 포함하고, 필요에 따라 `stream`을 설정하며, `messages`를 통해 프롬프트를 제공하세요. 선택적으로 `messages`와 함께 추가적인 Gemini 스타일 멀티모달 컨텍스트를 위해 `contents`를 포함할 수 있습니다.
+</Note>
+
+### 제공자별 참고 사항
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `model` | string | 예 | 이미지 생성 모델 식별자입니다 (예: `gemini-2.0-flash-preview-image-generation`). |
+| `messages[].content` | string | 예 | 원하는 이미지를 설명하는 프롬프트 텍스트입니다. |
+| `contents` | array | 아니요 | 추가적인 멀티모달 컨텍스트를 위한 선택적 Gemini 스타일 콘텐츠 배열로, 표준 OpenAI 채팅 스키마의 일부가 아닙니다. |
+
+<Tip>
+`contents` 필드는 표준 채팅 완성 스키마 위에 추가된 DGrid 확장 기능입니다 — 대상 모델이 지원하는 경우, OpenAI 스타일의 `messages` 배열과 함께 Gemini 네이티브 `parts`(예: `inlineData`)를 전달할 수 있게 해줍니다.
+</Tip>
+
+### 예시: 이미지 요청
+
+```json
+{
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Generate an image of a futuristic city skyline at sunset."
+    }
+  ]
+}
+```
+
+### 응답 필드
+
+응답은 표준 채팅 완성 형식을 따릅니다. 생성된 이미지는 어시스턴트 메시지 콘텐츠에 직접 포함됩니다.
+
+<ResponseField name="choices" type="array">
+  반환된 선택 항목입니다.
+
+  <Expandable title="choice properties">
+    <ResponseField name="index" type="integer">
+      선택 항목의 인덱스입니다.
+    </ResponseField>
+    <ResponseField name="message" type="object">
+      어시스턴트 메시지 객체입니다.
+
+      <Expandable title="message properties">
+        <ResponseField name="role" type="string">
+          메시지 역할로, 일반적으로 `assistant`입니다.
+        </ResponseField>
+        <ResponseField name="content" type="string">
+          메시지 콘텐츠입니다. 이미지 출력 모델의 경우, 생성된 이미지를 base64 데이터 URI로 임베딩한 마크다운 이미지 참조입니다 (예: `![generated image](data:image/png;base64,...)`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finish_reason" type="string">
+      종료 이유입니다 (예: `stop`).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usage" type="object">
+  토큰 사용량 요약입니다.
+</ResponseField>
+
+### 응답 예시
+
+```json 200
+{
+  "id": "chatcmpl-abc123",
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "object": "chat.completion",
+  "created": 1719859200,
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "![generated image](data:image/png;base64,<base64-encoded-image-bytes>)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 0,
+    "total_tokens": 12
+  }
+}
+```

@@ -1,0 +1,129 @@
+---
+title: "快速入門"
+sidebarTitle: "快速入門"
+description: "踏入 DGrid 生態系統，並在 5 分鐘內完成您的第一次 API 呼叫"
+---
+
+DGrid 是去中心化的 AI 智慧網路——一個涵蓋模型存取、模型探索、評估與鏈上激勵的單一生態系統。無論您從哪個產品開始，DGrid 的所有部分都可以透過一個 API 金鑰存取。
+
+## 探索 DGrid 生態系統
+
+<CardGroup cols={2}>
+  <Card title="DGrid AI Gateway" icon="network" href="/zh-Hant/ai-gateway/overview">
+    一個相容 OpenAI、Claude 與 Gemini 的 API，可存取 200 多個領先的 AI 模型，並提供 Web3 原生支付與智慧路由。
+  </Card>
+  <Card title="AI Arena" icon="trophy" href="/zh-Hant/ai-arena/overview">
+    盲測模型對戰，社群投票可賺取 $DGAI 空投積分，並提供 DGrid 路由智慧所需的資料。
+  </Card>
+  <Card title="Dori 尋找模型" icon="compass" href="/zh-Hant/dori">
+    自然語言顧問，將您的需求轉化為一份經過測試與比較的候選模型清單。
+  </Card>
+  <Card title="Model Marketplace" icon="store" href="/zh-Hant/api-reference/models/list-models">
+    DGrid AI Gateway 背後 200 多個模型與供應商的開放目錄，可瀏覽並透過一個 API 呼叫。
+  </Card>
+</CardGroup>
+
+## 開始使用 DGrid AI Gateway
+
+DGrid AI Gateway 為您提供一個相容 OpenAI 的單一 API，可存取 200 多個領先模型。本節將引導您從零開始，完成第一次聊天補全（chat completion）呼叫。
+
+<Steps>
+
+<Step title="取得您的 API 金鑰">
+
+依照[金鑰建立指南](https://blog.dgrid.ai/posts/2026-01-04/)取得有效的 `DGRID_API_KEY`。
+
+<Note>
+您的金鑰密鑰只會在建立時顯示一次。請立即複製並儲存在安全的地方，例如密鑰管理工具。切勿將其暴露於客戶端程式碼或公開的程式碼庫中。
+</Note>
+
+</Step>
+
+<Step title="發送您的第一個請求">
+
+向 DGrid AI Gateway 端點發送一個聊天補全請求。`model` 參數使用 `provider/model-name` 格式（例如 `openai/gpt-4o`），此格式在所有 DGrid 支援的模型中皆一致。
+
+<CodeGroup>
+
+```bash cURL
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the meaning of life?"
+      }
+    ]
+  }'
+```
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.dgrid.ai/v1",
+    api_key="<DGRID_API_KEY>",
+)
+
+completion = client.chat.completions.create(
+    model="openai/gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is the meaning of life?"
+        }
+    ]
+)
+
+print(completion.choices[0].message.content)
+```
+
+```typescript TypeScript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: '<DGRID_API_KEY>',
+});
+
+const completion = await openai.chat.completions.create({
+  model: 'openai/gpt-4o',
+  messages: [
+    {
+      role: 'user',
+      content: 'What is the meaning of life?',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+</CodeGroup>
+
+<Tip>
+DGrid 與 OpenAI SDK 完全相容——只需將 `baseURL` 指向 `https://api.dgrid.ai/v1`，您現有的程式碼即可不做任何修改直接運作。可透過 `pip install openai` 或 `npm install openai` 安裝。
+</Tip>
+
+</Step>
+
+<Step title="探索下一步">
+
+<CardGroup cols={3}>
+  <Card title="模型 API 參考文件" icon="code" href="/zh-Hant/api-reference/introduction">
+    涵蓋聊天、圖像、音訊、嵌入向量等功能的端點層級參考文件。
+  </Card>
+  <Card title="整合教學" icon="plug" href="/zh-Hant/ai-gateway/integrations">
+    將 DGrid 連接至 Claude Code、Cursor、Moltbot 等工具。
+  </Card>
+  <Card title="x402 支付" icon="credit-card" href="/zh-Hant/x402/overview">
+    透過 x402 協定，按次推論付費——無需帳戶餘額。
+  </Card>
+</CardGroup>
+
+</Step>
+
+</Steps>

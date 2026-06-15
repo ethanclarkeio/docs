@@ -1,0 +1,189 @@
+---
+title: "Documentation DGrid AI"
+sidebarTitle: "Accueil"
+description: "Accédez à plus de 200 modèles d'IA de premier plan via une passerelle (gateway) Web3 native unique. Découvrez les guides, les références API et l'économie $DGAI."
+mode: "wide"
+---
+
+<div className="flex flex-col md:flex-row items-center gap-8 mt-2 not-prose">
+  <div className="flex-1 flex flex-col gap-4">
+    <div className="leading-tight">
+      <div className="text-3xl md:text-5xl font-extrabold text-primary-dark dark:text-primary-light">DGrid AI</div>
+      <div className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100">Le réseau intelligent<br />décentralisé de l'IA</div>
+    </div>
+    <div className="flex flex-row flex-wrap gap-3 mt-2">
+      <a href="https://dgrid.ai/">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 shadow-sm text-white dark:text-gray-900 bg-primary-dark dark:bg-primary-light hover:opacity-[0.9] justify-center">
+          Site officiel
+        </button>
+      </a>
+      <a href="/fr/what-we-do">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          Qu'est-ce que DGrid AI ?
+        </button>
+      </a>
+      <a href="/fr/dgrid-solution">
+        <button type="button" className="px-5 flex items-center font-medium text-sm rounded-full py-2 border border-gray-300 dark:border-white/20 text-gray-900 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 justify-center">
+          La solution de DGrid
+        </button>
+      </a>
+    </div>
+  </div>
+  <div className="flex-shrink-0">
+    <img src="/favicon.png" alt="DGrid AI" className="w-32 h-32 md:w-44 md:h-44 rounded-3xl" />
+  </div>
+</div>
+
+<div className="divide-y divide-gray-100 dark:divide-white/10 mt-10">
+  <div className="flex flex-col w-full pb-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">Explorer la plateforme</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      Découvrez les produits phares qui composent l'écosystème DGrid.
+    </p>
+
+    <CardGroup cols={3}>
+      <Card title="AI Gateway" img="/images/illustrations/gateway.svg" href="https://dgrid.ai/ai-gateway">
+        Une API unique pour plus de 200 modèles, avec des paiements Web3 natifs et un routage intelligent.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ modèles</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">Compatible OpenAI</span>
+        </div>
+      </Card>
+      <Card title="AI Arena" img="/images/illustrations/arena.svg" href="https://dgrid.ai/arena">
+        Des duels de modèles en aveugle qui transforment les votes de la communauté en intelligence de routage.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">AI Battle</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">Points $DGAI</span>
+        </div>
+      </Card>
+      <Card title="Model Marketplace" img="/images/illustrations/marketplace.svg" href="https://dgrid.ai/models">
+        Le catalogue ouvert de plus de 200 modèles et fournisseurs derrière DGrid AI Gateway, consultable et accessible via une seule API.
+        <div className="flex flex-row gap-2 mt-3">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">200+ modèles</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">Catalogue ouvert</span>
+        </div>
+      </Card>
+    </CardGroup>
+  </div>
+
+  <div className="flex flex-col w-full py-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl">Construire avec DGrid</div>
+    <p className="text-gray-600 dark:text-gray-400 text-md mb-4 mt-2">
+      Au-delà de l'API — l'économie, les programmes et la couche d'agents qui font fonctionner l'écosystème DGrid.
+    </p>
+
+    <Tabs>
+      <Tab title="Économie $DGAI">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/fr/what-is-dgai" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Qu'est-ce que $DGAI</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Le token utilitaire derrière l'échange de valeur, les incitations et la gouvernance</span>
+            </a>
+            <a href="/fr/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Fonctions principales</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Staking, paiement, incitations et gouvernance — le moteur à quatre dimensions de $DGAI</span>
+            </a>
+            <a href="/fr/circulation-mechanism" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Mécanisme de circulation</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Comment $DGAI circule entre les utilisateurs, les opérateurs de nœuds et le réseau</span>
+            </a>
+            <a href="/fr/token-distribution" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Distribution des tokens</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Comment l'offre de 1 milliard de tokens est répartie au sein de l'écosystème</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/economy.svg" alt="Économie $DGAI" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="Genesis Premium">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/fr/premium/program-overview" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Présentation du programme</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Le NFT Genesis Pass : un titre de participation pour les premiers membres du réseau DGrid</span>
+            </a>
+            <a href="/fr/premium/exclusive-benefits" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Avantages exclusifs</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Accès aux ressources, droits de gouvernance et dividendes de l'écosystème pour les membres</span>
+            </a>
+            <a href="/fr/premium/purchase-and-activation" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Achat et activation</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Comment acquérir et activer votre Genesis Pass</span>
+            </a>
+            <a href="/fr/premium/incentive-mechanism-and-rewards" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Mécanisme d'incitation et récompenses</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Gagnez des $DGAI et des récompenses de l'écosystème selon vos contributions</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/premium.svg" alt="Genesis Premium" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="DClaw">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <a href="/fr/dclaw" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Ce que fait DClaw</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Déploiement en un clic pour des agents IA persistants et détenus par l'utilisateur, basés sur CoPaw</span>
+            </a>
+            <a href="/fr/dclaw#why-dclaw-matters" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Pourquoi DClaw est important</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Accès intégré à l'API DGrid, aux modèles, aux canaux, à la mémoire et aux compétences dans un seul flux de travail</span>
+            </a>
+            <a href="/fr/dori" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Dori Find Models</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Un conseiller en langage naturel qui sélectionne le modèle optimal pour chaque agent</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/dclaw.svg" alt="DClaw" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+      <Tab title="Staking">
+        <div className="flex flex-col md:flex-row gap-6 rounded-2xl bg-gray-50 dark:bg-white/5 p-6 not-prose">
+          <div className="flex-1 flex flex-col gap-3">
+            <div className="flex flex-row items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary-dark dark:text-primary-light">Bientôt disponible</span>
+            </div>
+            <a href="/fr/core-functions" className="flex flex-col rounded-xl p-4 bg-white dark:bg-white/10 shadow-sm">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Staking et accès</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Stakez des $DGAI pour obtenir du trafic réseau, bâtir votre réputation et sécuriser le réseau</span>
+            </a>
+            <a href="/fr/core-functions" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Opérateurs de nœuds</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Des exigences de staking échelonnées selon la performance et la fiabilité des nœuds</span>
+            </a>
+            <a href="/fr/what-is-dgai" className="flex flex-col rounded-xl p-4 hover:bg-white dark:hover:bg-white/10">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Token $DGAI</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 mt-1">Le token que vous staquerez — découvrez comment il fait fonctionner l'économie DGrid aujourd'hui</span>
+            </a>
+          </div>
+          <div className="flex-1 min-h-[280px]">
+            <img src="/images/illustrations/staking.svg" alt="Staking" className="rounded-xl w-full h-full object-cover" />
+          </div>
+        </div>
+      </Tab>
+    </Tabs>
+  </div>
+
+  <div className="flex flex-col w-full pt-10">
+    <div className="text-gray-900 dark:text-gray-200 text-xl mb-4">Ressources</div>
+
+    <Columns cols={3}>
+      <Card title="Site officiel" icon="globe" href="https://dgrid.ai/">
+        Découvrez la plateforme en direct sur dgrid.ai
+      </Card>
+      <Card title="Suivre sur X" icon="twitter" href="https://x.com/dgrid_ai">
+        Mises à jour produit et annonces
+      </Card>
+      <Card title="Communauté Telegram" icon="send" href="https://t.me/dgrid_ai">
+        Obtenez de l'aide et rencontrez d'autres développeurs
+      </Card>
+    </Columns>
+  </div>
+</div>

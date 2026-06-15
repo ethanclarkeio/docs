@@ -1,0 +1,285 @@
+---
+title: "Realtime"
+sidebarTitle: "Realtime"
+description: "Conversations texte et audio à faible latence compatibles OpenAI via websockets"
+---
+
+L'API Realtime expose des conversations texte et audio à faible latence compatibles OpenAI via des sessions websocket, ainsi qu'un point de terminaison HTTP pour les jetons clients à courte durée de vie.
+
+## Connexion WebSocket
+
+Ouvrez directement une session websocket en temps réel lorsque votre backend peut conserver la clé API DGrid de manière sécurisée.
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **Requête** | `websocket` |
+| **Réponse** | `websocket events` |
+
+### Paramètres de requête
+
+| Paramètre | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `model` | string | Oui | Identifiant du modèle temps réel, tel que `gpt-4o-realtime-preview`. |
+
+### Événements client
+
+| Type d'événement | Description |
+| --- | --- |
+| `session.update` | Met à jour les options au niveau de la session. |
+| `input_audio_buffer.append` | Diffuse des fragments audio vers le serveur. |
+| `input_audio_buffer.commit` | Valide l'audio actuellement mis en mémoire tampon. |
+| `response.create` | Déclenche une nouvelle réponse de l'assistant. |
+| `conversation.item.create` | Insère un élément de conversation. |
+
+### Événements serveur
+
+| Type d'événement | Description |
+| --- | --- |
+| `session.created` | La session a été créée avec succès. |
+| `session.updated` | Les paramètres de session ont été mis à jour. |
+| `response.text.delta` | Delta de jeton de texte en flux continu. |
+| `response.audio.delta` | Delta de fragment audio en flux continu. |
+| `response.done` | La réponse est terminée. |
+| `error` | Charge utile d'erreur. |
+
+<RequestExample>
+
+```javascript JavaScript Example
+const ws = new WebSocket(
+  'wss://api.dgrid.ai/v1/realtime?model=gpt-4o-realtime-preview',
+  [],
+  {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'OpenAI-Beta': 'realtime=v1'
+    }
+  }
+)
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'session.update',
+    session: {
+      modalities: ['text', 'audio'],
+      voice: 'alloy'
+    }
+  }))
+}
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data)
+  console.log('received event:', data)
+}
+```
+
+```http Realtime Notes
+Authorization: Bearer <DGRID_API_KEY>
+OpenAI-Beta: realtime=v1
+```
+
+</RequestExample>
+
+## Créer un jeton de session Realtime
+
+Utilisez l'exemple de point de terminaison realtime ci-dessous lorsque vous avez besoin d'une requête GET authentifiée vers le point d'entrée HTTP realtime.
+
+```http
+GET /v1/realtime
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>` |
+| **Requête** | `none` |
+| **Réponse** | `101 · application/json` |
+
+### En-têtes de requête
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `Authorization` | string | Oui | Jeton Bearer utilisé pour authentifier la requête realtime. |
+
+### Corps de la réponse
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `101` | text | Réponse de mise à niveau réussie sans corps JSON. |
+| `error` | object | Charge utile d'erreur renvoyée en cas d'échec de la requête. |
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.dgrid.ai/v1/realtime" \
+  -H "Authorization: Bearer "
+```
+
+```javascript JavaScript
+fetch("https://api.dgrid.ai/v1/realtime", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer "
+  }
+})
+```
+
+```go Go
+package main
+
+import (
+  "fmt"
+  "net/http"
+  "io/ioutil"
+)
+
+func main() {
+  url := "https://api.dgrid.ai/v1/realtime"
+
+  req, _ := http.NewRequest("GET", url, nil)
+  req.Header.Add("Authorization", "Bearer ")
+  res, _ := http.DefaultClient.Do(req)
+  defer res.Body.Close()
+  body, _ := ioutil.ReadAll(res.Body)
+
+  fmt.Println(res)
+  fmt.Println(string(body))
+}
+```
+
+```python Python
+import requests
+
+url = "https://api.dgrid.ai/v1/realtime"
+
+response = requests.request("GET", url, headers = {
+  "Authorization": "Bearer "
+})
+
+print(response.text)
+```
+
+```java Java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
+
+HttpClient client = HttpClient.newBuilder()
+  .connectTimeout(Duration.ofSeconds(10))
+  .build();
+
+HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+  .uri(URI.create("https://api.dgrid.ai/v1/realtime"))
+  .header("Authorization", "Bearer ")
+  .GET()
+  .build();
+
+try {
+  HttpResponse<String> response = client.send(requestBuilder.build(), BodyHandlers.ofString());
+  System.out.println("Status code: " + response.statusCode());
+  System.out.println("Response body: " + response.body());
+} catch (Exception e) {
+  e.printStackTrace();
+}
+```
+
+```csharp C#
+using System;
+using System.Net.Http;
+using System.Text;
+
+var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer ");
+var response = await client.GetAsync("https://api.dgrid.ai/v1/realtime");
+var responseBody = await response.Content.ReadAsStringAsync();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```text 101
+Empty
+```
+
+```json 400
+{
+  "error": {
+    "message": "string",
+    "type": "string",
+    "param": "string",
+    "code": "string"
+  }
+}
+```
+
+</ResponseExample>
+
+## Événements WebSocket
+
+Concevez votre client autour d'un petit ensemble de types d'événements de requête et de réponse pour le streaming conversationnel à faible latence.
+
+```http
+WSS wss://api.dgrid.ai/v1/realtime?model={model}
+```
+
+| | |
+| --- | --- |
+| **Authorization** | `Authorization: Bearer <DGRID_API_KEY>; OpenAI-Beta: realtime=v1` |
+| **Requête** | `websocket` |
+| **Réponse** | `event stream` |
+
+### Événements client principaux
+
+| Type d'événement | Description |
+| --- | --- |
+| `session.update` | Met à jour les modalités, la voix ou d'autres préférences de session. |
+| `input_audio_buffer.append` | Envoie des fragments audio encodés. |
+| `input_audio_buffer.commit` | Indique que l'audio mis en mémoire tampon est prêt. |
+| `response.create` | Demande au serveur de commencer à générer une réponse. |
+| `conversation.item.create` | Ajoute un tour de conversation ou un résultat d'outil. |
+
+### Événements serveur principaux
+
+| Type d'événement | Description |
+| --- | --- |
+| `session.created` | Confirmation initiale que la session websocket existe. |
+| `session.updated` | Confirmation que les paramètres de session ont changé. |
+| `response.text.delta` | Sortie texte incrémentale. |
+| `response.audio.delta` | Sortie audio incrémentale. |
+| `response.done` | Événement final pour une réponse terminée. |
+| `error` | Charge utile d'erreur récupérable ou fatale. |
+
+### Recommandations d'intégration
+
+1. Mettez en mémoire tampon l'audio côté client en petits fragments et utilisez `input_audio_buffer.commit` pour signaler les limites de tour.
+2. Écoutez à la fois `response.text.delta` et `response.audio.delta` si la session prend en charge une sortie multimodale.
+3. Utilisez le point de terminaison HTTP de jeton de session pour les clients navigateur afin que la clé API à longue durée de vie n'atteigne jamais le client.
+
+<ResponseExample>
+
+```json response.text.delta
+{
+  "type": "response.text.delta",
+  "response_id": "resp_123",
+  "delta": "Hello"
+}
+```
+
+```json response.done
+{
+  "type": "response.done",
+  "response": {
+    "id": "resp_123",
+    "status": "completed"
+  }
+}
+```
+
+</ResponseExample>

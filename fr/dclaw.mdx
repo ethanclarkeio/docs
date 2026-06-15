@@ -1,0 +1,69 @@
+---
+title: "DClaw"
+sidebarTitle: "DClaw"
+description: "La couche de déploiement en un clic de DGrid pour les agents IA personnels"
+---
+
+**DClaw** est la couche de déploiement en un clic de DGrid pour les agents IA personnels. Construite sur la base de **CoPaw**, elle aide les particuliers, les développeurs, les équipes et les communautés à lancer des agents persistants et détenus par l'utilisateur, avec moins de configuration et une complexité opérationnelle réduite.
+
+Plutôt que d'assembler l'accès aux modèles, la mémoire, les canaux et les compétences des agents à travers plusieurs services externes, DClaw offre une expérience de déploiement plus unifiée au sein de l'écosystème DGrid. Le résultat est un chemin plus rapide entre l'idée d'un agent et un agent opérationnel pouvant fonctionner dans des environnements réels.
+
+## Ce que fait DClaw
+
+DClaw est conçu pour faire passer les agents personnels d'un concept de prototype à un service utilisable et orienté production. Un agent DClaw déployé peut :
+
+* maintenir un contexte persistant à travers les interactions
+* communiquer via plusieurs canaux à partir d'une seule identité d'agent
+* exécuter des tâches au nom de l'utilisateur dans des flux de travail réels
+* évoluer au fil du temps grâce à la mémoire, aux compétences et aux extensions de type plugin
+
+En termes concrets, DClaw fait passer l'IA d'un outil que les utilisateurs ouvrent manuellement à un agent qui peut rester présent là où la communication et la coordination ont déjà lieu.
+
+## Pourquoi DClaw est important
+
+Les cadres d'agents open source traditionnels nécessitent souvent une configuration d'environnement, une orchestration de services, un paramétrage manuel et une maintenance continue avant qu'un agent ne devienne utilisable. DClaw réduit cette charge en regroupant l'infrastructure d'agent essentielle dans une couche de déploiement plus simple.
+
+Comparé à une approche centrée sur le framework comme OpenClaw, DClaw met l'accent sur :
+
+* un **déploiement en un clic** plutôt qu'une configuration d'environnement en plusieurs étapes
+* un **accès intégré à l'API DGrid** plutôt que l'assemblage de plusieurs services externes
+* des **modèles, canaux, mémoire et compétences intégrés** dans un seul flux de travail
+* une **mise en production plus rapide** pour les utilisateurs techniques comme non techniques
+
+## Capacités principales
+
+### Présence d'agent multi-canal
+
+DClaw prend en charge un ensemble croissant de canaux et de protocoles de communication, notamment Telegram, iMessage, Matrix, DingTalk, WeCom, WeChat, MQTT et les API basées sur Twilio. Cela permet à un seul agent d'interagir dans des environnements de travail, sociaux et de développement sans configuration répétée ni identités fragmentées.
+
+### Mémoire persistante détenue par l'utilisateur
+
+DClaw comprend un système de mémoire persistante qui stocke un contexte utile tel que les conversations précédentes, les préférences de l'utilisateur, les flux de travail récurrents et l'historique des tâches. Le principe de conception est celui d'une **mémoire détenue par l'utilisateur** : la personnalisation doit rester sous le contrôle de l'utilisateur plutôt que de dépendre d'une conservation de données opaque.
+
+### Extensibilité par compétences et plugins
+
+Les agents DClaw peuvent être étendus via des compétences et plugins modulaires. Les utilisateurs peuvent adopter des compétences communautaires, développer des capacités personnalisées, échanger des compétences sans reconstruire l'agent, et prendre en charge des flux de travail de plus en plus spécialisés au fil du temps.
+
+### Accès intégré aux modèles
+
+DClaw inclut l'accès aux principaux modèles d'IA sans nécessiter de configuration API distincte au départ. Les utilisateurs peuvent s'appuyer sur la logique de routage de DClaw pour sélectionner un modèle approprié en fonction des capacités, de la latence et du coût, tout en conservant la possibilité de choisir directement des modèles si nécessaire.
+
+## Utilisation typique
+
+Un flux de travail DClaw typique est simple :
+
+1. Déployez un agent via la couche DClaw.
+2. Connectez les canaux sur lesquels l'agent doit opérer.
+3. Définissez le rôle de l'agent, ses préférences de mémoire et les compétences requises.
+4. Laissez l'agent gérer les flux de travail récurrents de coordination, d'information ou orientés tâches.
+
+Cela rend DClaw adapté à des cas d'usage tels que :
+
+* assistants de productivité personnelle
+* agents de coordination et de reporting d'équipe
+* assistants de surveillance d'écosystème ou de recherche
+* agents développeurs pour le déploiement, le débogage ou le support opérationnel
+
+## Résumé
+
+DClaw est la couche de déploiement qui facilite le lancement, l'extension et l'utilisation à grande échelle des agents personnels au sein de l'écosystème DGrid. Elle combine un déploiement simplifié avec une mémoire persistante, une présence multi-canal, une extensibilité et un accès intégré aux modèles, afin que les utilisateurs puissent passer de la configuration à des flux de travail d'agent réels en quelques minutes.

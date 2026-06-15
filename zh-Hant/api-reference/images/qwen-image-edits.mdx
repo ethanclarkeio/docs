@@ -1,0 +1,81 @@
+---
+title: "Qwen 圖像編輯"
+sidebarTitle: "Qwen 圖像編輯"
+description: "透過相容 Qwen 的 OpenAI 圖像編輯流程編輯圖像"
+openapi: "api-reference/openapi.json POST /v1/images/edits"
+---
+
+本頁使用與 [編輯圖像](/zh-Hant/api-reference/images/edit-image) 相同的 `images/edits` 操作，上方 playground 已預先填入通用 OpenAI 風格的編輯結構（`image`、`mask`、`prompt` 等）。以下說明 `wanx-v1` 類模型的 Qwen 專用請求格式。
+
+<Note>
+Qwen 圖像編輯模型接受另一種 JSON 請求格式：將編輯指令與來源圖像參照包在 `input.messages` 中，而不是透過 multipart form data 上傳 `image`／`mask` 檔案。若要使用這種格式，請在 playground 的請求本文中同時提供 `model` 與 `input`。
+</Note>
+
+### Qwen 專用請求欄位
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `model` | string | 是 | 模型識別碼，例如 `wanx-v1`。 |
+| `input` | object | 是 | 在請求本文中傳送的輸入包裝物件，用來取代 multipart 的 `image`／`mask` 欄位。 |
+| `input.messages` | array | 是 | 巢狀於 `input` 之下的 messages 陣列。 |
+| `input.messages[].role` | string | 是 | 訊息角色，例如 `user`。 |
+| `input.messages[].content` | string | 是 | 編輯指令，以及任何被參照的來源圖像。 |
+
+<Tip>
+來源圖像可以直接在 `input.messages[].content` 中以內嵌方式參照（例如 URL 或嵌入式參照），而不必另外上傳 multipart 檔案。
+</Tip>
+
+### 範例：編輯圖像
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Remove the background and replace it with a solid white backdrop."
+      }
+    ]
+  }
+}
+```
+
+### 回應欄位
+
+回應遵循標準圖像編輯結構：
+
+<ResponseField name="created" type="integer">
+  建立時間戳。
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  生成圖像條目。
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      圖像 URL。
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Base64 圖像負載。
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      模型回傳的修訂 prompt。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/edited-abc123.png",
+      "b64_json": "",
+      "revised_prompt": "The subject with background removed and replaced with a solid white backdrop."
+    }
+  ]
+}
+```

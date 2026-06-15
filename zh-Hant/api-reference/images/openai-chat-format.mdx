@@ -1,0 +1,98 @@
+---
+title: "OpenAI 對話格式"
+sidebarTitle: "OpenAI 對話格式"
+description: "透過相容 OpenAI 的 Chat Completions 端點請求由 Gemini 驅動的圖像生成"
+openapi: "api-reference/openapi.json POST /v1/chat/completions"
+---
+
+本頁使用與 [建立對話補全](/zh-Hant/api-reference/chat/create-chat-completion) 相同的 `chat/completions` 操作，上方 playground 已預先填入通用對話結構。以下說明如何從相容 OpenAI 的用戶端，透過這個端點請求由 Gemini 驅動的圖像生成。
+
+<Note>
+請在 `model` 中指定圖像生成模型（例如 `gemini-2.0-flash-preview-image-generation`），依需求設定 `stream`，並透過 `messages` 提供 prompt。你也可以選擇加入 `contents`，搭配 `messages` 提供額外的 Gemini 風格多模態上下文。
+</Note>
+
+### 供應商特定說明
+
+| 欄位 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `model` | string | 是 | 圖像生成模型識別碼，例如 `gemini-2.0-flash-preview-image-generation`。 |
+| `messages[].content` | string | 是 | 描述目標圖像的 prompt 文字。 |
+| `contents` | array | 否 | 額外多模態上下文的 Gemini 風格內容陣列，並非標準 OpenAI 對話結構的一部分。 |
+
+<Tip>
+`contents` 欄位是 DGrid 疊加在標準 chat completions 結構上的延伸。當目標模型支援時，它可讓你在 OpenAI 風格的 `messages` 陣列之外，再傳送 Gemini 原生的 `parts`（例如 `inlineData`）。
+</Tip>
+
+### 範例：請求圖像
+
+```json
+{
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Generate an image of a futuristic city skyline at sunset."
+    }
+  ]
+}
+```
+
+### 回應欄位
+
+回應遵循標準 chat completions 結構。生成圖像會直接嵌入在 assistant 訊息內容中：
+
+<ResponseField name="choices" type="array">
+  回傳的 choice 條目。
+
+  <Expandable title="choice properties">
+    <ResponseField name="index" type="integer">
+      Choice 索引。
+    </ResponseField>
+    <ResponseField name="message" type="object">
+      Assistant 訊息物件。
+
+      <Expandable title="message properties">
+        <ResponseField name="role" type="string">
+          訊息角色，通常為 `assistant`。
+        </ResponseField>
+        <ResponseField name="content" type="string">
+          訊息內容。對於圖像輸出模型，這裡通常是 markdown 圖像參照，會以 base64 data URI 內嵌生成圖像，例如 `![generated image](data:image/png;base64,...)`。
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finish_reason" type="string">
+      完成原因，例如 `stop`。
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usage" type="object">
+  Token 使用摘要。
+</ResponseField>
+
+### 回應範例
+
+```json 200
+{
+  "id": "chatcmpl-abc123",
+  "model": "gemini-2.0-flash-preview-image-generation",
+  "object": "chat.completion",
+  "created": 1719859200,
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "![generated image](data:image/png;base64,<base64-encoded-image-bytes>)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 0,
+    "total_tokens": 12
+  }
+}
+```

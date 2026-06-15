@@ -1,0 +1,81 @@
+---
+title: "Générations d'images Qwen"
+sidebarTitle: "Générations d'images Qwen"
+description: "Générez des images via le point de terminaison OpenAI compatible Qwen pour les modèles de type wanx-v1"
+openapi: "api-reference/openapi.json POST /v1/images/generations"
+---
+
+Cette page utilise la même opération `images/generations` que [Créer une image](/fr/api-reference/images/create-image), avec le playground ci-dessus prérempli pour le schéma d'image générique de style OpenAI (`prompt`, `model`, `size`, etc.). Les notes ci-dessous décrivent la forme de requête spécifique à Qwen pour les modèles de type `wanx-v1`.
+
+<Note>
+Les modèles d'image Qwen acceptent une forme de requête alternative qui place votre prompt dans `input.messages` au lieu d'un champ `prompt` de premier niveau. Fournissez `model` et `input` ensemble dans le corps de requête du playground pour utiliser ce format.
+</Note>
+
+### Champs de requête spécifiques à Qwen
+
+| Champ | Type | Requis | Description |
+| --- | --- | --- | --- |
+| `model` | string | Oui | Identifiant du modèle, tel que `wanx-v1`. |
+| `input` | object | Oui | Objet conteneur envoyé dans la requête, utilisé à la place d'un `prompt` de premier niveau. |
+| `input.messages` | array | Oui | Tableau de messages imbriqué sous `input`. |
+| `input.messages[].role` | string | Oui | Rôle du message, par exemple `user`. |
+| `input.messages[].content` | string | Oui | Texte du prompt décrivant l'image souhaitée. |
+
+<Tip>
+Contrairement aux champs standards `prompt` / `size` / `quality` affichés dans le playground, les modèles `wanx-v1` de Qwen lisent le prompt à partir de `input.messages[].content`. Les autres champs de premier niveau tels que `n` et `response_format` ne sont pas utilisés par ce format.
+</Tip>
+
+### Exemple : générer une image
+
+```json
+{
+  "model": "wanx-v1",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "A serene mountain lake at dawn, photorealistic."
+      }
+    ]
+  }
+}
+```
+
+### Champs de réponse
+
+La réponse suit la forme standard de génération d'image :
+
+<ResponseField name="created" type="integer">
+  Horodatage de création.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Éléments d'image générés.
+
+  <Expandable title="data item properties">
+    <ResponseField name="url" type="string">
+      URL de l'image.
+    </ResponseField>
+    <ResponseField name="b64_json" type="string">
+      Charge utile image en base64.
+    </ResponseField>
+    <ResponseField name="revised_prompt" type="string">
+      Prompt révisé renvoyé par le modèle.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Exemple de réponse
+
+```json 200
+{
+  "created": 1719859200,
+  "data": [
+    {
+      "url": "https://cdn.dgrid.ai/generated/abc123.png",
+      "b64_json": "",
+      "revised_prompt": "A serene mountain lake at dawn with mist rising off the water, photorealistic."
+    }
+  ]
+}
+```

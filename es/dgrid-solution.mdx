@@ -1,0 +1,81 @@
+---
+title: "La solución de DGrid"
+sidebarTitle: "La solución de DGrid"
+description: "Arquitectura central y módulos clave de la red de inferencia descentralizada de DGrid AI"
+---
+
+<Info>
+***DGrid AI = Red descentralizada de enrutamiento y verificación + Mercado libre de LLM y agentes + Sistema de gobernanza AI DAO***
+</Info>
+
+DGrid AI aborda las brechas críticas entre la IA Web3 y la IA centralizada a través de un ecosistema interconectado compuesto por nodos, protocolos e infraestructura descentralizada.
+
+Al integrar interfaces estandarizadas de AI RPC, nodos de inferencia distribuidos, enrutamiento inteligente, liquidación en cadena y almacenamiento seguro, hemos construido una red de servicios de LLM y agentes escalable, centrada en el usuario y sin necesidad de confianza, lo que permite que la IA se convierta en una capacidad nativa de las aplicaciones blockchain. En su núcleo, la solución de DGrid redefine la inferencia de IA descentralizada a través de tres componentes fundamentales: nodos distribuidos para la ejecución de modelos con confiabilidad de resultados garantizada por **Proof of Quality (PoQ)**, protocolos estandarizados para el acceso universal y mecanismos en cadena para una transparencia total.
+
+<Frame caption="La arquitectura de la solución de DGrid AI">
+  <img src="/images/Dgrid_Solution.png" alt="Diagrama de la arquitectura de la solución de DGrid" />
+</Frame>
+
+## 1. Red descentralizada de enrutamiento y verificación
+
+- **Acceso inteligente unificado**: ofrece a los desarrolladores una API única para acceder simultáneamente a miles de modelos especializados y agentes preconfigurados, reduciendo significativamente los costos de integración.
+- **Enrutamiento y programación inteligentes**: recomienda y programa automáticamente los recursos de servicio óptimos en función de métricas multidimensionales, incluido el tipo de tarea, las restricciones presupuestarias y los datos de rendimiento histórico.
+- **Mecanismo de verificación confiable**: aprovecha el algoritmo **Proof of Quality (PoQ)** para garantizar la confiabilidad de los flujos de trabajo y los resultados de IA y agentes, logrando servicios eficientes, resistentes a la censura y trazables.
+
+## 2. Mercado libre de LLM y agentes
+
+- **Oportunidades de publicación abierta**: los proveedores de modelos, los desarrolladores de IA y los ingenieros de prompts pueden publicar modelos ajustados (fine-tuned) o agentes personalizados en la red de DGrid, fijar sus propios precios y obtener ingresos directamente de los usuarios globales a través de un mecanismo de competencia transparente.
+- **Tokenización de valor**: los modelos y agentes de alta calidad pueden tokenizarse en DGrid para capturar valor de mercado a largo plazo.
+
+## 3. Nodos de DGrid: ejecución de inferencia descentralizada
+
+Los nodos de DGrid son nodos operados por la comunidad que forman el núcleo computacional de la red al alojar uno o más modelos de lenguaje de gran tamaño (LLM, por ejemplo, Llama-2, Mixtral) y agentes de IA. Estos nodos:
+
+- Ejecutan tareas de inferencia para los usuarios, procesan entradas (por ejemplo, prompts de texto, consultas a contratos inteligentes), generan salidas mediante modelos precargados y verifican la calidad de los resultados de inferencia a través del mecanismo **PoQ (Proof of Quality)** para garantizar la confiabilidad y la precisión de los resultados.
+- Se adaptan a las capacidades del hardware: los operadores pueden seleccionar modelos que coincidan con las especificaciones de sus servidores, desde modelos ligeros de 7.000 millones de parámetros en GPU básicas hasta modelos de más de 70.000 millones de parámetros en hardware de alto rendimiento.
+- Informan métricas en tiempo real (latencia, consumo de unidades de cómputo [CU]) a la red de DGrid, proporcionando soporte de datos para el enrutamiento inteligente y permitiendo una asignación optimizada de tareas.
+
+Al distribuir las tareas de inferencia entre miles de nodos independientes, DGrid elimina los puntos únicos de falla y garantiza redundancia geográfica, algo fundamental para las aplicaciones Web3 que requieren confiabilidad las 24 horas.
+
+## 4. DGrid AI Gateway: acceso universal y verificación de solicitudes
+
+- **DGrid AI Gateway**: un protocolo JSON-RPC estandarizado que simplifica el acceso de los usuarios a los modelos y agentes de la red. Proporciona una API unificada para invocar cualquier LLM o agente (independientemente del nodo o tipo de modelo) e integra firmas EIP-712 para verificar las solicitudes de los usuarios, garantizando que solo se procesen tareas autorizadas y prepagadas.
+
+DGrid AI Gateway resuelve el problema de "fragmentación de interfaces" en la IA Web3, haciendo que la integración de LLM y agentes sea tan sencilla como llamar a un contrato inteligente.
+
+## 5. Proof of Quality (PoQ): garantía de confianza para los resultados de inferencia
+
+**Proof of Quality (PoQ)** es el mecanismo central del ecosistema DGrid que garantiza la confiabilidad de los resultados de inferencia de LLM y de ejecución de agentes. Trabajando en conjunto con los nodos distribuidos y DGrid AI Gateway, forma un flujo de trabajo cerrado de "Solicitud-Ejecución-Verificación":
+
+- **Evaluación de calidad multidimensional**: PoQ puntúa objetivamente los resultados de inferencia generados por los nodos de DGrid en función de tres dimensiones clave: **alineación de precisión** (comparación con respuestas estándar o resultados de referencia), **consistencia de respuesta** (desviación de la salida de la misma solicitud entre diferentes nodos) y **cumplimiento de formato** (adherencia a los requisitos de salida especificados por el usuario). El marco de evaluación incorpora además consideraciones de costo-eficiencia y lógica de verificación de similitud semántica para equilibrar la alta calidad con una baja sobrecarga.
+- **Generación de pruebas verificables en cadena**: tras completar una tarea de inferencia, los nodos cargan los registros del proceso de inferencia y los datos de puntuación PoQ en la red para generar pruebas de calidad a prueba de manipulaciones. Los usuarios pueden consultar estas pruebas en cadena para verificar rápidamente la confiabilidad de los resultados sin volver a ejecutar las tareas de inferencia. Combinado con una arquitectura de verificación híbrida, este mecanismo logra baja latencia y bajo costo mientras garantiza la integridad computacional.
+
+## 6. Contratos de facturación y capa AI DA: transparencia en cadena
+
+- **Contratos de facturación**: contratos inteligentes desplegados en la blockchain para la liquidación automatizada de tokens $DGAI entre usuarios y nodos. Estos contratos calculan las tarifas en función de las unidades de cómputo (CU) y la latencia, deducen los pagos de las cuentas de los usuarios mediante el protocolo x402 y distribuyen las recompensas a los operadores de nodos, eliminando intermediarios.
+- **Capa AI DA (disponibilidad de datos)**: una red de almacenamiento descentralizada donde todos los datos de las solicitudes de inferencia están protegidos por PoQ para garantizar la auditabilidad. Los usuarios pueden verificar los detalles de facturación, y los nodos pueden demostrar la finalización de las tareas, aumentando así la transparencia para la resolución de disputas o las auditorías de cumplimiento.
+
+## 7. Mecanismos de seguridad
+
+DGrid AI ha establecido un marco de seguridad integral para garantizar la ausencia de necesidad de confianza en la red descentralizada, combinando salvaguardas técnicas con transparencia en cadena:
+
+### Entorno de inferencia confiable
+
+- **Tiempo de ejecución inmutable**: los operadores de nodos de DGrid no pueden modificar los pesos ni los entornos de ejecución de los modelos de lenguaje de gran tamaño (LLM) y los agentes de IA, garantizando un comportamiento consistente del modelo en toda la red.
+- **Controles de recursos**: límites estrictos en el uso de CPU, GPU y red (aplicados por los nodos) previenen ataques de denegación de servicio (DoS).
+
+### Auditoría y rendición de cuentas en cadena
+
+- **Registros a prueba de manipulaciones**: todas las actividades críticas —registro de nodos, metadatos de inferencia (entradas/salidas), liquidaciones de tarifas y recompensas— se registran en cadena mediante los contratos de facturación y se almacenan en la capa AI DA.
+- **Mecanismos de penalización automáticos**: la red de DGrid supervisa el comportamiento de los nodos; los actores maliciosos (por ejemplo, que envían resultados falsos) enfrentan penalizaciones como la confiscación de tokens en staking o la inclusión del nodo en una lista negra, aplicadas mediante contratos inteligentes.
+- **Gobernanza descentralizada**: los titulares de tokens $DGAI pueden votar sobre actualizaciones de protocolo, estructuras de tarifas y parámetros de seguridad, garantizando que el desarrollo de la red se alinee con los intereses de la comunidad.
+
+## Ventajas fundamentales: definiendo la infraestructura de IA de próxima generación
+
+Al integrar ejecución descentralizada, coordinación inteligente, inferencia segura y liquidación transparente, DGrid construye ventajas fundamentales que la distinguen de la IA centralizada tradicional y de las soluciones de IA Web3 existentes, redefiniendo la próxima generación de infraestructura de IA:
+
+- **Confiabilidad de extremo a extremo**: basada en pruebas de calidad PoQ y almacenamiento de evidencia en cadena, logra procesos y resultados de inferencia verificables y auditables, resolviendo el problema de la "caja negra".
+- **Experiencia de integración fluida**: una única API de DGrid AI Gateway es compatible con miles de modelos y agentes, reduciendo significativamente los costos de integración y migración para los desarrolladores.
+- **Equidad del ecosistema y colaboración de beneficio mutuo**: el mercado libre de LLM y agentes, junto con el mecanismo de incentivos basado en el mérito, garantizan la alineación de valor entre creadores, constructores y usuarios.
+- **Elasticidad y resiliencia**: la red de nodos distribuida elimina los puntos únicos de falla, y la redundancia geográfica garantiza la disponibilidad del servicio las 24 horas, resistiendo interrupciones regionales y riesgos regulatorios.
+- **Gobernanza autónoma impulsada por la comunidad**: AI DAO impulsa la evolución de la red; los titulares de $DGAI lideran las decisiones clave, y los agentes de IA pueden participar en la gobernanza automatizada en representación de los usuarios, garantizando que el desarrollo del ecosistema se alinee con los intereses de la comunidad.

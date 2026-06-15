@@ -1,0 +1,117 @@
+---
+title: "네이티브 Gemini 형식"
+sidebarTitle: "네이티브 Gemini 형식"
+description: "멀티모달 오디오 이해 및 생성을 위해 Gemini 호환 generateContent 요청을 사용하세요"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+이 페이지는 [콘텐츠 생성 (Gemini)](/ko/api-reference/chat/generate-content)과 동일한 `generateContent` 작업을 사용하며, 위의 플레이그라운드에는 일반 텍스트 채팅이 미리 입력되어 있습니다. 아래 내용은 구조화된 파트(part)를 사용하여 오디오 이해 또는 생성을 요청하기 위해 `generationConfig`에 추가할 수 있는 Gemini 네이티브 필드를 설명합니다.
+
+<Note>
+오디오 출력을 요청하려면 `generationConfig.responseModalities`를 `["AUDIO"]`로 설정하고, 생성된 음성에 사용할 사전 정의된 음성을 선택하려면 `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName`을 설정하세요.
+</Note>
+
+### Gemini 네이티브 요청 필드
+
+| 필드 | 유형 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `generationConfig.responseModalities` | array | 예 | 요청할 응답 모달리티입니다 (예: `["AUDIO"]`). |
+| `generationConfig.speechConfig` | object | 아니요 | 음성 설정 객체입니다. |
+| `generationConfig.speechConfig.voiceConfig` | object | 아니요 | 음성 설정 래퍼입니다. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig` | object | 아니요 | 사전 정의된 음성 설정입니다. |
+| `generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName` | string | 아니요 | 사전 정의된 음성 프리셋 이름입니다 (예: `Kore`). |
+
+<Tip>
+오디오 출력을 요청할 때는 `model` 경로 매개변수에 `gemini-2.5-flash-preview-tts`와 같이 텍스트-음성 변환이 가능한 모델을 사용하세요.
+</Tip>
+
+### 예시: 음성 오디오 요청
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Say cheerfully: Have a wonderful day!" }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "responseModalities": ["AUDIO"],
+    "speechConfig": {
+      "voiceConfig": {
+        "prebuiltVoiceConfig": {
+          "voiceName": "Kore"
+        }
+      }
+    }
+  }
+}
+```
+
+### 응답 필드
+
+응답은 표준 `generateContent` 형식을 따릅니다. 오디오 출력을 요청한 경우, 반환되는 `parts`에는 텍스트 대신 인라인 오디오 데이터가 포함됩니다.
+
+<ResponseField name="candidates" type="array">
+  모델이 반환한 후보 응답입니다.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      생성된 콘텐츠 객체입니다.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          생성된 콘텐츠 블록에서 반환되는 역할로, 일반적으로 `model`입니다.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          반환된 파트입니다. 오디오 출력의 경우, 각 파트는 `mimeType`(예: `audio/L16;codec=pcm;rate=24000`)과 base64로 인코딩된 `data`를 포함하는 `inlineData` 객체를 포함합니다.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      종료 이유 문자열입니다 (예: `STOP`).
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      안전성 평가 결과입니다.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  `promptTokenCount`, `candidatesTokenCount`, `totalTokenCount`를 포함한 토큰 사용 내역입니다.
+</ResponseField>
+
+<ResponseField name="promptFeedback" type="object">
+  해당하는 경우 프롬프트 차단 관련 피드백입니다.
+</ResponseField>
+
+### 응답 예시
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "audio/L16;codec=pcm;rate=24000",
+              "data": "<base64-encoded-audio-bytes>"
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 10,
+    "candidatesTokenCount": 0,
+    "totalTokenCount": 10
+  }
+}
+```

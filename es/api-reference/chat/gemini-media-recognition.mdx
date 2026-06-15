@@ -1,0 +1,107 @@
+---
+title: "Reconocimiento multimedia de Gemini"
+sidebarTitle: "Reconocimiento multimedia de Gemini"
+description: "Use parts multimodales nativas de Gemini para analizar imágenes, audio, video o medios mixtos mediante generateContent"
+openapi: "api-reference/openapi.json POST /v1/models/{model}:generateContent"
+---
+
+Esta página usa la misma operación `generateContent` que [Generar contenido (Gemini)](/es/api-reference/chat/generate-content), con el playground de arriba rellenado previamente para chat de texto plano. Las notas a continuación describen los campos multimodales nativos de Gemini que puede agregar a `contents[].parts` para analizar imágenes, audio, video o medios mixtos en una sola solicitud.
+
+<Note>
+Cada part puede incluir datos inline (bytes codificados en base64 más un tipo MIME) junto con instrucciones de texto, lo que permite que el modelo razone entre modalidades en una sola llamada.
+</Note>
+
+### Campos de solicitud nativos de Gemini
+
+Los campos genéricos `contents` y `generationConfig` que se muestran en el playground aceptan la siguiente forma anidada para reconocimiento multimodal:
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `contents[].role` | string | No | Rol del turno, por ejemplo `user`. |
+| `contents[].parts` | array | Sí | Lista ordenada de parts de contenido (texto y/o medios inline). |
+| `contents[].parts[].text` | string | No | Instrucción de texto o pregunta para el modelo. |
+| `contents[].parts[].inlineData` | object | No | Carga multimedia inline para comprensión de imagen, audio o video. |
+| `contents[].parts[].inlineData.mimeType` | string | No | Tipo MIME de los datos inline, por ejemplo `image/jpeg`, `audio/mp3`, `video/mp4`. |
+| `contents[].parts[].inlineData.data` | string | No | Bytes multimedia codificados en base64. |
+
+<Tip>
+Puede mezclar varias parts en un solo turno; por ejemplo, una part `text` con una instrucción seguida de una o más parts `inlineData` que contengan el medio a analizar.
+</Tip>
+
+### Ejemplo: analizar una imagen
+
+```json
+{
+  "contents": [
+    {
+      "role": "user",
+      "parts": [
+        { "text": "Describe what is happening in this image." },
+        {
+          "inlineData": {
+            "mimeType": "image/jpeg",
+            "data": "<base64-encoded-image-bytes>"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Campos de respuesta
+
+La respuesta sigue la forma estándar de `generateContent`. Los campos más relevantes para el reconocimiento multimedia son:
+
+<ResponseField name="candidates" type="array">
+  Respuestas candidatas devueltas por el modelo.
+
+  <Expandable title="candidate properties">
+    <ResponseField name="content" type="object">
+      Objeto de contenido generado.
+
+      <Expandable title="content properties">
+        <ResponseField name="role" type="string">
+          Rol devuelto en el bloque de contenido generado, normalmente `model`.
+        </ResponseField>
+        <ResponseField name="parts" type="array">
+          Parts de contenido devueltas, normalmente texto que describe el medio analizado.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="finishReason" type="string">
+      Cadena de motivo de finalización, por ejemplo `STOP`.
+    </ResponseField>
+    <ResponseField name="safetyRatings" type="array">
+      Resultados de evaluación de seguridad.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usageMetadata" type="object">
+  Metadatos de contabilidad de tokens, incluido `promptTokenCount`, `candidatesTokenCount` y `totalTokenCount`. Los medios inline (imágenes, audio, video) consumen tokens del prompt además de cualquier part de texto.
+</ResponseField>
+
+### Ejemplo de respuesta
+
+```json 200
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          { "text": "The image shows a golden retriever sitting on a grassy lawn." }
+        ]
+      },
+      "finishReason": "STOP",
+      "safetyRatings": []
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 264,
+    "candidatesTokenCount": 18,
+    "totalTokenCount": 282
+  }
+}
+```
