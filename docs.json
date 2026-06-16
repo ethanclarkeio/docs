@@ -74,6 +74,214 @@
     {
       "source": "/ai-gateway/model-api/models",
       "destination": "/api-reference/models/list-models"
+    },
+    {
+      "source": "/Academic-Research",
+      "destination": "/academic-research"
+    },
+    {
+      "source": "/Arena-for-Agent",
+      "destination": "/ai-arena/arena-for-agent"
+    },
+    {
+      "source": "/AI-Arena",
+      "destination": "/ai-arena/overview"
+    },
+    {
+      "source": "/Integration-Tutorials",
+      "destination": "/ai-gateway/integrations"
+    },
+    {
+      "source": "/Realtime",
+      "destination": "/ai-gateway/model-api/realtime"
+    },
+    {
+      "source": "/AI-Gateway",
+      "destination": "/ai-gateway/overview"
+    },
+    {
+      "source": "/Supported-Countries-and-Regions",
+      "destination": "/ai-gateway/supported-regions"
+    },
+    {
+      "source": "/Terms-of-Service",
+      "destination": "/ai-gateway/terms-of-service"
+    },
+    {
+      "source": "/Create-speech",
+      "destination": "/api-reference/audio/create-speech"
+    },
+    {
+      "source": "/Create-transcription",
+      "destination": "/api-reference/audio/create-transcription"
+    },
+    {
+      "source": "/Create-translation",
+      "destination": "/api-reference/audio/create-translation"
+    },
+    {
+      "source": "/Native-Gemini-Format",
+      "destination": "/api-reference/audio/native-gemini-format"
+    },
+    {
+      "source": "/Create-chat-completion",
+      "destination": "/api-reference/chat/create-chat-completion"
+    },
+    {
+      "source": "/Create-message-Claude",
+      "destination": "/api-reference/chat/create-message"
+    },
+    {
+      "source": "/Create-response",
+      "destination": "/api-reference/chat/create-response"
+    },
+    {
+      "source": "/Gemini-Media-Recognition",
+      "destination": "/api-reference/chat/gemini-media-recognition"
+    },
+    {
+      "source": "/Generate-content-Gemini",
+      "destination": "/api-reference/chat/generate-content"
+    },
+    {
+      "source": "/Create-completion",
+      "destination": "/api-reference/completions/create-completion"
+    },
+    {
+      "source": "/Create-embeddings",
+      "destination": "/api-reference/embeddings/create-embedding"
+    },
+    {
+      "source": "/Create-embeddings-legacy-engines",
+      "destination": "/api-reference/embeddings/create-engine-embedding"
+    },
+    {
+      "source": "/Create-image",
+      "destination": "/api-reference/images/create-image"
+    },
+    {
+      "source": "/Edit-image",
+      "destination": "/api-reference/images/edit-image"
+    },
+    {
+      "source": "/Gemini-Native-Format",
+      "destination": "/api-reference/images/gemini-native-format"
+    },
+    {
+      "source": "/OpenAI-Chat-Format",
+      "destination": "/api-reference/images/openai-chat-format"
+    },
+    {
+      "source": "/Qwen-Image-Edits",
+      "destination": "/api-reference/images/qwen-image-edits"
+    },
+    {
+      "source": "/Qwen-Image-Generations",
+      "destination": "/api-reference/images/qwen-image-generations"
+    },
+    {
+      "source": "/Introduction",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/API-Reference",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/List-models",
+      "destination": "/api-reference/models/list-models"
+    },
+    {
+      "source": "/Create-moderation",
+      "destination": "/api-reference/moderations/create-moderation"
+    },
+    {
+      "source": "/Background",
+      "destination": "/background"
+    },
+    {
+      "source": "/Circulation-Mechanism",
+      "destination": "/circulation-mechanism"
+    },
+    {
+      "source": "/Core-Functions",
+      "destination": "/core-functions"
+    },
+    {
+      "source": "/DClaw",
+      "destination": "/dclaw"
+    },
+    {
+      "source": "/DGrids-Solution",
+      "destination": "/dgrid-solution"
+    },
+    {
+      "source": "/Dori-Find-Models",
+      "destination": "/dori"
+    },
+    {
+      "source": "/DGrid-AI-Documentation",
+      "destination": "/"
+    },
+    {
+      "source": "/Management-API-Keys",
+      "destination": "/management-api-keys"
+    },
+    {
+      "source": "/Node-Operators",
+      "destination": "/node-operators"
+    },
+    {
+      "source": "/Compliance-and-Regulatory",
+      "destination": "/premium/compliance-and-regulatory"
+    },
+    {
+      "source": "/Exclusive-Benefits",
+      "destination": "/premium/exclusive-benefits"
+    },
+    {
+      "source": "/Incentive-Mechanism-Rewards",
+      "destination": "/premium/incentive-mechanism-and-rewards"
+    },
+    {
+      "source": "/Legal-Disclaimer",
+      "destination": "/premium/legal-disclaimer"
+    },
+    {
+      "source": "/Program-Overview",
+      "destination": "/premium/program-overview"
+    },
+    {
+      "source": "/Purchase-Activation",
+      "destination": "/premium/purchase-and-activation"
+    },
+    {
+      "source": "/Quickstart",
+      "destination": "/quickstart"
+    },
+    {
+      "source": "/Roadmap",
+      "destination": "/roadmap"
+    },
+    {
+      "source": "/Token-Distribution",
+      "destination": "/token-distribution"
+    },
+    {
+      "source": "/What-is-DGAI",
+      "destination": "/what-is-dgai"
+    },
+    {
+      "source": "/What-We-Do",
+      "destination": "/what-we-do"
+    },
+    {
+      "source": "/x402-API",
+      "destination": "/x402/overview"
+    },
+    {
+      "source": "/x402/API-Reference",
+      "destination": "/x402/api-reference"
     }
   ],
   "navbar": {
