@@ -1,0 +1,109 @@
+---
+title: "Free Models Router"
+description: "Use DGrid's free intelligent inference gateway for everyday AI tasks with automatic model routing and fair-use rate limits."
+---
+
+Free Models Router is DGrid's free intelligent inference gateway for users worldwide. Instead of choosing a specific free model manually, you call one stable model ID and let DGrid route the request to available model capacity based on service availability, response efficiency, and the task requirements.
+
+<Info>
+Use model ID `dgridai/free` when you want DGrid to select an available free model automatically. See the [model detail page](https://dgrid.ai/models/dgridai/free) for the live model listing.
+</Info>
+
+## What it is for
+
+Free Models Router is designed for general-purpose AI usage where fast access and low friction matter more than selecting a specific provider model.
+
+It works well for:
+
+- Everyday Q&A and research assistance
+- Multilingual writing, rewriting, and translation
+- Coding help, debugging suggestions, and code explanation
+- Logical analysis and structured reasoning
+- Learning support and concept explanation
+- Drafting, summarizing, and content creation
+- Complex problem solving that benefits from a capable general model
+
+## How routing works
+
+DGrid aggregates multiple sources of free inference capacity behind a single routing layer. For each request, the router evaluates available model resources and schedules the request to a suitable backend.
+
+Routing may consider:
+
+- Current service availability
+- Expected response speed
+- Task type and prompt requirements
+- Free compute availability across connected model sources
+- Operational stability of the underlying route
+
+This means the underlying model can change from request to request. If your application requires a fixed model identity, use a specific Model API model ID instead of `dgridai/free`.
+
+## Quickstart
+
+Free Models Router uses the same OpenAI-compatible chat completion interface as the rest of DGrid AI Gateway.
+
+```bash
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "dgridai/free",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain zero-knowledge proofs in simple terms."
+      }
+    ]
+  }'
+```
+
+You can also use the OpenAI SDK by setting the DGrid base URL:
+
+```typescript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: process.env.DGRID_API_KEY,
+});
+
+const completion = await client.chat.completions.create({
+  model: 'dgridai/free',
+  messages: [
+    {
+      role: 'user',
+      content: 'Help me outline a launch plan for a developer tool.',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+## Rate limits
+
+To keep free access reliable and fair, DGrid applies request limits to Free Models Router. Limits are enforced per account.
+
+| Access level | Eligibility | Requests per minute | Requests per day |
+| --- | --- | ---: | ---: |
+| Standard access | Account has not completed at least `$5` in qualifying top-ups | 10 | 100 |
+| Increased access | Account has completed at least `$5` in qualifying top-ups | 20 | 1,000 |
+
+A qualifying top-up is a direct addition of funds to the account balance and is used to determine whether the account meets the `$5` threshold.
+
+### Rate limit errors
+
+Requests that exceed the applicable limit are rejected with:
+
+```text
+Rate limit exceeded. Please try again later.
+```
+
+If your application needs predictable higher throughput, use a paid model route or contact DGrid support for production guidance.
+
+## Operational guidance
+
+- Treat `dgridai/free` as a convenience router, not a fixed model.
+- Avoid relying on provider-specific behavior from the underlying routed model.
+- Add retry logic with backoff for temporary rate-limit or availability responses.
+- Use paid model IDs when you need deterministic model selection, higher throughput, stronger SLA expectations, or model-specific capabilities.
+- Log `DGrid-Request-ID` from responses if you need to reconcile usage later. See [Get request billing details](/api-reference/usage-and-billing/get-request-billing-details) for request-level billing lookup.

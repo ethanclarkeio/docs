@@ -1,0 +1,110 @@
+---
+title: "Routeur de modèles gratuits"
+sidebarTitle: "Routeur de modèles gratuits"
+description: "Utilisez la passerelle d’inférence gratuite et intelligente de DGrid pour les tâches IA courantes, avec routage automatique des modèles et limites d’usage équitables."
+---
+
+<strong>Free Models Router</strong> est la passerelle d’inférence gratuite et intelligente de DGrid pour les utilisateurs du monde entier. Plutôt que de choisir manuellement un modèle gratuit précis, vous appelez un ID de modèle stable et DGrid route la requête vers une capacité disponible en fonction de la disponibilité du service, de l’efficacité de réponse et des exigences de la tâche.
+
+<Info>
+Utilisez l’ID de modèle `dgridai/free` lorsque vous souhaitez que DGrid sélectionne automatiquement un modèle gratuit disponible. Consultez la [page de détail du modèle](https://dgrid.ai/models/dgridai/free) pour la liste en direct.
+</Info>
+
+## Cas d’usage
+
+Free Models Router est conçu pour les usages IA généralistes où la rapidité d’accès et la simplicité comptent davantage que le choix manuel d’un modèle fournisseur précis.
+
+Il convient notamment pour :
+
+- les questions-réponses et l’assistance à la recherche ;
+- la rédaction, la reformulation et la traduction multilingues ;
+- l’aide au code, les suggestions de débogage et l’explication de code ;
+- l’analyse logique et le raisonnement structuré ;
+- l’aide à l’apprentissage et l’explication de concepts ;
+- la rédaction de brouillons, le résumé et la création de contenu ;
+- la résolution de problèmes complexes nécessitant un modèle généraliste performant.
+
+## Fonctionnement du routage
+
+DGrid agrège plusieurs sources de capacité d’inférence gratuite derrière une couche de routage unique. Pour chaque requête, le routeur évalue les ressources disponibles et planifie la requête vers un backend adapté.
+
+Le routage peut prendre en compte :
+
+- la disponibilité actuelle du service ;
+- la vitesse de réponse attendue ;
+- le type de tâche et les besoins du prompt ;
+- la capacité gratuite disponible sur les sources connectées ;
+- la stabilité opérationnelle de la route sous-jacente.
+
+Le modèle sous-jacent peut donc changer d’une requête à l’autre. Si votre application exige une identité de modèle fixe, utilisez un ID de modèle Model API spécifique plutôt que `dgridai/free`.
+
+## Démarrage rapide
+
+Free Models Router utilise la même interface chat completion compatible OpenAI que le reste de DGrid AI Gateway.
+
+```bash
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "dgridai/free",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain zero-knowledge proofs in simple terms."
+      }
+    ]
+  }'
+```
+
+Vous pouvez aussi utiliser le SDK OpenAI en configurant l’URL de base DGrid :
+
+```typescript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: process.env.DGRID_API_KEY,
+});
+
+const completion = await client.chat.completions.create({
+  model: 'dgridai/free',
+  messages: [
+    {
+      role: 'user',
+      content: 'Help me outline a launch plan for a developer tool.',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+## Limites d’usage
+
+Pour maintenir un accès gratuit fiable et équitable, DGrid applique des limites de requêtes à Free Models Router. Les limites sont appliquées par compte.
+
+| Niveau d’accès | Éligibilité | Requêtes par minute | Requêtes par jour |
+| --- | --- | ---: | ---: |
+| Accès standard | Compte n’ayant pas encore effectué au moins `$5` de recharges éligibles | 10 | 100 |
+| Accès augmenté | Compte ayant effectué au moins `$5` de recharges éligibles | 20 | 1 000 |
+
+Une recharge éligible correspond à un ajout direct de fonds au solde du compte et sert à déterminer si le compte atteint le seuil de `$5`.
+
+### Erreurs de limite
+
+Les requêtes dépassant la limite applicable sont rejetées avec le message suivant :
+
+```text
+Rate limit exceeded. Please try again later.
+```
+
+Si votre application nécessite un débit supérieur et prévisible, utilisez une route de modèle payante ou contactez le support DGrid pour obtenir des conseils de production.
+
+## Recommandations opérationnelles
+
+- Traitez `dgridai/free` comme un routeur pratique, pas comme un modèle fixe.
+- Évitez de dépendre d’un comportement propre au fournisseur du modèle routé.
+- Ajoutez une logique de nouvelle tentative avec backoff pour les réponses temporaires de limite ou de disponibilité.
+- Utilisez des IDs de modèles payants lorsque vous avez besoin d’un choix de modèle déterministe, d’un débit plus élevé, d’attentes SLA plus fortes ou de capacités propres à un modèle.
+- Journalisez `DGrid-Request-ID` dans les réponses si vous devez rapprocher l’usage plus tard. Consultez [Obtenir les détails de facturation d’une requête](/fr/api-reference/usage-and-billing/get-request-billing-details) pour la recherche de facturation par requête.

@@ -1,0 +1,130 @@
+---
+title: "Obtenir les détails de facturation d’une requête"
+sidebarTitle: "Détails de facturation"
+description: "Récupérez l’utilisation des tokens, l’instantané de tarification et les coûts en USD d’une requête Model API terminée."
+---
+
+Récupérez l’enregistrement de facturation d’une requête Model API précise. Utilisez cet endpoint pour rapprocher l’usage affiché à vos utilisateurs, auditer les coûts des modèles ou inspecter l’instantané de tarification appliqué lors de la facturation.
+
+<Note>
+Utilisez la même clé API DGrid que celle employée pour la requête modèle d’origine. Les enregistrements de facturation sont associés à la clé authentifiée et ne peuvent pas être consultés depuis une autre clé.
+</Note>
+
+## Endpoint
+
+```http
+GET https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>
+```
+
+| | |
+| --- | --- |
+| **Authentification** | `Authorization: Bearer <DGRID_API_KEY>` |
+| **Requête** | Paramètre de requête |
+| **Réponse** | `application/json` |
+
+## Paramètres de requête
+
+| Paramètre | Type | Obligatoire | Description |
+| --- | --- | --- | --- |
+| `request_id` | string | Oui | ID de la requête Model API terminée dont vous souhaitez récupérer les détails de facturation. |
+
+## Obtenir l’ID de requête
+
+DGrid renvoie l’ID de requête dans l’en-tête de réponse `DGrid-Request-ID` de l’appel modèle initial. Conservez cette valeur si vous devez récupérer ou rapprocher les détails de facturation plus tard.
+
+```http
+DGrid-Request-ID: req_178027***********6dc9x
+```
+
+## Exemple de requête
+
+<RequestExample>
+
+```bash cURL
+curl --location \
+  'https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>' \
+  --header 'Authorization: Bearer <DGRID_API_KEY>'
+```
+
+</RequestExample>
+
+## Réponse
+
+### 200 OK
+
+L’enregistrement de facturation a été trouvé et appartient à la clé API authentifiée.
+
+<ResponseExample>
+
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "request_id": "req_**********86dc9x",
+    "billing_json": {
+      "model": "anthropic/claude-opus-4.6",
+      "input_cost": 0.54909,
+      "output_cost": 0.0027500000000000003,
+      "cache_create_cost": 0,
+      "cache_read_cost": 0,
+      "request_cost": 0,
+      "total_cost": 0.55184,
+      "supplier_id": 1,
+      "input_tokens": 109818,
+      "output_tokens": 110,
+      "cache_create_tokens": 0,
+      "cache_read_tokens": 0,
+      "pricing_mode": "usage",
+      "pricing_snapshot": {
+        "pricing_mode": "usage",
+        "input_price_per_1m": 5,
+        "output_price_per_1m": 25,
+        "cache_create_price": 6.25,
+        "cache_read_price": 0.5,
+        "price_per_request": null,
+        "input_tiers": [],
+        "output_tiers": [],
+        "cache_create_tiers": [],
+        "cache_read_tiers": []
+      }
+    }
+  }
+}
+```
+
+```json 401
+{
+  "code": 401,
+  "message": "unauthorized"
+}
+```
+
+```json 404
+{
+  "code": 404,
+  "message": "not found"
+}
+```
+
+</ResponseExample>
+
+## Champs de facturation
+
+| Champ | Description |
+| --- | --- |
+| `model` | ID du modèle utilisé par la requête d’origine. |
+| `input_tokens` / `output_tokens` | Nombre de tokens facturés pour le prompt et la sortie générée. |
+| `cache_create_tokens` / `cache_read_tokens` | Nombre de tokens liés au cache lorsque la tarification du cache s’applique. |
+| `input_cost` / `output_cost` | Coût en USD attribué aux tokens d’entrée et de sortie. |
+| `cache_create_cost` / `cache_read_cost` | Coût en USD attribué à la création et à la lecture du cache. |
+| `request_cost` | Coût fixe par requête lorsque le mode de tarification en inclut un. |
+| `total_cost` | Coût final en USD facturé pour la requête. |
+| `pricing_snapshot` | Configuration tarifaire utilisée au moment de la facturation. Les changements de prix ultérieurs ne modifient pas cet historique. |
+
+## Bonnes pratiques
+
+- Enregistrez `DGrid-Request-ID` avec vos propres journaux de requêtes afin de rapprocher l’usage plus tard.
+- Traitez `pricing_snapshot` comme l’historique tarifaire immuable de la requête.
+- Tous les coûts et prix sont libellés en USD.
+- Les valeurs numériques peuvent avoir un nombre variable de décimales. Ne dépendez pas d’un format décimal fixe.

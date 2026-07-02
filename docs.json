@@ -331,6 +331,7 @@
                 "group": "AI GATEWAY",
                 "pages": [
                   "ai-gateway/overview",
+                  "ai-gateway/free-models-router",
                   "ai-gateway/integrations",
                   "ai-gateway/supported-regions"
                 ]
@@ -448,6 +449,12 @@
                     ]
                   },
                   {
+                    "group": "Usage & Billing",
+                    "pages": [
+                      "api-reference/usage-and-billing/get-request-billing-details"
+                    ]
+                  },
+                  {
                     "group": "Realtime",
                     "pages": [
                       "ai-gateway/model-api/realtime"
@@ -499,6 +506,7 @@
                 "group": "AI 閘道",
                 "pages": [
                   "zh-Hant/ai-gateway/overview",
+                  "zh-Hant/ai-gateway/free-models-router",
                   "zh-Hant/ai-gateway/integrations",
                   "zh-Hant/ai-gateway/supported-regions"
                 ]
@@ -616,6 +624,12 @@
                     ]
                   },
                   {
+                    "group": "用量與計費",
+                    "pages": [
+                      "zh-Hant/api-reference/usage-and-billing/get-request-billing-details"
+                    ]
+                  },
+                  {
                     "group": "即時",
                     "pages": [
                       "zh-Hant/ai-gateway/model-api/realtime"
@@ -684,6 +698,7 @@
                 "group": "AI 게이트웨이",
                 "pages": [
                   "ko/ai-gateway/overview",
+                  "ko/ai-gateway/free-models-router",
                   "ko/ai-gateway/integrations",
                   "ko/ai-gateway/supported-regions"
                 ]
@@ -801,6 +816,12 @@
                     ]
                   },
                   {
+                    "group": "사용량 및 결제",
+                    "pages": [
+                      "ko/api-reference/usage-and-billing/get-request-billing-details"
+                    ]
+                  },
+                  {
                     "group": "실시간",
                     "pages": [
                       "ko/ai-gateway/model-api/realtime"
@@ -869,6 +890,7 @@
                 "group": "PASSERELLE IA",
                 "pages": [
                   "fr/ai-gateway/overview",
+                  "fr/ai-gateway/free-models-router",
                   "fr/ai-gateway/integrations",
                   "fr/ai-gateway/supported-regions"
                 ]
@@ -986,6 +1008,12 @@
                     ]
                   },
                   {
+                    "group": "Utilisation et facturation",
+                    "pages": [
+                      "fr/api-reference/usage-and-billing/get-request-billing-details"
+                    ]
+                  },
+                  {
                     "group": "Temps réel",
                     "pages": [
                       "fr/ai-gateway/model-api/realtime"
@@ -1054,6 +1082,7 @@
                 "group": "PUERTA DE ENLACE IA",
                 "pages": [
                   "es/ai-gateway/overview",
+                  "es/ai-gateway/free-models-router",
                   "es/ai-gateway/integrations",
                   "es/ai-gateway/supported-regions"
                 ]
@@ -1168,6 +1197,12 @@
                     "group": "Modelos",
                     "pages": [
                       "es/api-reference/models/list-models"
+                    ]
+                  },
+                  {
+                    "group": "Uso y facturación",
+                    "pages": [
+                      "es/api-reference/usage-and-billing/get-request-billing-details"
                     ]
                   },
                   {

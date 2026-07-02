@@ -26,6 +26,8 @@ Cada página de referencia de Model API incluye un playground interactivo: intro
 
 La Model API le ofrece un único gateway hacia más de 200 modelos de IA líderes. Cada endpoint es compatible con un estándar del ecosistema, ya sea OpenAI, Claude o Gemini, para que sus SDK y herramientas existentes funcionen sin modificaciones.
 
+Para conciliar costos a nivel de solicitud, guarde el encabezado de respuesta `DGrid-Request-ID` y use [Obtener detalles de facturación de una solicitud](/es/api-reference/usage-and-billing/get-request-billing-details) para recuperar uso de tokens, precios y costos en USD.
+
 ### URL base
 
 ```text
@@ -63,6 +65,7 @@ El parámetro `model` usa el formato `provider/model-name`, por ejemplo `openai/
 | Audio | `/v1/audio/speech`, `/v1/audio/transcriptions`, `/v1/audio/translations` | Texto a voz, transcripción y traducción |
 | Moderación | `/v1/moderations` | Filtrado de seguridad de contenido y verificaciones de políticas |
 | Modelos | `/v1/models` | Descubrir modelos disponibles y tipos de endpoint compatibles |
+| Uso y facturación | `/api/v1/model-router/billing-json` | Recuperar uso de tokens, instantáneas de precios y costos en USD a nivel de solicitud |
 | Realtime | `/v1/realtime` (WebSocket) | Conversaciones en streaming de baja latencia |
 
 ### Prácticas recomendadas

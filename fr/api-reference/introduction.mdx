@@ -26,6 +26,8 @@ Chaque page de référence Model API dispose d'un terrain de jeu interactif : re
 
 La Model API vous offre une passerelle unique vers plus de 200 modèles d'IA de premier plan. Chaque point de terminaison est compatible avec une norme d'écosystème — OpenAI, Claude ou Gemini — afin que vos SDK et outils existants fonctionnent sans modification.
 
+Pour rapprocher les coûts au niveau d’une requête, enregistrez l’en-tête de réponse `DGrid-Request-ID` et utilisez [Obtenir les détails de facturation d’une requête](/fr/api-reference/usage-and-billing/get-request-billing-details) afin de récupérer l’usage des tokens, la tarification et les coûts en USD.
+
 ### URL de base
 
 ```text
@@ -63,6 +65,7 @@ Le paramètre `model` utilise le format `provider/model-name` — par exemple `o
 | Audio | `/v1/audio/speech`, `/v1/audio/transcriptions`, `/v1/audio/translations` | Synthèse vocale, transcription, traduction |
 | Modérations | `/v1/moderations` | Filtrage de sécurité du contenu et vérifications de politique |
 | Modèles | `/v1/models` | Découvrir les modèles disponibles et les types de points de terminaison pris en charge |
+| Utilisation et facturation | `/api/v1/model-router/billing-json` | Récupérer l’usage des tokens, l’instantané de tarification et les coûts en USD par requête |
 | Realtime | `/v1/realtime` (WebSocket) | Conversations en flux continu à faible latence |
 
 ### Bonnes pratiques

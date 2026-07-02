@@ -1,0 +1,110 @@
+---
+title: "免費模型路由器"
+sidebarTitle: "免費模型路由器"
+description: "透過 DGrid 免費智慧推論閘道，以自動模型路由和公平使用限制處理日常 AI 任務。"
+---
+
+<strong>Free Models Router</strong> 是 DGrid 面向全球使用者提供的免費智慧推論閘道。你不需要手動選擇特定免費模型，只要呼叫一個穩定的模型 ID，DGrid 便會根據服務可用性、回應效率與任務需求，自動將請求路由到合適的可用模型資源。
+
+<Info>
+當你希望 DGrid 自動選擇可用免費模型時，請使用模型 ID `dgridai/free`。即時模型資訊可參考 [模型詳情頁](https://dgrid.ai/models/dgridai/free)。
+</Info>
+
+## 適用情境
+
+Free Models Router 適合需要快速存取、低使用門檻，且不必指定底層供應商模型的一般 AI 任務。
+
+它適合用於：
+
+- 日常問答與資料整理
+- 多語寫作、改寫與翻譯
+- 程式碼協助、除錯建議與程式碼解釋
+- 邏輯分析與結構化推理
+- 學習輔助與概念說明
+- 草稿撰寫、摘要與內容創作
+- 需要通用 AI 能力的複雜問題拆解
+
+## 路由方式
+
+DGrid 會在單一路由層後方聚合多個免費推論資源來源。每次請求送出時，路由器會評估目前可用的模型資源，並將請求排程到合適的後端。
+
+路由可能考量：
+
+- 目前服務可用性
+- 預期回應速度
+- 任務類型與提示詞需求
+- 已連接免費模型來源的可用算力
+- 底層路由的運行穩定性
+
+這代表底層模型可能在不同請求之間改變。如果你的應用需要固定模型身分，請改用特定 Model API 模型 ID，而不是 `dgridai/free`。
+
+## 快速開始
+
+Free Models Router 使用與 DGrid AI Gateway 其他模型相同的 OpenAI 相容 chat completion 介面。
+
+```bash
+curl https://api.dgrid.ai/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $DGRID_API_KEY" \
+  -d '{
+    "model": "dgridai/free",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain zero-knowledge proofs in simple terms."
+      }
+    ]
+  }'
+```
+
+你也可以透過 OpenAI SDK，將 base URL 指向 DGrid：
+
+```typescript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://api.dgrid.ai/v1',
+  apiKey: process.env.DGRID_API_KEY,
+});
+
+const completion = await client.chat.completions.create({
+  model: 'dgridai/free',
+  messages: [
+    {
+      role: 'user',
+      content: 'Help me outline a launch plan for a developer tool.',
+    },
+  ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+## 使用限制
+
+為了維持免費服務的可靠性與公平性，DGrid 會對 Free Models Router 套用請求限制。限制以帳號為單位執行。
+
+| 存取等級 | 資格 | 每分鐘請求數 | 每日請求數 |
+| --- | --- | ---: | ---: |
+| 標準存取 | 帳號尚未完成至少 `$5` 的合格儲值 | 10 | 100 |
+| 提升存取 | 帳號已完成至少 `$5` 的合格儲值 | 20 | 1,000 |
+
+合格儲值是指直接加入帳戶餘額的資金，並用於判斷帳號是否達到 `$5` 門檻。
+
+### 速率限制錯誤
+
+超過適用限制的請求會被拒絕，並回傳：
+
+```text
+Rate limit exceeded. Please try again later.
+```
+
+如果你的應用需要可預測的更高吞吐量，請使用付費模型路由，或聯絡 DGrid 支援以取得正式上線建議。
+
+## 運行建議
+
+- 將 `dgridai/free` 視為便利路由器，而不是固定模型。
+- 避免依賴底層被路由模型的特定供應商行為。
+- 對暫時性限流或可用性回應加入帶退避的重試邏輯。
+- 當你需要確定的模型選擇、更高吞吐量、更強的 SLA 預期或模型專屬能力時，請使用付費模型 ID。
+- 如果需要後續對帳，請記錄回應中的 `DGrid-Request-ID`。請參考 [取得請求計費明細](/zh-Hant/api-reference/usage-and-billing/get-request-billing-details) 進行請求級計費查詢。

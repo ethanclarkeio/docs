@@ -1,0 +1,129 @@
+---
+title: "Get request billing details"
+description: "Retrieve token usage, pricing, and USD cost details for a completed Model API request."
+---
+
+Retrieve the billing record for a single Model API request. Use this endpoint when you need to reconcile user-facing usage, audit model costs, or inspect the pricing snapshot that was applied when a request was billed.
+
+<Note>
+Use the same DGrid API key that made the original model request. Billing records are scoped to the authenticated key and cannot be queried across keys.
+</Note>
+
+## Endpoint
+
+```http
+GET https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>
+```
+
+| | |
+| --- | --- |
+| **Authentication** | `Authorization: Bearer <DGRID_API_KEY>` |
+| **Request** | Query parameter |
+| **Response** | `application/json` |
+
+## Query parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `request_id` | string | Yes | The ID of the completed Model API request whose billing details you want to retrieve. |
+
+## Get the request ID
+
+DGrid returns the request ID in the `DGrid-Request-ID` response header of the original model call. Store this value if you need to retrieve the request's billing details later.
+
+```http
+DGrid-Request-ID: req_178027***********6dc9x
+```
+
+## Request example
+
+<RequestExample>
+
+```bash cURL
+curl --location \
+  'https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>' \
+  --header 'Authorization: Bearer <DGRID_API_KEY>'
+```
+
+</RequestExample>
+
+## Response
+
+### 200 OK
+
+The billing record was found and belongs to the authenticated API key.
+
+<ResponseExample>
+
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "request_id": "req_**********86dc9x",
+    "billing_json": {
+      "model": "anthropic/claude-opus-4.6",
+      "input_cost": 0.54909,
+      "output_cost": 0.0027500000000000003,
+      "cache_create_cost": 0,
+      "cache_read_cost": 0,
+      "request_cost": 0,
+      "total_cost": 0.55184,
+      "supplier_id": 1,
+      "input_tokens": 109818,
+      "output_tokens": 110,
+      "cache_create_tokens": 0,
+      "cache_read_tokens": 0,
+      "pricing_mode": "usage",
+      "pricing_snapshot": {
+        "pricing_mode": "usage",
+        "input_price_per_1m": 5,
+        "output_price_per_1m": 25,
+        "cache_create_price": 6.25,
+        "cache_read_price": 0.5,
+        "price_per_request": null,
+        "input_tiers": [],
+        "output_tiers": [],
+        "cache_create_tiers": [],
+        "cache_read_tiers": []
+      }
+    }
+  }
+}
+```
+
+```json 401
+{
+  "code": 401,
+  "message": "unauthorized"
+}
+```
+
+```json 404
+{
+  "code": 404,
+  "message": "not found"
+}
+```
+
+</ResponseExample>
+
+## Billing fields
+
+| Field | Description |
+| --- | --- |
+| `model` | Model ID used by the original request. |
+| `input_tokens` / `output_tokens` | Token counts charged for prompt and generated output. |
+| `cache_create_tokens` / `cache_read_tokens` | Cache-related token counts when cache pricing applies. |
+| `input_cost` / `output_cost` | USD cost attributed to input and output token usage. |
+| `cache_create_cost` / `cache_read_cost` | USD cost attributed to cache creation and cache reads. |
+| `request_cost` | Fixed per-request USD cost when the pricing mode includes one. |
+| `total_cost` | Final USD cost billed for the request. |
+| `pricing_snapshot` | The pricing configuration used at billing time. Later price changes do not modify this historical record. |
+
+## Best practices
+
+- Save `DGrid-Request-ID` with your own request logs so you can reconcile usage later.
+- Treat `pricing_snapshot` as an immutable historical record for the request.
+- All cost and price fields are denominated in USD.
+- Numeric values may contain variable decimal precision. Do not rely on fixed-width decimal formatting.

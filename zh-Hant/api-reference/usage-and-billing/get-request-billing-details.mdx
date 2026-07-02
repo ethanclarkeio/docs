@@ -1,0 +1,130 @@
+---
+title: "取得請求計費明細"
+sidebarTitle: "取得請求計費明細"
+description: "查詢已完成 Model API 請求的 token 用量、定價快照與美元成本明細。"
+---
+
+查詢單一 Model API 請求的計費紀錄。當你需要對帳使用者用量、稽核模型成本，或確認請求結算時套用的定價快照時，可以使用此端點。
+
+<Note>
+請使用送出原始模型請求的同一把 DGrid API 金鑰。計費紀錄會綁定至已驗證的金鑰，不能跨金鑰查詢。
+</Note>
+
+## 端點
+
+```http
+GET https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>
+```
+
+| | |
+| --- | --- |
+| <strong>驗證</strong> | `Authorization: Bearer <DGRID_API_KEY>` |
+| <strong>請求</strong> | 查詢參數 |
+| <strong>回應</strong> | `application/json` |
+
+## 查詢參數
+
+| 參數 | 類型 | 必填 | 說明 |
+| --- | --- | --- | --- |
+| `request_id` | string | 是 | 要查詢計費明細的已完成 Model API 請求 ID。 |
+
+## 取得請求 ID
+
+DGrid 會在原始模型呼叫的 `DGrid-Request-ID` 回應標頭中回傳請求 ID。如果之後需要查詢或對帳計費明細，請保存此值。
+
+```http
+DGrid-Request-ID: req_178027***********6dc9x
+```
+
+## 請求範例
+
+<RequestExample>
+
+```bash cURL
+curl --location \
+  'https://api.dgrid.ai/api/v1/model-router/billing-json?request_id=<DGRID_REQUEST_ID>' \
+  --header 'Authorization: Bearer <DGRID_API_KEY>'
+```
+
+</RequestExample>
+
+## 回應
+
+### 200 OK
+
+找到計費紀錄，且該紀錄屬於目前驗證的 API 金鑰。
+
+<ResponseExample>
+
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "request_id": "req_**********86dc9x",
+    "billing_json": {
+      "model": "anthropic/claude-opus-4.6",
+      "input_cost": 0.54909,
+      "output_cost": 0.0027500000000000003,
+      "cache_create_cost": 0,
+      "cache_read_cost": 0,
+      "request_cost": 0,
+      "total_cost": 0.55184,
+      "supplier_id": 1,
+      "input_tokens": 109818,
+      "output_tokens": 110,
+      "cache_create_tokens": 0,
+      "cache_read_tokens": 0,
+      "pricing_mode": "usage",
+      "pricing_snapshot": {
+        "pricing_mode": "usage",
+        "input_price_per_1m": 5,
+        "output_price_per_1m": 25,
+        "cache_create_price": 6.25,
+        "cache_read_price": 0.5,
+        "price_per_request": null,
+        "input_tiers": [],
+        "output_tiers": [],
+        "cache_create_tiers": [],
+        "cache_read_tiers": []
+      }
+    }
+  }
+}
+```
+
+```json 401
+{
+  "code": 401,
+  "message": "unauthorized"
+}
+```
+
+```json 404
+{
+  "code": 404,
+  "message": "not found"
+}
+```
+
+</ResponseExample>
+
+## 計費欄位
+
+| 欄位 | 說明 |
+| --- | --- |
+| `model` | 原始請求使用的模型 ID。 |
+| `input_tokens` / `output_tokens` | 提示詞與輸出內容的計費 token 數量。 |
+| `cache_create_tokens` / `cache_read_tokens` | 適用快取定價時的快取相關 token 數量。 |
+| `input_cost` / `output_cost` | 輸入與輸出 token 用量對應的美元成本。 |
+| `cache_create_cost` / `cache_read_cost` | 快取建立與快取讀取對應的美元成本。 |
+| `request_cost` | 當定價模式包含固定請求費時，該請求的固定美元成本。 |
+| `total_cost` | 該請求最終結算的美元成本。 |
+| `pricing_snapshot` | 請求結算當下使用的定價設定。後續價格調整不會改變這筆歷史紀錄。 |
+
+## 最佳實務
+
+- 將 `DGrid-Request-ID` 與自己的請求日誌一起保存，方便後續對帳。
+- 將 `pricing_snapshot` 視為該請求不可變的歷史定價紀錄。
+- 所有成本與價格欄位皆以美元計價。
+- 數值可能包含不同的小數位數，客戶端不應依賴固定寬度的小數格式。
