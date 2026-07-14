@@ -148,7 +148,7 @@ navbar 调整（更动作导向）：
 "navbar": {
   "links": [
     { "label": "Website", "href": "https://dgrid.ai/" },
-    { "label": "Support", "href": "https://t.me/dgrid_ai" }
+    { "label": "Support", "href": "https://telegram.me/dgrid_ai" }
   ],
   "primary": {
     "type": "button",
@@ -164,7 +164,7 @@ footer 扩充为三栏（更像正式产品站）：
 "footer": {
   "socials": {
     "x": "https://x.com/dgrid_ai",
-    "telegram": "https://t.me/dgrid_ai"
+    "telegram": "https://telegram.me/dgrid_ai"
   },
   "links": [
     {
@@ -326,7 +326,7 @@ mode: "wide"
       <Card title="Follow on X" icon="twitter" href="https://x.com/dgrid_ai">
         Product updates and announcements
       </Card>
-      <Card title="Telegram Community" icon="send" href="https://t.me/dgrid_ai">
+      <Card title="Telegram Community" icon="send" href="https://telegram.me/dgrid_ai">
         Get help and meet other builders
       </Card>
     </Columns>
