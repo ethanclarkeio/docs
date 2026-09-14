@@ -331,6 +331,7 @@
                 "group": "AI GATEWAY",
                 "pages": [
                   "ai-gateway/overview",
+                  "ai-gateway/redeem-credit-code",
                   "ai-gateway/free-models-router",
                   "ai-gateway/integrations",
                   "ai-gateway/supported-regions"
@@ -506,6 +507,7 @@
                 "group": "AI 閘道",
                 "pages": [
                   "zh-Hant/ai-gateway/overview",
+                  "zh-Hant/ai-gateway/redeem-credit-code",
                   "zh-Hant/ai-gateway/free-models-router",
                   "zh-Hant/ai-gateway/integrations",
                   "zh-Hant/ai-gateway/supported-regions"
@@ -698,6 +700,7 @@
                 "group": "AI 게이트웨이",
                 "pages": [
                   "ko/ai-gateway/overview",
+                  "ko/ai-gateway/redeem-credit-code",
                   "ko/ai-gateway/free-models-router",
                   "ko/ai-gateway/integrations",
                   "ko/ai-gateway/supported-regions"
@@ -890,6 +893,7 @@
                 "group": "PASSERELLE IA",
                 "pages": [
                   "fr/ai-gateway/overview",
+                  "fr/ai-gateway/redeem-credit-code",
                   "fr/ai-gateway/free-models-router",
                   "fr/ai-gateway/integrations",
                   "fr/ai-gateway/supported-regions"
@@ -1082,6 +1086,7 @@
                 "group": "PUERTA DE ENLACE IA",
                 "pages": [
                   "es/ai-gateway/overview",
+                  "es/ai-gateway/redeem-credit-code",
                   "es/ai-gateway/free-models-router",
                   "es/ai-gateway/integrations",
                   "es/ai-gateway/supported-regions"
