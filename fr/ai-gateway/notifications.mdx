@@ -1,0 +1,102 @@
+---
+title: "Notifications"
+sidebarTitle: "Notifications"
+description: "Configurez les notifications par e-mail, Lark et Webhook pour le solde rechargé et les événements Auto Deposit."
+---
+
+DGrid peut vous notifier par e-mail ou Webhook. Choisissez un ou deux canaux pour chaque événement et envoyez une notification de test pour vérifier la réception. Accédez à [DGrid Settings](https://dgrid.ai/settings) → **Notifications**.
+
+## Événements disponibles
+
+| Événement dans Settings | Déclenchement |
+| --- | --- |
+| **Low balance** | Le solde rechargé atteint pour la première fois le seuil d’alerte ou passe en dessous. |
+| **Balance depleted** | Le solde rechargé est nul ou négatif. |
+| **Auto deposit succeeded** | Un rechargement Auto Deposit est terminé. |
+| **Auto deposit failed** | Un rechargement Auto Deposit échoue. |
+
+Le solde rechargé (Deposit Balance) exclut le solde d’abonnement.
+
+Email et Webhook se sélectionnent indépendamment pour chaque événement. Vous pouvez activer l’un ou les deux ; Webhook ne nécessite pas d’adresse e-mail liée. Après toute modification du seuil ou des interrupteurs, cliquez sur **Save** sous la liste des événements.
+
+## Configurer les canaux
+
+<Steps>
+
+<Step title="Configurer les notifications par e-mail">
+
+### Lier et vérifier votre adresse
+
+1. Dans [Settings](https://dgrid.ai/settings), trouvez **Email Binding**.
+2. Saisissez l’adresse destinataire dans **Billing email**, puis cliquez sur **Send Code**.
+3. Saisissez le code reçu dans **Verification code**, puis cliquez sur **Verify**.
+4. Vérifiez que **Verified** apparaît près de l’adresse et que **Email delivery** indique la même adresse vérifiée. DGrid y envoie les notifications.
+
+Pour changer d’adresse, saisissez la nouvelle dans **Billing email**, cliquez sur **Send Code**, puis utilisez le code reçu à cette adresse pour cliquer à nouveau sur **Verify**. Les notifications y sont envoyées lorsque **Verified** apparaît. Une adresse non vérifiée ne peut pas recevoir les notifications via les interrupteurs Email.
+
+### Choisir les événements et tester
+
+1. Dans **Notifications**, définissez **Low balance threshold** en USDT. Par exemple, un seuil de 10 peut déclencher une alerte lorsque le solde rechargé atteint pour la première fois 10 USDT ou moins.
+2. Activez **Email** pour chaque événement souhaité.
+3. Cliquez sur **Save** sous la liste.
+4. Dans la colonne **Send Test** d’un événement activé, cliquez sur **Email**. Après confirmation d’envoi, vérifiez la boîte de réception et les courriers indésirables de l’adresse vérifiée.
+
+Un test vérifie uniquement la livraison. Il ne modifie pas votre solde DGrid et n’exécute pas de rechargement automatique.
+
+</Step>
+
+<Step title="Configurer les notifications Webhook Lark">
+
+DGrid accepte directement l’URL Webhook d’un bot personnalisé de groupe Lark. Consultez le [guide officiel des bots personnalisés](https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot).
+
+### Obtenir l’URL Lark
+
+1. Ouvrez le groupe destinataire. Dans ses paramètres, ouvrez **Bots** et ajoutez un **Custom bot**.
+2. Nommez le bot et copiez son URL Webhook. Elle commence généralement par `https://open.larksuite.com/open-apis/bot/v2/hook/`.
+3. Gardez cette URL privée. Quiconque la possède peut potentiellement publier dans le groupe ; ne l’exposez pas dans la documentation ou le code.
+
+Si le bot utilise la vérification de signature, des mots-clés ou une liste d’IP autorisées, assurez-vous que les requêtes DGrid respectent ces paramètres. Le guide officiel explique leur configuration.
+
+### Enregistrer et activer dans DGrid
+
+1. Dans **Notifications** de [Settings](https://dgrid.ai/settings), sélectionnez **Channel configuration → Webhook**.
+2. Collez l’URL Lark dans **Endpoint URL**. DGrid choisit l’intégration compatible selon l’adresse. HTTPS est requis.
+3. Si la signature est activée sur le bot, saisissez sa clé dans **Signing secret**. Sinon, laissez le champ vide. Le secret enregistré n’est plus affiché ; saisissez une nouvelle valeur pour le remplacer.
+4. Activez **Webhook** et cliquez sur **Save** dans la configuration du canal. Vérifiez **On / Ready**.
+5. Activez **Webhook** pour les événements souhaités dans la liste au-dessus, puis cliquez sur le **Save** de cette liste. Enregistrer l’URL seule n’abonne à aucun événement.
+6. Sur une ligne activée, cliquez sur **Send Test → Webhook** et vérifiez le message dans le groupe Lark.
+
+Dans **Delivery history (last 30 days)**, consultez l’événement, le statut, le nombre de tentatives, le code de réponse et l’heure de la dernière tentative. Les tests permettent aussi de vérifier la connexion.
+
+</Step>
+
+<Step title="Transmettre vers d’autres plateformes">
+
+Fournissez une URL HTTPS publique, activez Webhook, générez un DGrid Signing Secret avec **Rotate Secret** et configurez la vérification de signature sur votre récepteur. Activez et enregistrez les événements, puis envoyez un test.
+
+Consultez le [guide Webhook](/fr/api-reference/webhooks/overview) pour la configuration, les données d’événement, la vérification de signature et le traitement des livraisons.
+
+<Note>
+La clé de signature du bot Lark concerne l’intégration Lark. Pour un récepteur personnalisé, utilisez le DGrid Signing Secret généré par **Rotate Secret** et le protocole de vérification du guide Webhook.
+</Note>
+
+</Step>
+
+</Steps>
+
+## Dépannage
+
+<AccordionGroup>
+<Accordion title="Pas de bouton de test Email ou pas d’e-mail reçu ?">
+Vérifiez d’abord l’adresse de facturation, activez **Email** pour l’événement et enregistrez. Après le test, vérifiez la boîte de réception et les courriers indésirables de l’adresse vérifiée.
+</Accordion>
+<Accordion title="Pas de bouton de test Webhook ou pas de message dans le groupe ?">
+Vérifiez l’URL enregistrée, le statut **On / Ready** et l’interrupteur **Webhook** activé et enregistré pour l’événement. Consultez le statut et le code dans **Delivery history**. Pour Lark, vérifiez aussi le groupe du bot et les paramètres de signature, de mots-clés et d’IP.
+</Accordion>
+<Accordion title="Puis-je utiliser les deux canaux ?">
+Oui. Activez et enregistrez **Email** et **Webhook** pour le même événement.
+</Accordion>
+<Accordion title="Un test facture-t-il ou recharge-t-il mon compte ?">
+Non. Un test vérifie uniquement la livraison de la notification.
+</Accordion>
+</AccordionGroup>

@@ -1,0 +1,70 @@
+---
+title: "Consulter le solde du compte"
+sidebarTitle: "Consulter le solde du compte"
+description: "Consultez les soldes total, d’abonnement et rechargé du compte associé à votre clé API de gestion."
+---
+
+Consultez le solde du compte associé à votre clé API de gestion. Cet endpoint distingue le solde total, le solde d’abonnement disponible et le solde rechargé.
+
+<Note>
+Authentifiez-vous avec une [clé API de gestion](/fr/management-api-keys), plutôt qu’une clé Model API. Auto Deposit et les alertes de solde rechargé utilisent `rechargeBalance`, qui exclut le solde d’abonnement.
+</Note>
+
+## Endpoint
+
+```http
+GET https://api.dgrid.ai/v1/management/balance
+```
+
+| Propriété | Valeur |
+| --- | --- |
+| Authentification | `Authorization: Bearer <DGRID_MANAGEMENT_KEY>` |
+| Paramètres de requête | Aucun |
+| Réponse | `application/json` |
+
+## Exemple de requête
+
+Définissez `DGRID_MANAGEMENT_KEY` sur votre clé API de gestion.
+
+<RequestExample>
+```bash cURL
+curl -sS -i "https://api.dgrid.ai/v1/management/balance" \
+  -H "Authorization: Bearer $DGRID_MANAGEMENT_KEY"
+```
+</RequestExample>
+
+## Réponse
+
+<ResponseExample>
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "userId": "11111111-1111-1111-1111-111111111111",
+    "balance": "123.45678912",
+    "subscriptionBalance": "100.00000000",
+    "rechargeBalance": "23.45678912",
+    "currency": "USD",
+    "planName": "Pro"
+  }
+}
+```
+</ResponseExample>
+
+## Champs de réponse
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `userId` | string | Identifiant du compte associé à la clé API de gestion. |
+| `balance` | string | Solde total : `subscriptionBalance + rechargeBalance`. |
+| `subscriptionBalance` | string | Solde d’abonnement disponible ; zéro si aucun n’est disponible. |
+| `rechargeBalance` | string | Solde rechargé, exactement égal à `balance - subscriptionBalance`. |
+| `currency` | string | Devise des montants ; actuellement `USD`. |
+| `planName` | string | Nom de la formule d’abonnement ; chaîne vide si aucun nom n’est disponible. |
+
+## Précision des montants
+
+Les montants sont des chaînes décimales pour préserver leur précision. Ne supposez pas un nombre fixe de décimales ; utilisez un type numérique décimal pour les calculs. Les soldes total et rechargé peuvent être négatifs. Affichez les valeurs reçues sans les ramener à zéro.
+
+Consultez [Rechargement automatique](/fr/ai-gateway/auto-deposit) pour le rechargement automatique et [Notifications](/fr/ai-gateway/notifications) pour les alertes de solde.

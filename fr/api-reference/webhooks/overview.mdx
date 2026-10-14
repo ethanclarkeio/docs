@@ -1,0 +1,195 @@
+---
+title: "Guide Webhook"
+sidebarTitle: "Guide Webhook"
+description: "Recevez les événements DGrid sur un endpoint HTTPS, vérifiez les signatures et gérez les tests, les tentatives et les doublons."
+---
+
+Webhook envoie les notifications DGrid à votre récepteur. Il fonctionne indépendamment de l’e-mail lié ; aucune adresse e-mail n’est requise.
+
+Consultez [Notifications](/fr/ai-gateway/notifications) pour l’e-mail et Lark. Ce guide concerne un récepteur HTTPS personnalisé.
+
+## Configurer Webhook
+
+1. **Saisissez l’adresse du récepteur.** Enregistrez dans DGrid une URL HTTPS publique fournie par vous ou votre équipe technique.
+2. **Activez Webhook.**
+3. **Récupérez votre Signing Secret.** Cliquez sur **Rotate Secret**, copiez le secret de manière sécurisée et configurez votre récepteur. Gardez-le privé. Chaque rotation génère un nouveau secret ; conservez l’ancienne clé jusqu’à la fin des livraisons en attente.
+4. **Choisissez les événements.** Activez les types souhaités.
+5. **Testez les notifications.** Vérifiez que le récepteur accepte la notification et valide sa signature.
+
+## Événements disponibles
+
+Les six événements suivants sont disponibles dans les paramètres Webhook. Utilisez le champ `eventType` au niveau supérieur pour les identifier, en conservant exactement la casse, les points et les underscores.
+
+| Notification | Identifiant (`eventType`) | Déclenchement |
+| --- | --- | --- |
+| Solde rechargé faible | `balance.low` | Le solde rechargé atteint le seuil d’alerte du compte ou passe en dessous. |
+| Solde rechargé épuisé | `balance.depleted` | Le solde rechargé est nul ou négatif. |
+| Auto Deposit terminé | `auto_recharge.succeeded` | Un rechargement automatique est confirmé et crédité. |
+| Auto Deposit échoué | `auto_recharge.failed` | Une tentative de rechargement automatique échoue. |
+| Abonnement actif | `subscription.activated` | L’abonnement est activé ou un changement de formule réussit. |
+| Solde d’abonnement faible | `subscription.balance_low` | Le solde mensuel d’abonnement restant atteint 15% ou moins. |
+
+Les soldes rechargé et d’abonnement sont distincts. L’alerte de solde d’abonnement faible est envoyée au plus une fois par abonnement et par mois UTC. Il n’existe pas d’événement distinct de solde d’abonnement épuisé. L’échec Auto Deposit désigne une tentative réellement échouée, pas un avertissement de fonds ou d’autorisation avant une tentative.
+
+## Requête entrante
+
+DGrid envoie un HTTP `POST` à l’URL enregistrée avec `Content-Type: application/json`. Chaque notification utilise la même structure externe :
+
+```json
+{
+  "id": "1f3c489c-5ca1-41f4-872e-c10b2b47207a",
+  "eventType": "balance.low",
+  "createdAt": "2026-10-13T08:30:00Z",
+  "data": {
+    "eventType": "balance.low",
+    "balance": "4.25",
+    "test": false
+  },
+  "test": false
+}
+```
+
+| Champ | Type | Signification |
+| --- | --- | --- |
+| `id` | string | UUID de livraison, identique à `DGrid-Event-Id`. Stable lors des nouvelles tentatives ; utilisez-le pour dédupliquer. |
+| `eventType` | string | Un des six identifiants ci-dessus. Utilisez ce champ externe pour router les notifications. |
+| `createdAt` | string | Horodatage UTC RFC 3339 de cette tentative de livraison. Il peut changer lors d’une nouvelle tentative et ne correspond pas nécessairement à l’heure de l’événement métier. |
+| `data` | object | Données propres à l’événement, décrites ci-dessous. |
+| `test` | boolean | `true` pour un test, `false` pour une notification métier. |
+
+## Données des événements
+
+Les exemples suivants remplacent uniquement `data` dans la structure commune. Les identifiants, dates et soldes sont des exemples.
+
+### Solde rechargé faible : `balance.low`
+
+```json
+{
+  "eventType": "balance.low",
+  "balance": "4.25",
+  "test": false
+}
+```
+
+### Solde rechargé épuisé : `balance.depleted`
+
+```json
+{
+  "eventType": "balance.depleted",
+  "balance": "-1",
+  "test": false
+}
+```
+
+Pour ces deux événements, `eventType` est une chaîne et `test` un booléen. `balance` est une chaîne décimale signée en USD, éventuellement nulle ou négative. Elle représente le solde rechargé, hors allocation d’abonnement. Préservez la précision sans conversion en virgule flottante ni application des règles d’arrondi ou de troncature de l’e-mail.
+
+### Auto Deposit terminé : `auto_recharge.succeeded`
+
+```json
+{
+  "attemptId": "7e6956ab-f9cb-4dc0-b793-6e5b6237bb48",
+  "state": "confirmed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+### Auto Deposit échoué : `auto_recharge.failed`
+
+```json
+{
+  "attemptId": "7304a355-2a63-4c23-9121-7b615d7c410f",
+  "state": "failed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+Les trois champs sont des chaînes. `attemptId` identifie la tentative ; `state` vaut respectivement `confirmed` ou `failed` ; `occurredAt` est l’heure de l’événement au format UTC RFC 3339, avec éventuellement des fractions de seconde. Seuls ces trois champs sont présents : aucun `eventType` ou `test` interne, montant, hash de transaction, portefeuille ou motif d’échec.
+
+### Abonnement actif : `subscription.activated`
+
+```json
+{
+  "eventType": "subscription.activated",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd"
+}
+```
+
+`sourceId` est l’UUID de l’abonnement.
+
+### Solde d’abonnement faible : `subscription.balance_low`
+
+```json
+{
+  "eventType": "subscription.balance_low",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd:2026-10"
+}
+```
+
+`sourceId` combine l’UUID et le mois UTC au format `<subscription UUID>:YYYY-MM`. Les trois champs d’abonnement sont des chaînes ; `occurredAt` est un horodatage UTC RFC 3339. Ils ne contiennent ni nom de formule, ni dates d’abonnement, ni quota, ni pourcentage, ni portefeuille. Ne supposez pas qu’ils incluent les détails de l’e-mail.
+
+## Notifications de test
+
+Les tests ont `test: true` au niveau supérieur. Chaque événement utilise la même structure de test à trois champs ; `data.eventType` correspond à l’événement choisi et au `eventType` externe. Exemple pour Auto Deposit terminé :
+
+```json
+{
+  "id": "55555555-5555-4555-8555-555555555555",
+  "eventType": "auto_recharge.succeeded",
+  "createdAt": "2026-10-13T08:00:00Z",
+  "data": {
+    "eventType": "auto_recharge.succeeded",
+    "balance": "",
+    "test": true
+  },
+  "test": true
+}
+```
+
+Vérifiez la signature et accusez réception normalement, mais examinez le `test` externe avant de valider le schéma réel ou de traiter des données métier. Les tests n’ont pas de champs réels tels que `attemptId` ou `sourceId`. Un `balance` vide ne signifie pas zéro. N’utilisez pas un test pour modifier des soldes, enregistrer un dépôt ou activer un abonnement.
+
+## Vérifier la signature
+
+Chaque requête contient quatre en-têtes :
+
+| En-tête | Valeur |
+| --- | --- |
+| `DGrid-Event-Id` | UUID de livraison correspondant au `id` externe. |
+| `DGrid-Timestamp` | Horodatage Unix en secondes sous forme de chaîne. |
+| `DGrid-Signature` | `sha256=` suivi du HMAC en hexadécimal minuscule. |
+| `DGrid-Signature-Version` | `v1`, version du protocole de signature, pas de la clé. |
+
+Les noms d’en-têtes sont insensibles à la casse. Aucun en-tête séparé n’indique la version de la clé.
+
+Le Signing Secret affiché par **Rotate Secret** est l’encodage base64url sans padding d’une clé de 32 octets. Décodez-le en octets avant de calculer le HMAC ; n’utilisez pas le texte affiché directement comme clé.
+
+```text
+key = base64url_decode(Signing Secret)
+message = UTF8(DGrid-Timestamp + ".") + exact raw request body bytes
+expected = "sha256=" + lowercase_hex(HMAC_SHA256(key, message))
+```
+
+Préservez les octets exacts du corps brut. Vérifiez la signature avant de parser le JSON. Parser puis sérialiser le JSON peut modifier les octets et invalider la vérification.
+
+Comparez la signature attendue et `DGrid-Signature` en temps constant. Exigez la version `v1`. Une fenêtre d’horodatage de cinq minutes est recommandée pour limiter le rejeu ; synchronisez l’horloge du récepteur. Après vérification, parsez le JSON et vérifiez que `DGrid-Event-Id` correspond à `id`.
+
+## Répondre aux livraisons
+
+Acceptez durablement la notification vérifiée, puis renvoyez un HTTP `2xx` en **moins de cinq secondes**. Par exemple, persistez-la dans une file et renvoyez :
+
+```http
+HTTP/1.1 204 No Content
+```
+
+Aucun corps JSON ni enveloppe n’est nécessaire. DGrid utilise le statut HTTP pour déterminer l’acceptation : même un HTTP `200` dont le JSON indique une erreur compte comme accepté.
+
+Les réponses non `2xx`, erreurs réseau et délais dépassés déclenchent de nouvelles tentatives, jusqu’à **cinq tentatives au total**, première incluse. Les redirections ne sont pas suivies. Effectuez les traitements longs après l’acceptation durable.
+
+Les livraisons peuvent être dupliquées et leur ordre n’est pas garanti. Dédupliquez avec le `id` externe, stable lors des nouvelles tentatives. Répondez `2xx` à un doublon déjà accepté sans reproduire ses effets métier. Les horodatages, signatures et octets bruts peuvent changer ; ne les utilisez pas, ni `createdAt`, pour dédupliquer ou établir l’ordre des événements métier.
+
+## Changement d’URL, rotation du secret et désactivation
+
+Les livraisons en attente conservent l’URL et la clé utilisées à leur mise en file. Après un changement d’URL ou de secret, maintenez l’ancien récepteur accessible et conservez l’ancienne clé de vérification jusqu’à la fin de ces livraisons.
+
+Désactiver Webhook n’annule pas les livraisons déjà en attente. Votre récepteur peut encore les recevoir et doit les traiter.

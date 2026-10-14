@@ -1,0 +1,195 @@
+---
+title: "Webhook 指南"
+sidebarTitle: "Webhook 指南"
+description: "使用自訂 HTTPS 接收端接收 DGrid 事件、驗證簽章，並處理測試、重試與重複投遞。"
+---
+
+Webhook 可將 DGrid 通知發送至您指定的接收端，無需綁定電子郵件。
+
+電子郵件與 Lark 設定請參閱[通知設定](/zh-Hant/ai-gateway/notifications)。本指南說明自訂 HTTPS 接收端。
+
+## 設定 Webhook
+
+1. <strong>輸入接收端地址</strong>：在 DGrid 的 Webhook 設定中輸入並儲存您或技術團隊提供的公開 HTTPS URL。
+2. <strong>啟用 Webhook</strong>。
+3. <strong>取得 Signing Secret</strong>：點擊 <strong>Rotate Secret</strong>，安全複製產生的密鑰並加入接收端設定。每次輪替都會產生新密鑰；請更新接收端，並在排隊投遞完成前保留舊金鑰。
+4. <strong>選擇事件</strong>：啟用需要接收的通知類型。
+5. <strong>測試通知</strong>：確認接收端可接受通知並驗證簽章。
+
+## 可用事件
+
+以下 6 類事件皆可在 Webhook 設定中選擇。請以通知 JSON 最外層的 `eventType` 辨識事件，保留識別碼的大小寫、句點與底線。
+
+| 通知 | 事件識別碼（`eventType`） | 接收時機 |
+| --- | --- | --- |
+| 儲值餘額不足 | `balance.low` | 儲值餘額降至帳戶提醒門檻或以下。 |
+| 儲值餘額耗盡 | `balance.depleted` | 儲值餘額為零或負數。 |
+| 自動儲值完成 | `auto_recharge.succeeded` | 自動儲值已確認並入帳。 |
+| 自動儲值失敗 | `auto_recharge.failed` | 一次自動儲值嘗試失敗。 |
+| 訂閱啟用 | `subscription.activated` | 訂閱啟用或方案變更成功。 |
+| 訂閱餘額不足 | `subscription.balance_low` | 每月訂閱剩餘餘額降至 15% 或以下。 |
+
+儲值餘額與訂閱餘額是分開的。每個訂閱在每個 UTC 月份最多發送一次訂閱餘額不足通知，沒有獨立的訂閱餘額耗盡事件。自動儲值失敗指實際嘗試失敗，不包含尚未建立嘗試前的資金或授權警告。
+
+## 傳入請求
+
+DGrid 向已儲存的 URL 發送 HTTP `POST`，並使用 `Content-Type: application/json`。所有通知使用相同的外層結構：
+
+```json
+{
+  "id": "1f3c489c-5ca1-41f4-872e-c10b2b47207a",
+  "eventType": "balance.low",
+  "createdAt": "2026-10-13T08:30:00Z",
+  "data": {
+    "eventType": "balance.low",
+    "balance": "4.25",
+    "test": false
+  },
+  "test": false
+}
+```
+
+| 欄位 | 類型 | 說明 |
+| --- | --- | --- |
+| `id` | string | 投遞 UUID，與 `DGrid-Event-Id` 相同。重試時保持不變，請用於去重。 |
+| `eventType` | string | 上述 6 種識別碼之一，請用此最外層欄位分派通知。 |
+| `createdAt` | string | 本次投遞嘗試的 UTC RFC 3339 時間戳記。重試時可能變更，不一定是業務事件發生時間。 |
+| `data` | object | 事件專屬資料，見下方範例。 |
+| `test` | boolean | 測試通知為 `true`，業務通知為 `false`。 |
+
+## 事件資料
+
+以下範例僅替換共同結構的 `data`。識別碼、時間與餘額均為範例值。
+
+### 儲值餘額不足：`balance.low`
+
+```json
+{
+  "eventType": "balance.low",
+  "balance": "4.25",
+  "test": false
+}
+```
+
+### 儲值餘額耗盡：`balance.depleted`
+
+```json
+{
+  "eventType": "balance.depleted",
+  "balance": "-1",
+  "test": false
+}
+```
+
+這兩種事件的 `eventType` 為字串，`test` 為布林值。`balance` 是以 USD 計的帶正負號十進位字串，可為零或負數，僅代表儲值餘額，不含訂閱額度。請保留精度，不要轉成浮點數，也不要套用電子郵件顯示的四捨五入或截斷規則。
+
+### 自動儲值完成：`auto_recharge.succeeded`
+
+```json
+{
+  "attemptId": "7e6956ab-f9cb-4dc0-b793-6e5b6237bb48",
+  "state": "confirmed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+### 自動儲值失敗：`auto_recharge.failed`
+
+```json
+{
+  "attemptId": "7304a355-2a63-4c23-9121-7b615d7c410f",
+  "state": "failed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+三個欄位皆為字串。`attemptId` 識別自動儲值嘗試；`state` 分別固定為 `confirmed` 或 `failed`；`occurredAt` 是 UTC RFC 3339 事件時間，可能包含小數秒。資料僅包含這三個欄位，沒有內層 `eventType` 或 `test`，也沒有金額、交易雜湊、錢包或失敗原因。
+
+### 訂閱啟用：`subscription.activated`
+
+```json
+{
+  "eventType": "subscription.activated",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd"
+}
+```
+
+`sourceId` 是訂閱 UUID。
+
+### 訂閱餘額不足：`subscription.balance_low`
+
+```json
+{
+  "eventType": "subscription.balance_low",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd:2026-10"
+}
+```
+
+`sourceId` 結合訂閱 UUID 與 UTC 月份，格式為 `<subscription UUID>:YYYY-MM`。訂閱事件的三個欄位皆為字串，`occurredAt` 為 UTC RFC 3339 時間戳記。資料不含方案名稱、訂閱日期、額度、百分比或錢包；請勿假設具有電子郵件顯示的所有細節。
+
+## 測試通知
+
+測試通知最外層的 `test` 為 `true`。每種事件的測試 `data` 都使用相同的三欄位結構；`data.eventType` 與選取事件及外層 `eventType` 相同。例如選擇自動儲值完成時：
+
+```json
+{
+  "id": "55555555-5555-4555-8555-555555555555",
+  "eventType": "auto_recharge.succeeded",
+  "createdAt": "2026-10-13T08:00:00Z",
+  "data": {
+    "eventType": "auto_recharge.succeeded",
+    "balance": "",
+    "test": true
+  },
+  "test": true
+}
+```
+
+請照常驗證簽章並回應，但在驗證正式事件結構或處理業務資料之前，先檢查外層 `test`。測試沒有正式事件的 `attemptId` 或 `sourceId`，空白 `balance` 也不代表零。請勿使用測試通知修改餘額、記錄儲值或啟用訂閱。
+
+## 驗證簽章
+
+請求包含四個相關標頭：
+
+| 標頭 | 值 |
+| --- | --- |
+| `DGrid-Event-Id` | 投遞 UUID，與外層 `id` 相同。 |
+| `DGrid-Timestamp` | 以字串表示的 Unix 時間戳記，單位為秒。 |
+| `DGrid-Signature` | `sha256=` 加上小寫十六進位 HMAC 摘要。 |
+| `DGrid-Signature-Version` | `v1`，代表簽章協定版本，不是金鑰版本。 |
+
+標頭名稱不區分大小寫，沒有獨立的簽章金鑰版本標頭。
+
+<strong>Rotate Secret</strong> 顯示的 Signing Secret 是 32 位元組金鑰的無填補 base64url 編碼。計算 HMAC 前需解碼為位元組，不能直接以顯示的密鑰文字當作金鑰。
+
+```text
+key = base64url_decode(Signing Secret)
+message = UTF8(DGrid-Timestamp + ".") + exact raw request body bytes
+expected = "sha256=" + lowercase_hex(HMAC_SHA256(key, message))
+```
+
+保留原始請求本文的完整位元組，並在解析 JSON 前驗證簽章。解析後重新序列化 JSON 可能改變位元組，導致驗證失敗。
+
+以固定時間比較預期簽章與 `DGrid-Signature`，並要求協定版本為 `v1`。建議採用 5 分鐘的時間戳記容許範圍以限制重播，並同步接收端時鐘。驗證後才解析 JSON，並確認 `DGrid-Event-Id` 與 `id` 相同。
+
+## 回應投遞
+
+將已驗證通知可靠地持久化後，在 <strong>5 秒內</strong>回傳任意 HTTP `2xx`。例如先寫入持久化佇列，再回傳：
+
+```http
+HTTP/1.1 204 No Content
+```
+
+不需要 JSON 回應本文或包裝結構。DGrid 以 HTTP 狀態判斷是否接受；即使 HTTP `200` 的 JSON 本文表示錯誤，也會視為已接受。
+
+非 `2xx`、網路失敗或逾時會觸發重試，包含首次在內<strong>最多共 5 次嘗試</strong>。DGrid 不會跟隨重新導向。耗時的業務處理請在通知已持久化後進行。
+
+通知可能重複且順序不保證。請以重試時保持不變的外層 `id` 去重。已接受的重複通知仍回傳 `2xx`，但不要重複執行業務操作。重試時時間戳記、簽章與原始位元組可能變更，請勿使用它們或 `createdAt` 去重或判定業務事件順序。
+
+## 變更 URL、輪替密鑰與停用
+
+排隊中的投遞會保留入列時的 URL 與簽章金鑰。變更 URL 或輪替密鑰後，請維持舊接收端可連線，並保留舊驗證金鑰，直到排隊投遞完成。
+
+停用 Webhook 不會取消已排隊的投遞，接收端仍可能收到並需要處理這些請求。

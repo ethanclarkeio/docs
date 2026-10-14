@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
 sidebarTitle: "Introduction"
-description: "Aperçu des trois surfaces API de DGrid — Model API, Management API Keys et l'API x402 de paiement par inférence — avec authentification et URLs de base."
+description: "Aperçu des API Model, de gestion et x402 de DGrid, avec authentification, URL de base et ressources d’intégration Webhook."
 ---
 
 La référence API de DGrid est organisée en trois surfaces API, chacune avec son propre modèle d'authentification et son propre objectif :
@@ -10,13 +10,17 @@ La référence API de DGrid est organisée en trois surfaces API, chacune avec s
   <Card title="Model API" icon="brain" href="#model-api">
     Points de terminaison compatibles OpenAI, Claude et Gemini pour le chat, les complétions, les embeddings, les images, l'audio et les modérations.
   </Card>
-  <Card title="Clés API de gestion" icon="key" href="/fr/management-api-keys">
-    Gestion programmatique du cycle de vie des clés API de modèle — création, rotation, limitation, désactivation et révocation.
+  <Card title="API de gestion" icon="key" href="/fr/management-api-keys">
+    Gérez les clés Model API par programmation et consultez les soldes avec une clé API de gestion.
   </Card>
   <Card title="x402 API" icon="credit-card" href="/fr/x402/overview">
     Accès à l'inférence payée à l'usage utilisant le protocole de paiement x402, sans solde de compte pré-approvisionné.
   </Card>
 </CardGroup>
+
+<Tip>
+Pour recevoir les événements sur votre endpoint HTTPS, consultez le [guide Webhook](/fr/api-reference/webhooks/overview). Pour l’e-mail et Lark, consultez [Notifications](/fr/ai-gateway/notifications).
+</Tip>
 
 <Note>
 Chaque page de référence Model API dispose d'un terrain de jeu interactif : renseignez votre clé API et vos paramètres, puis appuyez sur **Send** pour tester le point de terminaison en direct sur `https://api.dgrid.ai`.
@@ -75,11 +79,11 @@ Le paramètre `model` utilise le format `provider/model-name` — par exemple `o
 3. N'utilisez les formats natifs des fournisseurs que lorsque vous avez besoin de fonctionnalités de charge utile spécifiques au fournisseur, telles que les parties multimodales de Gemini ou les charges utiles d'outils de Claude.
 4. Maintenez les exemples de requêtes et de réponses synchronisés avec votre famille de modèles cible, car les noms de paramètres diffèrent entre les styles OpenAI, Claude et Gemini.
 
-## Clés API de gestion
+## API de gestion
 
-Les clés API de gestion sont des identifiants administratifs pour l'ensemble du cycle de vie des clés API de modèle — création, rotation, limites d'utilisation, désactivation et révocation. Elles sont limitées aux opérations de gestion de clés et ne peuvent pas appeler les points de terminaison d'inférence de la Model API.
+Les clés API de gestion sont des identifiants administratifs pour gérer le cycle de vie des clés Model API et consulter le solde du compte. Elles ne peuvent pas appeler les endpoints d’inférence de la Model API.
 
-Consultez [Clés API de gestion](/fr/management-api-keys) pour les surfaces API, les limites d'authentification et la référence des points de terminaison.
+Consultez [Clés API de gestion](/fr/management-api-keys) pour la création des clés, les limites d’authentification et les endpoints de leur cycle de vie. Utilisez [Consulter le solde du compte](/fr/api-reference/management/get-account-balance) pour obtenir les soldes total, d’abonnement et rechargé avec une clé API de gestion.
 
 ## x402 API
 

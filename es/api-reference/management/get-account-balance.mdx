@@ -1,0 +1,70 @@
+---
+title: "Consultar el saldo de la cuenta"
+sidebarTitle: "Consultar el saldo de la cuenta"
+description: "Consulte el saldo total, de suscripción y recargado de la cuenta asociada a su clave API de gestión."
+---
+
+Consulte el saldo de la cuenta asociada a su clave API de gestión. Este endpoint distingue el saldo total, el saldo de suscripción disponible y el saldo recargado.
+
+<Note>
+Autentíquese con una [clave API de gestión](/es/management-api-keys), en lugar de una clave Model API. Auto Deposit y las alertas de saldo recargado usan `rechargeBalance`, que excluye el saldo de suscripción.
+</Note>
+
+## Endpoint
+
+```http
+GET https://api.dgrid.ai/v1/management/balance
+```
+
+| Propiedad | Valor |
+| --- | --- |
+| Autenticación | `Authorization: Bearer <DGRID_MANAGEMENT_KEY>` |
+| Parámetros de consulta | Ninguno |
+| Respuesta | `application/json` |
+
+## Ejemplo de solicitud
+
+Asigne su clave API de gestión a `DGRID_MANAGEMENT_KEY`.
+
+<RequestExample>
+```bash cURL
+curl -sS -i "https://api.dgrid.ai/v1/management/balance" \
+  -H "Authorization: Bearer $DGRID_MANAGEMENT_KEY"
+```
+</RequestExample>
+
+## Respuesta
+
+<ResponseExample>
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "userId": "11111111-1111-1111-1111-111111111111",
+    "balance": "123.45678912",
+    "subscriptionBalance": "100.00000000",
+    "rechargeBalance": "23.45678912",
+    "currency": "USD",
+    "planName": "Pro"
+  }
+}
+```
+</ResponseExample>
+
+## Campos de respuesta
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `userId` | string | ID de la cuenta asociada a la clave API de gestión. |
+| `balance` | string | Saldo total: `subscriptionBalance + rechargeBalance`. |
+| `subscriptionBalance` | string | Saldo de suscripción disponible; cero cuando no hay saldo disponible. |
+| `rechargeBalance` | string | Saldo recargado, exactamente igual a `balance - subscriptionBalance`. |
+| `currency` | string | Moneda de los importes; actualmente `USD`. |
+| `planName` | string | Nombre del plan de suscripción; una cadena vacía si no hay nombre disponible. |
+
+## Precisión de los importes
+
+Todos los importes se devuelven como cadenas decimales para conservar la precisión. No suponga un número fijo de decimales; use un tipo numérico decimal para los cálculos. El saldo total y el recargado pueden ser negativos. Muestre los valores devueltos sin ajustarlos a cero.
+
+Consulte [Recarga automática](/es/ai-gateway/auto-deposit) para recargas automáticas y [Notificaciones](/es/ai-gateway/notifications) para alertas de saldo.

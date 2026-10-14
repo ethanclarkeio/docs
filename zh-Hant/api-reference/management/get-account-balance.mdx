@@ -1,0 +1,70 @@
+---
+title: "查詢帳戶餘額"
+sidebarTitle: "查詢帳戶餘額"
+description: "使用管理 API 金鑰查詢所屬帳戶的總餘額、訂閱餘額與儲值餘額。"
+---
+
+查詢管理 API 金鑰所屬帳戶的餘額，並區分總餘額、可用訂閱餘額與儲值餘額。
+
+<Note>
+請使用[管理 API 金鑰](/zh-Hant/management-api-keys)驗證，而非模型 API 金鑰。自動儲值與儲值餘額通知使用 `rechargeBalance`，不包含訂閱餘額。
+</Note>
+
+## 端點
+
+```http
+GET https://api.dgrid.ai/v1/management/balance
+```
+
+| 項目 | 值 |
+| --- | --- |
+| 驗證方式 | `Authorization: Bearer <DGRID_MANAGEMENT_KEY>` |
+| 查詢參數 | 無 |
+| 回應格式 | `application/json` |
+
+## 請求範例
+
+將 `DGRID_MANAGEMENT_KEY` 設為您的管理 API 金鑰。
+
+<RequestExample>
+```bash cURL
+curl -sS -i "https://api.dgrid.ai/v1/management/balance" \
+  -H "Authorization: Bearer $DGRID_MANAGEMENT_KEY"
+```
+</RequestExample>
+
+## 回應
+
+<ResponseExample>
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "userId": "11111111-1111-1111-1111-111111111111",
+    "balance": "123.45678912",
+    "subscriptionBalance": "100.00000000",
+    "rechargeBalance": "23.45678912",
+    "currency": "USD",
+    "planName": "Pro"
+  }
+}
+```
+</ResponseExample>
+
+## 回應欄位
+
+| 欄位 | 類型 | 說明 |
+| --- | --- | --- |
+| `userId` | string | 管理 API 金鑰所屬帳戶的識別碼。 |
+| `balance` | string | 總餘額，等於 `subscriptionBalance + rechargeBalance`。 |
+| `subscriptionBalance` | string | 目前可用的訂閱餘額；沒有可用訂閱餘額時為零。 |
+| `rechargeBalance` | string | 儲值餘額，精確等於 `balance - subscriptionBalance`。 |
+| `currency` | string | 金額幣別，目前為 `USD`。 |
+| `planName` | string | 訂閱方案名稱；沒有方案名稱時為空字串。 |
+
+## 金額精度
+
+所有金額皆以十進位字串回傳，以保留精度。請勿假設固定小數位數；計算時請使用十進位數值型別。總餘額與儲值餘額可能為負數，請依實際回傳值顯示，不要強制歸零。
+
+自動補足資金請參閱[自動儲值](/zh-Hant/ai-gateway/auto-deposit)，餘額提醒請參閱[通知設定](/zh-Hant/ai-gateway/notifications)。

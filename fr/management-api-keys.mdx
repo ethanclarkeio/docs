@@ -1,12 +1,12 @@
 ---
 title: "Gestion des clés API"
 sidebarTitle: "Gestion des clés API"
-description: "Créez, faites tourner, listez et révoquez par programmation les clés Model API de DGrid pour gérer cycle de vie, périmètres et accès des équipes."
+description: "Créez et gérez les clés Model API par programmation et consultez les soldes avec votre clé API de gestion."
 ---
 
 Les clés API de gestion (Management API Keys) offrent un moyen programmatique de gérer l'ensemble du cycle de vie des clés API de modèle (Model API Keys). Elles sont conçues pour les équipes d'entreprise, les plateformes SaaS et les systèmes d'automatisation qui doivent créer, distribuer, faire pivoter, activer, désactiver ou révoquer des clés sans dépendre d'opérations manuelles dans la console.
 
-Les clés API de gestion sont des identifiants administratifs et sont limitées aux opérations de gestion de clés. Elles ne peuvent pas être utilisées pour appeler les points de terminaison d'inférence ou de complétion de modèles.
+Les clés API de gestion sont des identifiants administratifs pour gérer les clés Model API et consulter le solde du compte. Elles ne peuvent pas appeler les endpoints d’inférence ou de complétion de modèles.
 
 ## 1. Vue d'ensemble
 
@@ -26,16 +26,19 @@ Capacités principales :
 
 ## 2. Surfaces API et limites d'authentification
 
-La gestion des clés est répartie sur deux surfaces API, chacune avec son propre modèle d'authentification :
+Les opérations de gestion utilisent les surfaces API et les modèles d’authentification suivants :
 
 | Surface API | Objectif | Authentification |
 | --- | --- | --- |
 | `/v1/management-keys` | Gérer les clés API de gestion | `JWT` |
 | `/api/v1/model-router/keys` | Gérer les clés API de modèle à l'aide d'une clé API de gestion | `Authorization: Bearer <management_key>` |
+| `/v1/management/balance` | Consulter le solde du compte avec une clé API de gestion | `Authorization: Bearer <management_key>` |
+
+Pour les soldes total, d’abonnement et rechargé, consultez [Consulter le solde du compte](/fr/api-reference/management/get-account-balance).
 
 Important :
 
-- Une `Management API Key` ne peut être utilisée qu'avec `/api/v1/model-router/keys`
+- Une `Management API Key` peut être utilisée avec `/api/v1/model-router/keys` et `GET /v1/management/balance`
 - Une `Management API Key` ne peut pas être utilisée avec `/v1/management-keys`
 - `/v1/management-keys` ne prend en charge que l'authentification `JWT`
 - Le secret complet n'est renvoyé qu'une seule fois lors de la création d'une clé et ne peut pas être récupéré ultérieurement
@@ -61,6 +64,7 @@ Préfixes de routes utilisés dans ce document :
 ```text
 /v1/management-keys
 /api/v1/model-router/keys
+/v1/management
 ```
 
 ## 5. Créer une clé API de gestion
@@ -90,6 +94,7 @@ Ce document couvre deux modes d'authentification :
 
 - Les points de terminaison sous `/v1/management-keys` nécessitent un `JWT`
 - Les points de terminaison sous `/api/v1/model-router/keys` nécessitent une clé API de gestion
+- `GET /v1/management/balance` nécessite une clé API de gestion
 
 Utilisez l'en-tête suivant lors de l'appel des points de terminaison `/api/v1/model-router/keys` :
 

@@ -1,12 +1,12 @@
 ---
 title: "Claves API de gestión"
 sidebarTitle: "Claves API de gestión"
-description: "Crea, rota, lista y revoca claves de la Model API de DGrid de forma programática para gestionar el ciclo de vida de credenciales, alcances y acceso del equipo."
+description: "Cree y gestione claves Model API mediante programación y consulte saldos con su clave API de gestión."
 ---
 
 Las claves API de gestión proporcionan una forma programática de administrar el ciclo de vida completo de las claves API de modelo. Están diseñadas para equipos empresariales, plataformas SaaS y sistemas de automatización que necesitan crear, distribuir, rotar, habilitar, deshabilitar o revocar claves sin depender de operaciones manuales en la consola.
 
-Las claves API de gestión son credenciales administrativas y están limitadas a operaciones de gestión de claves. No pueden usarse para llamar a endpoints de inferencia o completions de modelos.
+Las claves API de gestión son credenciales administrativas para gestionar claves Model API y consultar el saldo de la cuenta. No pueden llamar a endpoints de inferencia o completions de modelos.
 
 ## 1. Descripción general
 
@@ -26,16 +26,19 @@ Capacidades principales:
 
 ## 2. Superficies API y límites de autenticación
 
-La gestión de claves se divide en dos superficies API, cada una con su propio modelo de autenticación:
+Las operaciones de gestión usan las siguientes superficies API y modelos de autenticación:
 
 | Superficie API | Propósito | Autenticación |
 | --- | --- | --- |
 | `/v1/management-keys` | Gestionar claves API de gestión | `JWT` |
 | `/api/v1/model-router/keys` | Gestionar claves API de modelo usando una clave API de gestión | `Authorization: Bearer <management_key>` |
+| `/v1/management/balance` | Consultar el saldo de la cuenta con una clave API de gestión | `Authorization: Bearer <management_key>` |
+
+Para los saldos total, de suscripción y recargado, consulte [Consultar el saldo de la cuenta](/es/api-reference/management/get-account-balance).
 
 Importante:
 
-- Una `Management API Key` solo puede usarse con `/api/v1/model-router/keys`
+- Una `Management API Key` puede usarse con `/api/v1/model-router/keys` y `GET /v1/management/balance`
 - Una `Management API Key` no puede usarse con `/v1/management-keys`
 - `/v1/management-keys` solo admite autenticación `JWT`
 - El secreto completo solo se devuelve una vez cuando se crea una clave y no puede recuperarse más tarde
@@ -61,6 +64,7 @@ Prefijos de ruta usados en este documento:
 ```text
 /v1/management-keys
 /api/v1/model-router/keys
+/v1/management
 ```
 
 ## 5. Crear una clave API de gestión
@@ -90,6 +94,7 @@ Este documento cubre dos modos de autenticación:
 
 - Los endpoints bajo `/v1/management-keys` requieren `JWT`
 - Los endpoints bajo `/api/v1/model-router/keys` requieren una clave API de gestión
+- `GET /v1/management/balance` requiere una clave API de gestión
 
 Use el siguiente encabezado al llamar a los endpoints `/api/v1/model-router/keys`:
 

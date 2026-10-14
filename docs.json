@@ -332,6 +332,8 @@
                 "pages": [
                   "ai-gateway/overview",
                   "ai-gateway/redeem-credit-code",
+                  "ai-gateway/auto-deposit",
+                  "ai-gateway/notifications",
                   "ai-gateway/free-models-router",
                   "ai-gateway/integrations",
                   "ai-gateway/supported-regions"
@@ -464,9 +466,16 @@
                 ]
               },
               {
-                "group": "MANAGEMENT API KEYS",
+                "group": "MANAGEMENT API",
                 "pages": [
-                  "management-api-keys"
+                  "management-api-keys",
+                  "api-reference/management/get-account-balance"
+                ]
+              },
+              {
+                "group": "WEBHOOKS",
+                "pages": [
+                  "api-reference/webhooks/overview"
                 ]
               },
               {
@@ -508,6 +517,8 @@
                 "pages": [
                   "zh-Hant/ai-gateway/overview",
                   "zh-Hant/ai-gateway/redeem-credit-code",
+                  "zh-Hant/ai-gateway/auto-deposit",
+                  "zh-Hant/ai-gateway/notifications",
                   "zh-Hant/ai-gateway/free-models-router",
                   "zh-Hant/ai-gateway/integrations",
                   "zh-Hant/ai-gateway/supported-regions"
@@ -640,9 +651,16 @@
                 ]
               },
               {
-                "group": "管理 API 金鑰",
+                "group": "管理 API",
                 "pages": [
-                  "zh-Hant/management-api-keys"
+                  "zh-Hant/management-api-keys",
+                  "zh-Hant/api-reference/management/get-account-balance"
+                ]
+              },
+              {
+                "group": "Webhook 整合",
+                "pages": [
+                  "zh-Hant/api-reference/webhooks/overview"
                 ]
               },
               {
@@ -701,6 +719,8 @@
                 "pages": [
                   "ko/ai-gateway/overview",
                   "ko/ai-gateway/redeem-credit-code",
+                  "ko/ai-gateway/auto-deposit",
+                  "ko/ai-gateway/notifications",
                   "ko/ai-gateway/free-models-router",
                   "ko/ai-gateway/integrations",
                   "ko/ai-gateway/supported-regions"
@@ -833,9 +853,16 @@
                 ]
               },
               {
-                "group": "API 키 관리",
+                "group": "관리 API",
                 "pages": [
-                  "ko/management-api-keys"
+                  "ko/management-api-keys",
+                  "ko/api-reference/management/get-account-balance"
+                ]
+              },
+              {
+                "group": "Webhook 통합",
+                "pages": [
+                  "ko/api-reference/webhooks/overview"
                 ]
               },
               {
@@ -894,6 +921,8 @@
                 "pages": [
                   "fr/ai-gateway/overview",
                   "fr/ai-gateway/redeem-credit-code",
+                  "fr/ai-gateway/auto-deposit",
+                  "fr/ai-gateway/notifications",
                   "fr/ai-gateway/free-models-router",
                   "fr/ai-gateway/integrations",
                   "fr/ai-gateway/supported-regions"
@@ -1026,9 +1055,16 @@
                 ]
               },
               {
-                "group": "CLÉS API DE GESTION",
+                "group": "API DE GESTION",
                 "pages": [
-                  "fr/management-api-keys"
+                  "fr/management-api-keys",
+                  "fr/api-reference/management/get-account-balance"
+                ]
+              },
+              {
+                "group": "WEBHOOKS",
+                "pages": [
+                  "fr/api-reference/webhooks/overview"
                 ]
               },
               {
@@ -1087,6 +1123,8 @@
                 "pages": [
                   "es/ai-gateway/overview",
                   "es/ai-gateway/redeem-credit-code",
+                  "es/ai-gateway/auto-deposit",
+                  "es/ai-gateway/notifications",
                   "es/ai-gateway/free-models-router",
                   "es/ai-gateway/integrations",
                   "es/ai-gateway/supported-regions"
@@ -1219,9 +1257,16 @@
                 ]
               },
               {
-                "group": "CLAVES DE API DE GESTIÓN",
+                "group": "API DE GESTIÓN",
                 "pages": [
-                  "es/management-api-keys"
+                  "es/management-api-keys",
+                  "es/api-reference/management/get-account-balance"
+                ]
+              },
+              {
+                "group": "WEBHOOKS",
+                "pages": [
+                  "es/api-reference/webhooks/overview"
                 ]
               },
               {

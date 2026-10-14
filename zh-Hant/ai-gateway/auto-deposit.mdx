@@ -1,0 +1,107 @@
+---
+title: "自動儲值"
+sidebarTitle: "自動儲值"
+description: "依儲值餘額自動補足 USDT，並管理錢包授權、累計扣款上限與到期日。"
+---
+
+Auto Deposit（自動儲值）讓您授權 DGrid 從資金錢包扣款，並設定累計 USDT 上限。當儲值餘額低於觸發值時，DGrid 會依執行當下的儲值餘額計算補足目標所需的金額，在可用授權內扣款，並於交易確認後入帳。錢包 USDT 不足時，會以可用金額進行部分儲值。
+
+前往 [DGrid Billing](https://dgrid.ai/billing) → <strong>Deposit</strong> → <strong>Auto Deposit</strong>。
+
+## 開始之前
+
+- 登入 DGrid，並連接您要用於自動儲值的錢包。
+- 檢查頁面顯示的網路與代幣。目前設定視窗顯示 <strong>BNB Chain</strong> 與 <strong>USDT</strong>。資金錢包需持有 USDT，以及少量 BNB，以支付首次 USDT 核准交易的 gas 費用。
+- <strong>儲值餘額（Deposit Balance）</strong>不包含訂閱餘額，用於觸發自動儲值及計算補足金額。<strong>資金錢包（Funding wallet）</strong>持有鏈上 USDT。設定授權上限不會立即將全部金額轉入 DGrid。
+
+<Note>
+核准前，請核對 Billing 頁面與錢包提示中的網路、代幣及授權接收地址。
+</Note>
+
+## 設定自動儲值規則
+
+在 [Billing](https://dgrid.ai/billing) 的 <strong>Deposit</strong> 區段選擇 <strong>Auto Deposit</strong>，點擊 <strong>Set Up Auto Deposit</strong> 開啟設定。
+
+| 欄位 | 說明 |
+| --- | --- |
+| <strong>Network / Token</strong> | 唯讀欄位；目前為 BNB Chain / USDT。 |
+| <strong>Funding wallet</strong> | 扣款錢包，請確認與已連接的錢包一致。 |
+| <strong>Trigger balance</strong> | 儲值餘額低於此值時觸發自動儲值，可設為零或正值。 |
+| <strong>Target balance</strong> | 儲值後希望達到的儲值餘額，必須高於觸發值。 |
+| <strong>Approved limit</strong> | 本次授權可累計扣款的 USDT 上限，至少須為「目標餘額 − 觸發餘額」。請預留執行前餘額進一步下降的空間；這不是每次扣款金額。 |
+| <strong>Maximum auto-deposit amount</strong> | 頁面計算的唯讀上限；目前規則下等於目標餘額。 |
+| <strong>Expiry date</strong> | 授權到期日，須為未來日期；到期後需重新授權。 |
+
+檢查預估扣款與 gas 費用說明，再點擊 <strong>Enable Auto Deposit</strong>。
+
+例如，觸發值為 10 USDT、目標為 200 USDT、累計授權上限為 1,000 USDT。執行時儲值餘額為 8 USDT，需補足 192 USDT（200 − 8）。錢包與授權足夠時，扣款 192 USDT，已用授權為 192 USDT，剩餘授權為 808 USDT。若錢包僅有 50 USDT，則扣款 50 USDT，儲值餘額變為 58 USDT，剩餘授權為 950 USDT。實際金額以執行當下的餘額為準。
+
+## 完成錢包授權
+
+依序完成頁面與錢包提示：
+
+<Steps>
+
+<Step title="核准 USDT 額度">
+
+核對網路、USDT 代幣、spender 地址與核准金額，再確認鏈上交易。您需支付此交易的 BNB gas 費用。
+
+</Step>
+
+<Step title="簽署自動儲值授權">
+
+若錢包要求簽章，請核對後簽署。簽署不會立即扣除全部授權額度。
+
+</Step>
+
+<Step title="等待註冊">
+
+狀態變為 <strong>Active</strong>，且顯示資金錢包、授權金額與到期日，才代表設定完成。僅完成錢包 Approve 不代表自動儲值已啟用。
+
+</Step>
+
+</Steps>
+
+DGrid 支付授權註冊與後續自動儲值交易的 gas 費用。若交易遭拒、簽署失敗或註冊失敗，請依頁面錯誤訊息處理，並確認最終狀態為 <strong>Active</strong>。
+
+## 了解扣款計算方式
+
+狀態為 <strong>Active</strong> 時，DGrid 會依規則與執行當下的儲值餘額計算補足金額：
+
+```text
+Amount needed to reach target = Target balance − Deposit Balance at execution
+Actual deposit = min(Amount needed to reach target, available wallet USDT)
+```
+
+此公式假設剩餘授權足夠且代幣 allowance 有效。錢包 USDT 不足時會部分儲值，儲值餘額可能仍低於目標；錢包沒有可用 USDT 時則無法扣款。授權或 allowance 不足時，請依頁面提示重新授權。交易需等待鏈上確認與帳戶入帳，觸發後餘額可能不會立即更新。
+
+<strong>Approved limit / Total authorization 是累計上限</strong>。每次成功儲值皆會消耗部分額度。處理中金額顯示於 <strong>Processing</strong>，成功後移至 <strong>Used</strong>，失敗後釋放。<strong>Remaining</strong> 顯示可用額度。新的授權會取代舊授權，不會加到原有剩餘額度。
+
+## 檢視與管理授權
+
+- 在 <strong>Auto Deposit</strong> 頁面查看狀態、<strong>Total authorization</strong>、<strong>Used</strong>、<strong>Processing</strong>、<strong>Remaining</strong> 與 <strong>Authorization expiry</strong>。
+- 點擊 <strong>Manage</strong>。<strong>Pause</strong> 暫停自動儲值，<strong>Resume</strong> 恢復。使用 <strong>Edit / Adjust Credit</strong> 調整設定或額度，並在提示時重新完成錢包授權。
+- 剩餘額度不足、allowance 失效或授權到期時，選擇 <strong>Re-Authorize</strong> 並重新完成授權流程。
+- <strong>Revoke</strong> 撤銷自動儲值授權；<strong>Set Allowance to 0</strong> 則另外清除錢包的 USDT 扣款額度，可能需要另一筆須支付 gas 的鏈上交易。allowance 不足會使自動儲值暫停；再次使用時請選擇 <strong>Re-Authorize</strong>。請依您想變更的項目選擇操作。
+- 在 <strong>Payment History</strong> 查看 <strong>Type: Auto</strong> 的紀錄、金額、時間與 <strong>Tx Hash</strong>。僅完成授權不會產生儲值紀錄。
+
+## 通知
+
+在[通知設定](/zh-Hant/ai-gateway/notifications)啟用儲值成功與失敗提醒。
+
+## 常見問題
+
+<AccordionGroup>
+<Accordion title="核准 1,000 USDT 會立即扣款 1,000 USDT 嗎？">
+不會。這是累計扣款上限；僅在自動儲值觸發且完成時，才扣除當次所需金額。
+</Accordion>
+<Accordion title="儲值餘額不足時，為何沒有自動儲值？">
+先確認狀態為 <strong>Active</strong>。錢包有少量 USDT 時仍可部分儲值，沒有 USDT 則無法扣款。請檢查 <strong>Remaining</strong>、USDT allowance 與到期日。若顯示 <strong>Paused</strong>，請依原因補足資金或重新授權，並查看頁面錯誤訊息。
+</Accordion>
+<Accordion title="新額度會加到原本的剩餘授權嗎？">
+不會。重新授權會取代先前的授權與規則。
+</Accordion>
+<Accordion title="必須使用 10、200、1,000 USDT 嗎？">
+不必。這些數字僅用於計算範例，請依您的餘額與預期用量設定。
+</Accordion>
+</AccordionGroup>

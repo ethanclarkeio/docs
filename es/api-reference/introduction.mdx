@@ -1,7 +1,7 @@
 ---
 title: "Introducción"
 sidebarTitle: "Introducción"
-description: "Visión general de las tres superficies de API de DGrid: Model API, Management API Keys y la API de pago por inferencia x402, con autenticación y URLs base."
+description: "Visión general de las API Model, de gestión y x402 de DGrid, con autenticación, URL base y recursos de integración Webhook."
 ---
 
 La referencia API de DGrid está organizada en tres superficies de API, cada una con su propio modelo de autenticación y propósito:
@@ -10,13 +10,17 @@ La referencia API de DGrid está organizada en tres superficies de API, cada una
   <Card title="Model API" icon="brain" href="#model-api">
     Endpoints compatibles con OpenAI, Claude y Gemini para chat, completions, embeddings, imágenes, audio y moderación.
   </Card>
-  <Card title="Claves API de gestión" icon="key" href="/es/management-api-keys">
-    Gestión programática del ciclo de vida completo de las claves API de modelo: creación, rotación, limitación, desactivación y revocación.
+  <Card title="API de gestión" icon="key" href="/es/management-api-keys">
+    Gestione claves Model API mediante programación y consulte saldos con una clave API de gestión.
   </Card>
   <Card title="x402 API" icon="credit-card" href="/es/x402/overview">
     Acceso de inferencia de pago por uso mediante el protocolo de pago x402, sin saldo de cuenta prefinanciado.
   </Card>
 </CardGroup>
+
+<Tip>
+Para recibir eventos en su endpoint HTTPS, consulte la [guía Webhook](/es/api-reference/webhooks/overview). Para correo y Lark, consulte [Notificaciones](/es/ai-gateway/notifications).
+</Tip>
 
 <Note>
 Cada página de referencia de Model API incluye un playground interactivo: introduzca su clave API y parámetros, y luego pulse **Send** para probar el endpoint en vivo en `https://api.dgrid.ai`.
@@ -75,11 +79,11 @@ El parámetro `model` usa el formato `provider/model-name`, por ejemplo `openai/
 3. Use formatos nativos del proveedor solo cuando necesite funciones de carga útiles específicas del proveedor, como las parts multimodales de Gemini o las cargas de tools de Claude.
 4. Mantenga sincronizados los ejemplos de solicitud y respuesta con la familia de modelos de destino, ya que los nombres de parámetros varían entre los estilos de OpenAI, Claude y Gemini.
 
-## Claves API de gestión
+## API de gestión
 
-Las claves API de gestión son credenciales administrativas para todo el ciclo de vida de las claves API de modelo: creación, rotación, límites de uso, desactivación y revocación. Están limitadas a operaciones de gestión de claves y no pueden llamar a endpoints de inferencia de Model API.
+Las claves API de gestión son credenciales administrativas para gestionar el ciclo de vida de las claves Model API y consultar el saldo de la cuenta. No pueden llamar a endpoints de inferencia de Model API.
 
-Consulte [Claves API de gestión](/es/management-api-keys) para conocer las superficies API, los límites de autenticación y la referencia de endpoints.
+Consulte [Claves API de gestión](/es/management-api-keys) para crear claves y conocer los límites de autenticación y los endpoints de su ciclo de vida. Use [Consultar el saldo de la cuenta](/es/api-reference/management/get-account-balance) para obtener los saldos total, de suscripción y recargado con una clave API de gestión.
 
 ## x402 API
 

@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-description: "Overview of DGrid's three API surfaces — the Model API, Management API Keys, and x402 pay-per-inference API — with authentication and base URLs."
+description: "Overview of DGrid’s Model API, Management API, and x402 API, with authentication, base URLs, and Webhook integration resources."
 ---
 
 The DGrid API Reference is organized into three API surfaces, each with its own authentication model and purpose:
@@ -9,13 +9,17 @@ The DGrid API Reference is organized into three API surfaces, each with its own 
   <Card title="Model API" icon="brain" href="#model-api">
     OpenAI-, Claude-, and Gemini-compatible endpoints for chat, completions, embeddings, images, audio, and moderations.
   </Card>
-  <Card title="Management API Keys" icon="key" href="/management-api-keys">
-    Programmatic lifecycle management for Model API Keys — create, rotate, limit, disable, and revoke.
+  <Card title="Management API" icon="key" href="/management-api-keys">
+    Manage Model API keys programmatically and query account balances with a Management API Key.
   </Card>
   <Card title="x402 API" icon="credit-card" href="/x402/overview">
     Pay-per-inference access using the x402 payment protocol, with no pre-funded account balance.
   </Card>
 </CardGroup>
+
+<Tip>
+To receive events at your own HTTPS endpoint, see the [Webhook guide](/api-reference/webhooks/overview). For email and Lark setup, see [Notifications](/ai-gateway/notifications).
+</Tip>
 
 <Note>
 Every Model API reference page has an interactive playground: fill in your API key and parameters, then press **Send** to test the endpoint live against `https://api.dgrid.ai`.
@@ -74,11 +78,11 @@ The `model` parameter uses the `provider/model-name` format — for example `ope
 3. Use provider-native formats only when you need provider-specific payload features such as Gemini multimodal parts or Claude tool payloads.
 4. Keep request and response examples in sync with your target model family, because parameter names differ between OpenAI, Claude, and Gemini styles.
 
-## Management API Keys
+## Management API
 
-Management API Keys are administrative credentials for the full lifecycle of Model API Keys — creation, rotation, usage limits, disabling, and revocation. They are restricted to key management operations and cannot call Model API inference endpoints.
+Management API Keys are administrative credentials for Model API key lifecycle operations and account balance queries. They cannot call Model API inference endpoints.
 
-See [Management API Keys](/management-api-keys) for the API surfaces, authentication boundaries, and endpoint reference.
+See [Management API Keys](/management-api-keys) for key creation, authentication boundaries, and lifecycle endpoints. Use [Get account balance](/api-reference/management/get-account-balance) to query total, subscription, and recharge balances with a Management API Key.
 
 ## x402 API
 

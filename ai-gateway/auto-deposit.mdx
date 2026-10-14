@@ -1,0 +1,114 @@
+---
+title: "Auto Deposit"
+sidebarTitle: "Auto Deposit"
+description: "Set up automatic USDT deposits based on your recharge balance, and manage your wallet authorization and cumulative spending limit."
+---
+
+Auto Deposit lets you authorize a cumulative USDT spending limit from a funding wallet. When your Deposit Balance falls below your chosen trigger balance, DGrid calculates the amount needed to reach your target balance, charges the wallet within the available authorization, and credits your Deposit Balance after the transaction is confirmed. If the wallet has less USDT than the target charge, DGrid deposits the USDT available in the wallet.
+
+Go to [DGrid Billing](https://dgrid.ai/billing) → **Deposit** → **Auto Deposit**.
+
+## Before you start
+
+- Sign in to DGrid and connect the wallet you want to use for Auto Deposit.
+- Check the network and token shown on the page. The settings window currently shows **BNB Chain** and **USDT**. Your funding wallet needs some USDT for a deposit; if it has less than the amount needed to reach the target, DGrid deposits the available USDT. You also need a small amount of BNB to pay the gas fee for the initial USDT approval.
+- Keep the balances distinct: **Deposit Balance** is your recharge balance inside DGrid, excluding subscription balance. It determines when Auto Deposit is triggered and how much is needed to reach the target. Your **funding wallet** holds the USDT onchain. Setting an approved limit does not move the full amount into DGrid upfront.
+
+<Note>
+Before approving, check the network, token, and approval recipient shown on the Billing page and in your wallet prompt.
+</Note>
+
+## Set your Auto Deposit rule
+
+1. Open [Billing](https://dgrid.ai/billing) and select **Auto Deposit** in the **Deposit** section.
+2. Click **Set Up Auto Deposit** to open **Auto-deposit settings**.
+3. Review and fill in the fields:
+
+   | Field | What it means |
+   | --- | --- |
+   | **Network / Token** | Read-only: BNB Chain / USDT in the current settings window. |
+   | **Funding wallet** | The wallet that will fund Auto Deposit. Check that it matches the connected wallet. |
+   | **Trigger balance** | Auto Deposit is triggered when your Deposit Balance falls below this amount. It can be zero or higher. |
+   | **Target balance** | The Deposit Balance to restore after a deposit. It must be higher than the trigger balance. |
+   | **Approved limit** | The cumulative maximum USDT that may be charged under this authorization. It must be at least “target balance − trigger balance.” Leave room for the balance to fall further before execution. It is not the amount of every charge. |
+   | **Maximum auto-deposit amount** | A read-only cap calculated by the page. Under the current rule, it equals the target balance. |
+   | **Expiry date** | A future date when the authorization expires. Re-authorization is needed after expiry. |
+
+4. Review the estimated charge and gas fee note, then click **Enable Auto Deposit**.
+
+For example, set a **10 USDT** trigger balance, a **200 USDT** target balance, and a **1,000 USDT** approved limit. If your Deposit Balance is **8 USDT** when a deposit runs, reaching the target requires **192 USDT** (200 − 8). With at least 192 USDT in the wallet and sufficient authorization, the charge is 192 USDT; after success, 192 USDT has been used and 808 USDT remains authorized. If the wallet has only **50 USDT**, the charge is **50 USDT**, bringing the Deposit Balance to **58 USDT** and leaving **950 USDT** of the cumulative authorization. The actual charge uses the live balances at execution. Choose a cumulative limit that fits your expected usage.
+
+## Complete authorization in your wallet
+
+After clicking Enable, follow the page and wallet prompts in order:
+
+<Steps>
+
+<Step title="Approve the USDT allowance">
+
+Confirm the transaction in your wallet after checking the network, USDT token, spender address, and approved amount. You pay the BNB gas fee for this onchain approval.
+
+</Step>
+
+<Step title="Sign the Auto Deposit authorization">
+
+If your wallet asks for a signature, review and sign it. This registers your Auto Deposit rule; signing does not charge the full approved limit immediately.
+
+</Step>
+
+<Step title="Wait for registration">
+
+The page shows authorization progress. Setup is complete when the status is **Active** and the funding wallet, authorization amounts, and expiry appear. A successful wallet Approve alone does not mean Auto Deposit is active.
+
+</Step>
+
+</Steps>
+
+DGrid pays the gas fees for authorization registration and subsequent Auto Deposit transactions. If the wallet transaction is rejected, the signature fails, or registration fails, follow the page's error message and verify that the final status becomes **Active**.
+
+## Understand how charges are calculated
+
+While Auto Deposit is **Active**, DGrid can start a deposit according to your balance and rule. It first calculates the amount needed to reach the target using the live Deposit Balance at execution:
+
+```text
+Amount needed to reach target = Target balance − Deposit Balance at execution
+Actual deposit = min(Amount needed to reach target, available wallet USDT)
+```
+
+The actual deposit formula assumes sufficient remaining authorization and a valid token allowance. If the funding wallet has less USDT than the target amount, DGrid makes a partial deposit using the USDT available in the wallet; your Deposit Balance may remain below the target. If the wallet has no available USDT, there is nothing to charge. If the authorization or token allowance is insufficient, follow the page prompt to re-authorize. An Auto Deposit also needs onchain confirmation and account crediting, so the Deposit Balance may not update immediately after the rule is triggered.
+
+**Approved limit / Total authorization is a cumulative cap.** Each successful deposit uses part of it. An amount in flight may appear under **Processing**; after success it moves to **Used**, and after failure it is released. **Remaining** shows what is still available. A new authorization replaces the previous one; it does not add to the old remaining amount.
+
+## Review and manage your authorization
+
+- On the **Auto Deposit** page, check the status and **Total authorization, Used, Processing, Remaining**, and **Authorization expiry**.
+- Click **Manage** to open the management dialog. **Pause** stops Auto Deposit; **Resume** turns it back on. Use **Edit / Adjust Credit** to change settings or the limit, and complete wallet authorization again if prompted.
+- If the remaining limit is too low, the token allowance is no longer valid, or the authorization has expired, choose **Re-Authorize** and complete the wallet steps again.
+- **Revoke** cancels the Auto Deposit authorization. **Set Allowance to 0** separately removes the wallet's USDT token spending allowance and may require another gas-paid onchain transaction. Auto Deposit will then pause because the token allowance is insufficient. To use it again, select **Re-Authorize** and complete the wallet authorization steps. Choose the action that matches what you intend to change.
+- Open **Payment History** to review deposits. Records with **Type: Auto** are Auto Deposits; check their amount, time, and **Tx Hash**. Authorizing Auto Deposit by itself does not create a deposit record.
+
+## Notifications
+
+Enable completion and failure alerts in [Notifications](/ai-gateway/notifications).
+
+## Frequently asked questions
+
+<AccordionGroup>
+
+<Accordion title="Will approving 1,000 USDT charge me 1,000 USDT immediately?">
+No. That figure is the cumulative amount DGrid may charge under the authorization. A charge occurs only when an Auto Deposit is triggered and completed, for the amount needed at that time.
+</Accordion>
+
+<Accordion title="Why didn't Auto Deposit run when my balance was low?">
+First check that the status is **Active**. If the wallet has less USDT than needed to reach the target, DGrid can still deposit the available amount; if it has no available USDT, there is nothing to charge. Also check the **Remaining** authorization, the wallet's USDT allowance, and the expiry date. If the page says **Paused**, address the stated reason, fund the wallet, or re-authorize as appropriate. Review the displayed error if it still fails.
+</Accordion>
+
+<Accordion title="Does a new limit add to the old remaining amount?">
+No. Re-authorization replaces the previous authorization and rule.
+</Accordion>
+
+<Accordion title="Are 10, 200, and 1,000 USDT required values?">
+No. They are examples to show the calculation. Choose values that fit your own balance and expected usage.
+</Accordion>
+
+</AccordionGroup>

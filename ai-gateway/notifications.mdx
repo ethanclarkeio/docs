@@ -1,0 +1,107 @@
+---
+title: "Notifications"
+sidebarTitle: "Notifications"
+description: "Configure email, Lark, and custom Webhook notifications for recharge balance and Auto Deposit events."
+---
+
+DGrid can notify you by **email** or **Webhook**. Choose one or both channels for each event, and send a test notification to check delivery. Go to [DGrid Settings](https://dgrid.ai/settings) → **Notifications**.
+
+## Available events
+
+| Event in Settings | When it is sent |
+| --- | --- |
+| **Low balance** | Your Deposit Balance first falls to or below your low balance threshold. |
+| **Balance depleted** | Your Deposit Balance is zero or negative. |
+| **Auto deposit succeeded** | An Auto Deposit completes. |
+| **Auto deposit failed** | An Auto Deposit fails. |
+
+Deposit Balance is your recharge balance, excluding subscription balance.
+
+Email and Webhook are selected independently for each event. You can enable either channel or both; Webhook does not require a bound email address. After changing the threshold or event switches, click **Save** below the event list.
+
+## Configure notification channels
+
+<Steps>
+
+<Step title="Set up email notifications">
+
+### Bind and verify your email
+
+1. Open [Settings](https://dgrid.ai/settings) and find **Email Binding**.
+2. Enter the address that should receive notifications in **Billing email**, then click **Send Code**.
+3. Find the verification code in that mailbox, enter it in **Verification code**, and click **Verify**.
+4. Check that **Verified** appears next to the address and that **Email delivery** shows the same verified address. DGrid sends email notifications to this address.
+
+**To change your email address:** Enter the new address directly in the **Billing email** field, click **Send Code**, then enter the code received at the new address and click **Verify** again. Email notifications go to the new address after it shows **Verified**. An unverified address cannot receive notifications through the Email switches in the event list.
+
+### Select events and send a test
+
+1. Under **Notifications**, set the **Low balance threshold** in USDT. For example, with a threshold of 10, a low balance notification can be triggered when the Deposit Balance first falls to 10 USDT or less.
+2. Turn on **Email** for each event you want to receive.
+3. Click **Save** below the event list.
+4. In an enabled event's **Send Test** column, click **Email**. After DGrid reports that the test was sent, check the verified mailbox, including its spam folder if needed.
+
+A test notification checks email delivery. It does not change your DGrid balance or execute an Auto Deposit.
+
+</Step>
+
+<Step title="Set up Lark Webhook notifications">
+
+DGrid accepts a **Lark group custom bot** Webhook URL directly. See Lark's official [Custom bot usage guide](https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot) for the bot setup steps.
+
+### Get a Webhook URL from Lark
+
+1. Open the Lark group that should receive notifications. In the group settings, open **Bots**, then add a **Custom bot**.
+2. Name the bot and copy the Webhook URL it provides. The URL typically starts with `https://open.larksuite.com/open-apis/bot/v2/hook/`.
+3. Keep this URL private. Anyone with it may be able to post messages to the group; do not publish it in documentation or source code.
+
+If the bot uses signature verification, keywords, or an IP allowlist, make sure DGrid's requests satisfy those security settings. The official Lark guide above explains how to configure them.
+
+### Save and enable the Webhook in DGrid
+
+1. In the **Notifications** area of [Settings](https://dgrid.ai/settings), select **Channel configuration → Webhook**.
+2. Paste the Lark bot URL into **Endpoint URL**. DGrid selects the compatible Webhook integration from the address. The URL must use HTTPS.
+3. If signature verification is enabled for the Lark bot, enter its key in **Signing secret**. Otherwise, leave the field blank. The saved secret is not shown again; enter a new value to replace it.
+4. Turn on the **Webhook** switch and click **Save** in this channel configuration area. Check that the channel shows **On / Ready**.
+5. In the event list above, enable **Webhook** for each event you want to send, then click the event list's **Save** button. Saving a URL alone does not subscribe you to any event.
+6. In an event row with Webhook enabled, click **Send Test → Webhook**. Check the Lark group for the test message.
+
+Use **Delivery history (last 30 days)** below the channel settings to review the event, status, attempt count, response code, and last attempt time of Webhook deliveries. Test deliveries can help confirm that the connection works.
+
+</Step>
+
+<Step title="Forward to other platforms">
+
+Provide a public HTTPS receiver URL, enable Webhook, generate a DGrid Signing Secret with **Rotate Secret**, and configure signature verification on your receiver. Enable and save the events you want, then send a test notification.
+
+See the [Webhook guide](/api-reference/webhooks/overview) for receiver configuration, event payloads, signature verification, and delivery handling.
+
+<Note>
+The Lark bot signing key above belongs to the Lark integration. For a custom receiver, use the DGrid Signing Secret generated by **Rotate Secret** and the verification protocol in the Webhook guide.
+</Note>
+
+</Step>
+
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+
+<Accordion title="No email test link or no email received?">
+Verify the billing email first, enable **Email** for the event, and save. Check the verified mailbox and spam folder after sending a test.
+</Accordion>
+
+<Accordion title="No Webhook test link or no group message?">
+Confirm that the Webhook URL is saved, the channel shows **On / Ready**, and the event's **Webhook** switch is on and saved. Then check **Delivery history** for the status and response code. For Lark, also check that the bot is in the intended group and that its signature, keyword, and IP allowlist settings accept the request.
+</Accordion>
+
+<Accordion title="Can I use both channels?">
+Yes. Enable and save **Email** and **Webhook** for the same event.
+</Accordion>
+
+<Accordion title="Does a test notification charge me or make a deposit?">
+No. A test only checks notification delivery.
+</Accordion>
+
+</AccordionGroup>

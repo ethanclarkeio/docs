@@ -1,0 +1,102 @@
+---
+title: "通知設定"
+sidebarTitle: "通知設定"
+description: "設定儲值餘額與自動儲值事件的電子郵件、Lark 及自訂 Webhook 通知。"
+---
+
+DGrid 可透過電子郵件或 Webhook 發送通知。每個事件可選擇一種或兩種管道，並發送測試通知確認投遞。前往 [DGrid Settings](https://dgrid.ai/settings) → <strong>Notifications</strong>。
+
+## 可用事件
+
+| Settings 中的事件 | 發送時機 |
+| --- | --- |
+| <strong>Low balance</strong> | 儲值餘額首次降至餘額不足門檻或以下。 |
+| <strong>Balance depleted</strong> | 儲值餘額為零或負數。 |
+| <strong>Auto deposit succeeded</strong> | 自動儲值完成。 |
+| <strong>Auto deposit failed</strong> | 自動儲值失敗。 |
+
+儲值餘額（Deposit Balance）不包含訂閱餘額。
+
+每個事件的 Email 與 Webhook 可分別設定，也可同時啟用。Webhook 不需要綁定電子郵件。變更門檻或事件開關後，請點擊事件清單下方的 <strong>Save</strong>。
+
+## 設定通知管道
+
+<Steps>
+
+<Step title="設定電子郵件通知">
+
+### 綁定並驗證電子郵件
+
+1. 開啟 [Settings](https://dgrid.ai/settings)，找到 <strong>Email Binding</strong>。
+2. 在 <strong>Billing email</strong> 輸入收件地址，點擊 <strong>Send Code</strong>。
+3. 從信箱取得驗證碼，填入 <strong>Verification code</strong>，點擊 <strong>Verify</strong>。
+4. 確認地址旁顯示 <strong>Verified</strong>，且 <strong>Email delivery</strong> 顯示相同的已驗證地址。通知將發送至此信箱。
+
+更換信箱時，直接在 <strong>Billing email</strong> 輸入新地址，點擊 <strong>Send Code</strong>，並使用新信箱收到的驗證碼再次完成 <strong>Verify</strong>。顯示 <strong>Verified</strong> 後，通知才會改寄新地址。未驗證的地址無法透過事件清單中的 Email 開關接收通知。
+
+### 選擇事件並測試
+
+1. 在 <strong>Notifications</strong> 設定以 USDT 計的 <strong>Low balance threshold</strong>。例如設為 10，儲值餘額首次降至 10 USDT 或以下時可觸發通知。
+2. 為需要的事件開啟 <strong>Email</strong>。
+3. 點擊事件清單下方的 <strong>Save</strong>。
+4. 在已啟用事件的 <strong>Send Test</strong> 欄點擊 <strong>Email</strong>。頁面回報已發送後，請檢查已驗證信箱與垃圾郵件匣。
+
+測試僅確認投遞，不會變更 DGrid 餘額或執行自動儲值。
+
+</Step>
+
+<Step title="設定 Lark Webhook 通知">
+
+DGrid 可直接接受 Lark 群組自訂機器人的 Webhook URL。建立方式請參閱 Lark 官方[自訂機器人使用指南](https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot)。
+
+### 取得 Lark Webhook URL
+
+1. 開啟目標 Lark 群組，在群組設定中選擇 <strong>Bots</strong>，新增 <strong>Custom bot</strong>。
+2. 命名機器人並複製 Webhook URL，通常以 `https://open.larksuite.com/open-apis/bot/v2/hook/` 開頭。
+3. 請妥善保管此 URL。持有者可能可以向群組發送訊息，請勿公開於文件或程式碼中。
+
+若機器人啟用了簽章驗證、關鍵字或 IP 允許清單，請確認 DGrid 請求符合設定。詳細設定請參閱上述官方指南。
+
+### 在 DGrid 儲存並啟用
+
+1. 在 [Settings](https://dgrid.ai/settings) 的 <strong>Notifications</strong> 中選擇 <strong>Channel configuration → Webhook</strong>。
+2. 將 Lark URL 貼入 <strong>Endpoint URL</strong>。DGrid 會依地址選擇相容的整合方式，URL 必須使用 HTTPS。
+3. 若 Lark 機器人啟用簽章驗證，請在 <strong>Signing secret</strong> 輸入其金鑰，否則留白。儲存後不會再次顯示密鑰；輸入新值可取代原值。
+4. 開啟 <strong>Webhook</strong>，點擊管道設定區的 <strong>Save</strong>，確認顯示 <strong>On / Ready</strong>。
+5. 在上方事件清單為所需事件開啟 <strong>Webhook</strong>，再點擊事件清單的 <strong>Save</strong>。只儲存 URL 不會訂閱事件。
+6. 在已啟用的事件列點擊 <strong>Send Test → Webhook</strong>，檢查 Lark 群組是否收到測試訊息。
+
+在管道設定下方的 <strong>Delivery history (last 30 days)</strong> 查看事件、狀態、嘗試次數、回應碼與上次嘗試時間。測試投遞也可協助確認連線。
+
+</Step>
+
+<Step title="轉送至其他平台">
+
+提供公開 HTTPS 接收端 URL，啟用 Webhook，透過 <strong>Rotate Secret</strong> 產生 DGrid Signing Secret，並在接收端設定簽章驗證。啟用並儲存所需事件後，發送測試通知。
+
+接收端設定、事件資料、簽章驗證與投遞處理，請參閱 [Webhook 指南](/zh-Hant/api-reference/webhooks/overview)。
+
+<Note>
+Lark 機器人的簽章金鑰用於 Lark 整合。自訂接收端需使用 <strong>Rotate Secret</strong> 產生的 DGrid Signing Secret，並遵循 Webhook 指南中的驗證協定。
+</Note>
+
+</Step>
+
+</Steps>
+
+## 疑難排解
+
+<AccordionGroup>
+<Accordion title="沒有 Email 測試按鈕或沒有收到信件？">
+先驗證帳務信箱，為事件啟用 <strong>Email</strong> 並儲存。測試後請檢查已驗證信箱與垃圾郵件匣。
+</Accordion>
+<Accordion title="沒有 Webhook 測試按鈕或群組沒有收到訊息？">
+確認 URL 已儲存、管道顯示 <strong>On / Ready</strong>，且事件的 <strong>Webhook</strong> 開關已啟用並儲存。在 <strong>Delivery history</strong> 檢查狀態與回應碼。Lark 也需確認機器人位於正確群組，且簽章、關鍵字與 IP 設定接受此請求。
+</Accordion>
+<Accordion title="可以同時使用兩種管道嗎？">
+可以。為同一事件啟用並儲存 <strong>Email</strong> 與 <strong>Webhook</strong>。
+</Accordion>
+<Accordion title="測試通知會扣款或儲值嗎？">
+不會。測試僅確認通知投遞。
+</Accordion>
+</AccordionGroup>

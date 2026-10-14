@@ -1,7 +1,7 @@
 ---
 title: "소개"
 sidebarTitle: "소개"
-description: "DGrid의 세 가지 API 표면인 Model API, Management API Keys, x402 종량 과금 API에 대한 개요와 인증 방식, 기본 URL, OpenAI 호환성, 사용 시나리오, 요청 흐름을 한곳에서 설명하는 API 레퍼런스 진입점 가이드입니다."
+description: "DGrid의 Model API, Management API, x402 API와 인증 방식, 기본 URL, Webhook 통합 자료를 소개합니다."
 ---
 
 DGrid API Reference는 각기 고유한 인증 모델과 목적을 가진 세 가지 API 영역으로 구성됩니다.
@@ -10,13 +10,17 @@ DGrid API Reference는 각기 고유한 인증 모델과 목적을 가진 세 �
   <Card title="Model API" icon="brain" href="#model-api">
     채팅, 완성, 임베딩, 이미지, 오디오, 모더레이션을 위한 OpenAI, Claude, Gemini 호환 엔드포인트입니다.
   </Card>
-  <Card title="Management API Keys" icon="key" href="/ko/management-api-keys">
-    Model API 키의 전체 생명주기를 프로그래밍 방식으로 관리합니다 — 생성, 교체, 한도 설정, 비활성화, 폐기.
+  <Card title="Management API" icon="key" href="/ko/management-api-keys">
+    Model API 키를 프로그래밍 방식으로 관리하고 Management API Key로 계정 잔액을 조회합니다.
   </Card>
   <Card title="x402 API" icon="credit-card" href="/ko/x402/overview">
     사전 충전된 계정 잔액 없이 x402 결제 프로토콜을 사용한 추론 단위 결제 방식 접근입니다.
   </Card>
 </CardGroup>
+
+<Tip>
+HTTPS 수신 서버로 이벤트를 받으려면 [Webhook 가이드](/ko/api-reference/webhooks/overview)를 참고하세요. 이메일과 Lark는 [알림 설정](/ko/ai-gateway/notifications)을 참고하세요.
+</Tip>
 
 <Note>
 모든 Model API 참조 페이지에는 대화형 플레이그라운드가 제공됩니다. API 키와 매개변수를 입력한 후 <strong>Send</strong>를 눌러 `https://api.dgrid.ai`에 대해 엔드포인트를 실시간으로 테스트해 보세요.
@@ -75,11 +79,11 @@ anthropic-version: 2023-06-01
 3. Gemini의 멀티모달 파트나 Claude의 도구 페이로드와 같은 제공자별 페이로드 기능이 필요한 경우에만 제공자 네이티브 형식을 사용하세요.
 4. OpenAI, Claude, Gemini 스타일 간에 매개변수 이름이 다르므로, 요청 및 응답 예시를 대상 모델 패밀리에 맞게 일치시키세요.
 
-## Management API Keys
+## Management API
 
-Management API Keys는 Model API 키의 전체 생명주기 — 생성, 교체, 사용량 한도 설정, 비활성화, 폐기 — 를 위한 관리용 자격 증명입니다. 키 관리 작업으로만 제한되며 Model API 추론 엔드포인트를 호출할 수 없습니다.
+Management API Keys는 Model API 키 생명주기 관리와 계정 잔액 조회를 위한 관리용 자격 증명입니다. Model API 추론 엔드포인트를 호출할 수 없습니다.
 
-API 영역, 인증 경계, 엔드포인트 참조에 대한 자세한 내용은 [Management API Keys](/ko/management-api-keys)를 참고하세요.
+키 생성, 인증 경계, 생명주기 엔드포인트는 [Management API Keys](/ko/management-api-keys)를 참고하세요. Management API Key로 총 잔액, 구독 잔액, 충전 잔액을 조회하려면 [계정 잔액 조회](/ko/api-reference/management/get-account-balance)를 참고하세요.
 
 ## x402 API
 

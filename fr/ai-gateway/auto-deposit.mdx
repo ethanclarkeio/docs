@@ -1,0 +1,107 @@
+---
+title: "Rechargement automatique"
+sidebarTitle: "Rechargement automatique"
+description: "Configurez le rechargement automatique en USDT selon votre solde rechargé et gérez l’autorisation de votre portefeuille."
+---
+
+Auto Deposit permet d’autoriser un plafond cumulé de dépenses en USDT depuis un portefeuille de financement. Lorsque votre solde rechargé passe sous le seuil choisi, DGrid calcule le montant nécessaire pour atteindre le solde cible, débite le portefeuille dans la limite de l’autorisation disponible, puis crédite votre solde rechargé après confirmation. Si le portefeuille n’a pas assez d’USDT, DGrid effectue un rechargement partiel avec les fonds disponibles.
+
+Accédez à [DGrid Billing](https://dgrid.ai/billing) → **Deposit** → **Auto Deposit**.
+
+## Avant de commencer
+
+- Connectez-vous à DGrid et connectez le portefeuille à utiliser pour Auto Deposit.
+- Vérifiez le réseau et le token affichés. La fenêtre de configuration indique actuellement **BNB Chain** et **USDT**. Le portefeuille doit contenir des USDT et un peu de BNB pour payer les frais de gas de l’approbation initiale des USDT.
+- Le **solde rechargé (Deposit Balance)** exclut le solde d’abonnement. Il détermine le déclenchement et le montant à recharger. Le **portefeuille de financement (Funding wallet)** contient les USDT onchain. Définir un plafond ne transfère pas immédiatement la totalité des fonds vers DGrid.
+
+<Note>
+Avant d’approuver, vérifiez le réseau, le token et l’adresse bénéficiaire de l’approbation dans Billing et dans votre portefeuille.
+</Note>
+
+## Définir la règle de rechargement
+
+Dans [Billing](https://dgrid.ai/billing), sélectionnez **Auto Deposit** sous **Deposit**, puis cliquez sur **Set Up Auto Deposit**.
+
+| Champ | Signification |
+| --- | --- |
+| **Network / Token** | Lecture seule ; actuellement BNB Chain / USDT. |
+| **Funding wallet** | Portefeuille débité. Vérifiez qu’il correspond au portefeuille connecté. |
+| **Trigger balance** | Le rechargement se déclenche quand le solde rechargé passe sous cette valeur, qui peut être nulle ou positive. |
+| **Target balance** | Solde rechargé à atteindre après le dépôt. Il doit dépasser le seuil de déclenchement. |
+| **Approved limit** | Plafond cumulé d’USDT pouvant être débité sous cette autorisation. Il doit être au moins égal à « solde cible − seuil de déclenchement ». Prévoyez une marge si le solde baisse avant l’exécution. Ce n’est pas le montant de chaque débit. |
+| **Maximum auto-deposit amount** | Plafond calculé en lecture seule ; selon la règle actuelle, il correspond au solde cible. |
+| **Expiry date** | Date future d’expiration de l’autorisation. Une nouvelle autorisation est nécessaire après expiration. |
+
+Vérifiez le débit estimé et les frais de gas, puis cliquez sur **Enable Auto Deposit**.
+
+Par exemple, choisissez un seuil de 10 USDT, une cible de 200 USDT et un plafond cumulé de 1,000 USDT. Si le solde rechargé vaut 8 USDT à l’exécution, il faut 192 USDT (200 − 8). Avec suffisamment de fonds et d’autorisation, le débit est de 192 USDT : 192 USDT sont utilisés et 808 USDT restent autorisés. Si le portefeuille ne contient que 50 USDT, le débit est de 50 USDT, le solde rechargé atteint 58 USDT et il reste 950 USDT d’autorisation. Le montant réel utilise les soldes au moment de l’exécution.
+
+## Finaliser l’autorisation dans le portefeuille
+
+Suivez les étapes dans l’ordre :
+
+<Steps>
+
+<Step title="Approuver l’allowance USDT">
+
+: vérifiez le réseau, le token USDT, l’adresse du spender et le montant, puis confirmez la transaction onchain. Vous payez les frais de gas en BNB pour cette approbation.
+
+</Step>
+
+<Step title="Signer l’autorisation Auto Deposit">
+
+: si le portefeuille demande une signature, vérifiez et signez. La signature ne débite pas immédiatement le plafond entier.
+
+</Step>
+
+<Step title="Attendre l’enregistrement">
+
+: la configuration est terminée lorsque le statut affiche **Active**, avec le portefeuille, les montants autorisés et la date d’expiration. Une simple approbation réussie dans le portefeuille ne suffit pas.
+
+</Step>
+
+</Steps>
+
+DGrid paie les frais de gas de l’enregistrement et des rechargements automatiques suivants. En cas de transaction refusée, de signature ou d’enregistrement échoué, suivez le message d’erreur et vérifiez que le statut final devient **Active**.
+
+## Comprendre le calcul des débits
+
+Lorsque le statut est **Active**, DGrid calcule le montant nécessaire selon la règle et le solde rechargé au moment de l’exécution :
+
+```text
+Amount needed to reach target = Target balance − Deposit Balance at execution
+Actual deposit = min(Amount needed to reach target, available wallet USDT)
+```
+
+La formule suppose une autorisation restante suffisante et une allowance valide. Si les USDT du portefeuille sont insuffisants, le rechargement est partiel et le solde peut rester sous la cible. Sans USDT disponibles, aucun débit n’est possible. Si l’autorisation ou l’allowance est insuffisante, suivez les instructions pour renouveler l’autorisation. La confirmation onchain et le crédit du compte prennent du temps ; le solde peut ne pas être mis à jour immédiatement.
+
+**Approved limit / Total authorization est un plafond cumulé.** Chaque rechargement réussi en consomme une partie. Un montant en cours apparaît dans **Processing**, passe dans **Used** après succès et est libéré après échec. **Remaining** indique ce qui reste disponible. Une nouvelle autorisation remplace la précédente sans s’ajouter au montant restant.
+
+## Consulter et gérer l’autorisation
+
+- Sur **Auto Deposit**, consultez le statut, **Total authorization**, **Used**, **Processing**, **Remaining** et **Authorization expiry**.
+- Cliquez sur **Manage**. **Pause** suspend le rechargement ; **Resume** le réactive. Utilisez **Edit / Adjust Credit** pour modifier les paramètres ou le plafond et autorisez à nouveau dans le portefeuille si nécessaire.
+- Si le plafond restant est trop faible, l’allowance invalide ou l’autorisation expirée, sélectionnez **Re-Authorize** et répétez les étapes.
+- **Revoke** annule l’autorisation Auto Deposit. **Set Allowance to 0** supprime séparément l’allowance USDT du portefeuille et peut nécessiter une autre transaction onchain avec des frais de gas. Auto Deposit se met alors en pause faute d’allowance. Pour le réutiliser, sélectionnez **Re-Authorize**. Choisissez l’action correspondant à ce que vous souhaitez modifier.
+- Dans **Payment History**, les lignes **Type: Auto** sont les rechargements automatiques. Vérifiez le montant, la date et le **Tx Hash**. L’autorisation seule ne crée pas d’historique de dépôt.
+
+## Notifications
+
+Activez les alertes de succès et d’échec dans [Notifications](/fr/ai-gateway/notifications).
+
+## Questions fréquentes
+
+<AccordionGroup>
+<Accordion title="Approuver 1,000 USDT débite-t-il immédiatement 1,000 USDT ?">
+Non. Il s’agit du plafond cumulé. Un débit intervient uniquement lorsqu’un rechargement est déclenché et terminé, pour le montant nécessaire à ce moment.
+</Accordion>
+<Accordion title="Pourquoi le rechargement n’a-t-il pas eu lieu avec un solde rechargé faible ?">
+Vérifiez d’abord le statut **Active**. Un portefeuille avec peu d’USDT permet un rechargement partiel ; sans USDT, aucun débit n’est possible. Vérifiez **Remaining**, l’allowance USDT et l’expiration. Si le statut est **Paused**, traitez la cause indiquée, approvisionnez le portefeuille ou renouvelez l’autorisation, puis consultez les erreurs affichées.
+</Accordion>
+<Accordion title="Un nouveau plafond s’ajoute-t-il à l’autorisation restante ?">
+Non. La nouvelle autorisation remplace l’autorisation et la règle précédentes.
+</Accordion>
+<Accordion title="Les valeurs 10, 200 et 1,000 USDT sont-elles obligatoires ?">
+Non. Ce sont des exemples de calcul. Choisissez des valeurs adaptées à votre solde et à votre utilisation prévue.
+</Accordion>
+</AccordionGroup>

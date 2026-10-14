@@ -1,12 +1,12 @@
 ---
 title: "관리 API 키"
 sidebarTitle: "관리 API 키"
-description: "DGrid Model API 키를 프로그래밍 방식으로 생성, 교체, 조회, 폐기하며 자격 증명, 권한 범위, 사용량 제한, 팀 단위 접근 제어를 포함한 전체 키 수명 주기를 안전하게 관리하는 Management API 사용 방법을 자세히 안내합니다."
+description: "Model API 키를 프로그래밍 방식으로 생성하고 관리하며 Management API Key로 계정 잔액을 조회합니다."
 ---
 
 Management API Keys는 Model API 키의 전체 생명주기를 프로그래밍 방식으로 관리하는 방법을 제공합니다. 이는 수동 콘솔 작업에 의존하지 않고 키를 생성, 배포, 교체, 활성화, 비활성화 또는 폐기해야 하는 엔터프라이즈 팀, SaaS 플랫폼, 자동화 시스템을 위해 설계되었습니다.
 
-Management API Keys는 관리용 자격 증명이며 키 관리 작업으로만 제한됩니다. 모델 추론 또는 완성 엔드포인트를 호출하는 데는 사용할 수 없습니다.
+Management API Keys는 Model API 키 관리와 계정 잔액 조회를 위한 관리용 자격 증명입니다. 모델 추론 또는 완성 엔드포인트를 호출하는 데는 사용할 수 없습니다.
 
 ## 1. 개요
 
@@ -26,16 +26,19 @@ Management API Keys는 다음과 같은 시나리오를 위해 설계되었습�
 
 ## 2. API 영역 및 인증 경계
 
-키 관리는 각기 고유한 인증 모델을 가진 두 개의 API 영역으로 나뉩니다.
+관리 작업은 다음 API 영역과 인증 모델을 사용합니다.
 
 | API 영역 | 목적 | 인증 |
 | --- | --- | --- |
 | `/v1/management-keys` | Management API Keys 관리 | `JWT` |
 | `/api/v1/model-router/keys` | Management API Key를 사용한 Model API Keys 관리 | `Authorization: Bearer <management_key>` |
+| `/v1/management/balance` | Management API Key로 계정 잔액 조회 | `Authorization: Bearer <management_key>` |
+
+총 잔액, 구독 잔액, 충전 잔액은 [계정 잔액 조회](/ko/api-reference/management/get-account-balance)를 참고하세요.
 
 중요 사항:
 
-- `Management API Key`는 `/api/v1/model-router/keys`에서만 사용할 수 있습니다
+- `Management API Key`는 `/api/v1/model-router/keys`와 `GET /v1/management/balance`에서 사용할 수 있습니다
 - `Management API Key`는 `/v1/management-keys`에서 사용할 수 없습니다
 - `/v1/management-keys`는 `JWT` 인증만 지원합니다
 - 전체 시크릿은 키가 생성될 때 한 번만 반환되며, 이후에는 다시 조회할 수 없습니다
@@ -61,6 +64,7 @@ https://api.dgrid.ai
 ```text
 /v1/management-keys
 /api/v1/model-router/keys
+/v1/management
 ```
 
 ## 5. Management API Key 생성
@@ -90,6 +94,7 @@ Management API를 사용하기 전에, 먼저 DGrid 콘솔에서 Management API 
 
 - `/v1/management-keys` 하위 엔드포인트는 `JWT`가 필요합니다
 - `/api/v1/model-router/keys` 하위 엔드포인트는 Management API Key가 필요합니다
+- `GET /v1/management/balance`는 Management API Key가 필요합니다
 
 `/api/v1/model-router/keys` 엔드포인트를 호출할 때는 다음 헤더를 사용하세요.
 

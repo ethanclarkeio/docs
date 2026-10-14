@@ -1,0 +1,107 @@
+---
+title: "Recarga automática"
+sidebarTitle: "Recarga automática"
+description: "Configure recargas automáticas de USDT según su saldo recargado y gestione la autorización de su cartera."
+---
+
+Auto Deposit le permite autorizar un límite acumulado de gasto en USDT desde una cartera de financiación. Cuando el saldo recargado cae por debajo del umbral elegido, DGrid calcula el importe necesario para alcanzar el saldo objetivo, cobra a la cartera dentro de la autorización disponible y acredita el saldo recargado tras confirmar la transacción. Si la cartera tiene menos USDT de los necesarios, DGrid realiza una recarga parcial con el importe disponible.
+
+Vaya a [DGrid Billing](https://dgrid.ai/billing) → **Deposit** → **Auto Deposit**.
+
+## Antes de empezar
+
+- Inicie sesión en DGrid y conecte la cartera que usará para Auto Deposit.
+- Compruebe la red y el token mostrados. La ventana de configuración indica actualmente **BNB Chain** y **USDT**. La cartera necesita USDT y una pequeña cantidad de BNB para pagar el gas de la aprobación inicial de USDT.
+- El **saldo recargado (Deposit Balance)** excluye el saldo de suscripción y determina el inicio y el importe de la recarga. La **cartera de financiación (Funding wallet)** contiene USDT onchain. Definir el límite no transfiere de inmediato todo el importe a DGrid.
+
+<Note>
+Antes de aprobar, compruebe la red, el token y la dirección receptora de la aprobación en Billing y en la solicitud de su cartera.
+</Note>
+
+## Definir la regla de recarga
+
+En [Billing](https://dgrid.ai/billing), seleccione **Auto Deposit** en **Deposit** y pulse **Set Up Auto Deposit**.
+
+| Campo | Significado |
+| --- | --- |
+| **Network / Token** | Solo lectura; actualmente BNB Chain / USDT. |
+| **Funding wallet** | Cartera que pagará la recarga. Compruebe que coincide con la conectada. |
+| **Trigger balance** | La recarga se activa cuando el saldo recargado cae por debajo de este valor, que puede ser cero o positivo. |
+| **Target balance** | Saldo recargado que se busca alcanzar tras el depósito. Debe superar el umbral de activación. |
+| **Approved limit** | Máximo acumulado de USDT que puede cobrarse con esta autorización. Debe ser al menos “saldo objetivo − umbral de activación”. Deje margen por si el saldo cae antes de la ejecución. No es el importe de cada cobro. |
+| **Maximum auto-deposit amount** | Tope calculado por la página, de solo lectura. Según la regla actual, equivale al saldo objetivo. |
+| **Expiry date** | Fecha futura de vencimiento. Después deberá volver a autorizar. |
+
+Revise el cobro estimado y la nota sobre el gas, y pulse **Enable Auto Deposit**.
+
+Por ejemplo, establezca un umbral de 10 USDT, un objetivo de 200 USDT y un límite acumulado de 1,000 USDT. Si el saldo recargado es de 8 USDT al ejecutarse, se necesitan 192 USDT (200 − 8). Con fondos y autorización suficientes, se cobran 192 USDT: se han usado 192 USDT y quedan 808 USDT autorizados. Si la cartera solo tiene 50 USDT, se cobran 50 USDT, el saldo recargado pasa a 58 USDT y quedan 950 USDT de autorización. El cobro real usa los saldos en el momento de la ejecución.
+
+## Completar la autorización en la cartera
+
+Siga las solicitudes en este orden:
+
+<Steps>
+
+<Step title="Aprobar la allowance de USDT">
+
+compruebe la red, el token USDT, la dirección del spender y el importe, y confirme la transacción onchain. Usted paga el gas en BNB de esta aprobación.
+
+</Step>
+
+<Step title="Firmar la autorización de Auto Deposit">
+
+si la cartera solicita una firma, revise y firme. La firma no cobra de inmediato todo el límite aprobado.
+
+</Step>
+
+<Step title="Esperar el registro">
+
+la configuración termina cuando el estado es **Active** y aparecen la cartera, los importes autorizados y el vencimiento. Una aprobación correcta en la cartera por sí sola no activa Auto Deposit.
+
+</Step>
+
+</Steps>
+
+DGrid paga el gas del registro y de las recargas automáticas posteriores. Si se rechaza la transacción o falla la firma o el registro, siga el mensaje de error y compruebe que el estado final sea **Active**.
+
+## Entender el cálculo del cobro
+
+Con estado **Active**, DGrid calcula el importe necesario según la regla y el saldo recargado en el momento de la ejecución:
+
+```text
+Amount needed to reach target = Target balance − Deposit Balance at execution
+Actual deposit = min(Amount needed to reach target, available wallet USDT)
+```
+
+La fórmula supone autorización restante suficiente y allowance válida. Si faltan USDT, la recarga es parcial y el saldo puede quedar por debajo del objetivo. Si no hay USDT disponibles, no hay importe que cobrar. Si la autorización o la allowance son insuficientes, vuelva a autorizar según las indicaciones. La confirmación onchain y la acreditación del saldo requieren tiempo; el saldo puede no actualizarse inmediatamente.
+
+**Approved limit / Total authorization es un límite acumulado.** Cada recarga correcta consume parte del límite. El importe en curso aparece en **Processing**; tras el éxito pasa a **Used** y tras un fallo se libera. **Remaining** muestra lo disponible. Una nueva autorización sustituye a la anterior; no se suma al importe restante.
+
+## Consultar y gestionar la autorización
+
+- En **Auto Deposit**, revise el estado, **Total authorization**, **Used**, **Processing**, **Remaining** y **Authorization expiry**.
+- Pulse **Manage**. **Pause** detiene las recargas y **Resume** las reactiva. Use **Edit / Adjust Credit** para cambiar ajustes o límites y vuelva a autorizar en la cartera si se solicita.
+- Si el límite restante es insuficiente, la allowance deja de ser válida o vence la autorización, seleccione **Re-Authorize** y repita los pasos.
+- **Revoke** cancela la autorización de Auto Deposit. **Set Allowance to 0** elimina por separado la allowance de USDT de la cartera y puede requerir otra transacción onchain con gas. Auto Deposit se pausa por allowance insuficiente. Para volver a usarlo, seleccione **Re-Authorize**. Elija la acción según lo que desee modificar.
+- En **Payment History**, los registros **Type: Auto** son recargas automáticas. Revise importe, fecha y **Tx Hash**. Autorizar por sí solo no crea un registro de depósito.
+
+## Notificaciones
+
+Active alertas de éxito y fallo en [Notificaciones](/es/ai-gateway/notifications).
+
+## Preguntas frecuentes
+
+<AccordionGroup>
+<Accordion title="¿Aprobar 1,000 USDT cobra inmediatamente 1,000 USDT?">
+No. Es el límite acumulado. Solo se cobra cuando se activa y completa una recarga, por el importe necesario en ese momento.
+</Accordion>
+<Accordion title="¿Por qué no se ejecutó la recarga con un saldo recargado bajo?">
+Compruebe primero el estado **Active**. Con pocos USDT puede realizarse una recarga parcial; sin USDT no se puede cobrar. Revise **Remaining**, la allowance de USDT y el vencimiento. Si aparece **Paused**, resuelva la causa indicada, añada fondos o vuelva a autorizar y revise el error mostrado.
+</Accordion>
+<Accordion title="¿Un nuevo límite se suma a la autorización restante?">
+No. La nueva autorización sustituye a la autorización y a la regla anteriores.
+</Accordion>
+<Accordion title="¿Son obligatorios los valores 10, 200 y 1,000 USDT?">
+No. Son ejemplos de cálculo. Elija valores acordes con su saldo y uso previsto.
+</Accordion>
+</AccordionGroup>

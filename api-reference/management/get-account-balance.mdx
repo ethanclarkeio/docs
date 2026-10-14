@@ -1,0 +1,70 @@
+---
+title: "Get account balance"
+sidebarTitle: "Get account balance"
+description: "Retrieve total, subscription, and recharge balances for the account associated with your Management API Key."
+---
+
+Retrieve the balance of the account associated with your Management API Key. Use this endpoint to distinguish total balance, available subscription balance, and recharge balance.
+
+<Note>
+Authenticate with a [Management API Key](/management-api-keys), rather than a Model API Key. Auto Deposit and deposit balance alerts use `rechargeBalance`, which excludes subscription balance.
+</Note>
+
+## Endpoint
+
+```http
+GET https://api.dgrid.ai/v1/management/balance
+```
+
+| Property | Value |
+| --- | --- |
+| Authentication | `Authorization: Bearer <DGRID_MANAGEMENT_KEY>` |
+| Query parameters | None |
+| Response | `application/json` |
+
+## Request example
+
+Set `DGRID_MANAGEMENT_KEY` to your Management API Key.
+
+<RequestExample>
+```bash cURL
+curl -sS -i "https://api.dgrid.ai/v1/management/balance" \
+  -H "Authorization: Bearer $DGRID_MANAGEMENT_KEY"
+```
+</RequestExample>
+
+## Response
+
+<ResponseExample>
+```json 200
+{
+  "code": 200,
+  "message": "ok",
+  "data": {
+    "userId": "11111111-1111-1111-1111-111111111111",
+    "balance": "123.45678912",
+    "subscriptionBalance": "100.00000000",
+    "rechargeBalance": "23.45678912",
+    "currency": "USD",
+    "planName": "Pro"
+  }
+}
+```
+</ResponseExample>
+
+## Response fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `userId` | string | Account ID associated with the Management API Key. |
+| `balance` | string | Total balance: `subscriptionBalance + rechargeBalance`. |
+| `subscriptionBalance` | string | Available subscription balance; zero when none is available. |
+| `rechargeBalance` | string | Recharge balance, exactly `balance - subscriptionBalance`. |
+| `currency` | string | Currency of the amounts; currently `USD`. |
+| `planName` | string | Subscription plan name; an empty string when no name is available. |
+
+## Amount precision
+
+All amounts are decimal strings to preserve precision. Do not assume a fixed number of decimal places; use a decimal numeric type for calculations. Total and recharge balances can be negative. Display the returned values without clamping them to zero.
+
+See [Auto Deposit](/ai-gateway/auto-deposit) for automatic funding and [Notifications](/ai-gateway/notifications) for balance alerts.

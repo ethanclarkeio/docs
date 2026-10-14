@@ -1,0 +1,195 @@
+---
+title: "Guía Webhook"
+sidebarTitle: "Guía Webhook"
+description: "Reciba eventos de DGrid en un endpoint HTTPS, verifique firmas y gestione pruebas, reintentos y entregas duplicadas."
+---
+
+Webhook envía notificaciones de DGrid a su receptor. Funciona de forma independiente del correo vinculado, por lo que no requiere una dirección de correo.
+
+Consulte [Notificaciones](/es/ai-gateway/notifications) para correo y Lark. Esta guía cubre un receptor HTTPS personalizado.
+
+## Configurar Webhook
+
+1. **Introduzca la dirección receptora.** Guarde en DGrid una URL HTTPS pública proporcionada por usted o su equipo técnico.
+2. **Active Webhook.**
+3. **Obtenga el Signing Secret.** Pulse **Rotate Secret**, copie el secreto de forma segura y añádalo a la configuración del receptor. Manténgalo privado. Cada rotación genera otro secreto; conserve la clave anterior hasta terminar las entregas pendientes.
+4. **Elija los eventos.** Active los tipos de notificación deseados.
+5. **Pruebe las notificaciones.** Compruebe que el receptor acepta la notificación y verifica su firma.
+
+## Eventos disponibles
+
+Los seis eventos siguientes están disponibles en los ajustes de Webhook. Identifíquelos mediante el `eventType` del nivel superior del JSON. Respete mayúsculas, puntos y guiones bajos.
+
+| Notificación | Identificador (`eventType`) | Cuándo se recibe |
+| --- | --- | --- |
+| Saldo recargado bajo | `balance.low` | El saldo recargado llega al umbral de alerta de la cuenta o cae por debajo. |
+| Saldo recargado agotado | `balance.depleted` | El saldo recargado es cero o negativo. |
+| Auto Deposit completado | `auto_recharge.succeeded` | Una recarga automática se confirma y acredita. |
+| Auto Deposit fallido | `auto_recharge.failed` | Falla un intento de recarga automática. |
+| Suscripción activa | `subscription.activated` | Se activa la suscripción o se cambia el plan correctamente. |
+| Saldo de suscripción bajo | `subscription.balance_low` | El saldo mensual restante de la suscripción llega al 15% o menos. |
+
+El saldo recargado y el de suscripción son distintos. La alerta de saldo de suscripción bajo se envía como máximo una vez por suscripción y mes UTC; no hay un evento separado de saldo de suscripción agotado. Auto Deposit fallido se refiere a un intento que realmente falló, no a una advertencia de fondos o autorización anterior a un intento.
+
+## Solicitud entrante
+
+DGrid envía un HTTP `POST` a la URL guardada con `Content-Type: application/json`. Todas las notificaciones tienen la misma estructura externa:
+
+```json
+{
+  "id": "1f3c489c-5ca1-41f4-872e-c10b2b47207a",
+  "eventType": "balance.low",
+  "createdAt": "2026-10-13T08:30:00Z",
+  "data": {
+    "eventType": "balance.low",
+    "balance": "4.25",
+    "test": false
+  },
+  "test": false
+}
+```
+
+| Campo | Tipo | Significado |
+| --- | --- | --- |
+| `id` | string | UUID de entrega, igual a `DGrid-Event-Id`. No cambia en los reintentos; úselo para deduplicar. |
+| `eventType` | string | Uno de los seis identificadores anteriores. Use este campo externo para enrutar notificaciones. |
+| `createdAt` | string | Marca de tiempo UTC RFC 3339 de este intento de entrega. Puede cambiar en los reintentos y no es necesariamente la hora del evento de negocio. |
+| `data` | object | Datos específicos del evento, descritos abajo. |
+| `test` | boolean | `true` para una prueba y `false` para una notificación real. |
+
+## Datos de eventos
+
+Los ejemplos siguientes solo sustituyen `data` en la estructura común. Los ID, fechas y saldos son valores de ejemplo.
+
+### Saldo recargado bajo: `balance.low`
+
+```json
+{
+  "eventType": "balance.low",
+  "balance": "4.25",
+  "test": false
+}
+```
+
+### Saldo recargado agotado: `balance.depleted`
+
+```json
+{
+  "eventType": "balance.depleted",
+  "balance": "-1",
+  "test": false
+}
+```
+
+En ambos eventos, `eventType` es una cadena y `test` es un booleano. `balance` es una cadena decimal con signo en USD y puede ser cero o negativa. Representa el saldo recargado, excluyendo el saldo de suscripción. Conserve la precisión sin convertir a coma flotante ni aplicar el redondeo o truncado usado en el correo.
+
+### Auto Deposit completado: `auto_recharge.succeeded`
+
+```json
+{
+  "attemptId": "7e6956ab-f9cb-4dc0-b793-6e5b6237bb48",
+  "state": "confirmed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+### Auto Deposit fallido: `auto_recharge.failed`
+
+```json
+{
+  "attemptId": "7304a355-2a63-4c23-9121-7b615d7c410f",
+  "state": "failed",
+  "occurredAt": "2026-10-13T08:29:45Z"
+}
+```
+
+Los tres campos son cadenas. `attemptId` identifica el intento, `state` es fijo como `confirmed` o `failed`, respectivamente, y `occurredAt` es la hora del evento UTC RFC 3339, posiblemente con fracciones de segundo. Solo contienen esos tres campos: no hay `eventType` o `test` interno, importe, hash de transacción, cartera ni motivo del fallo.
+
+### Suscripción activa: `subscription.activated`
+
+```json
+{
+  "eventType": "subscription.activated",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd"
+}
+```
+
+`sourceId` es el UUID de la suscripción.
+
+### Saldo de suscripción bajo: `subscription.balance_low`
+
+```json
+{
+  "eventType": "subscription.balance_low",
+  "occurredAt": "2026-10-13T08:29:45Z",
+  "sourceId": "d45ae7a2-401a-4980-9371-736eb51aeacd:2026-10"
+}
+```
+
+`sourceId` combina el UUID y el mes UTC como `<subscription UUID>:YYYY-MM`. Los tres campos de suscripción son cadenas y `occurredAt` es una marca de tiempo UTC RFC 3339. No incluyen nombre del plan, fechas de suscripción, cuota, porcentaje ni cartera. No suponga que contienen los detalles del correo.
+
+## Notificaciones de prueba
+
+Las pruebas tienen `test: true` en el nivel superior. Cada evento usa la misma estructura de prueba de tres campos; `data.eventType` coincide con el evento seleccionado y el `eventType` externo. Ejemplo al elegir Auto Deposit completado:
+
+```json
+{
+  "id": "55555555-5555-4555-8555-555555555555",
+  "eventType": "auto_recharge.succeeded",
+  "createdAt": "2026-10-13T08:00:00Z",
+  "data": {
+    "eventType": "auto_recharge.succeeded",
+    "balance": "",
+    "test": true
+  },
+  "test": true
+}
+```
+
+Verifique la firma y confirme la recepción como siempre, pero revise el `test` externo antes de validar el esquema real o procesar datos de negocio. Las pruebas no incluyen campos reales como `attemptId` o `sourceId`; un `balance` vacío no significa cero. No use pruebas para modificar saldos, registrar recargas o activar suscripciones.
+
+## Verificar la firma
+
+Cada solicitud incluye cuatro encabezados relacionados:
+
+| Encabezado | Valor |
+| --- | --- |
+| `DGrid-Event-Id` | UUID de entrega que coincide con el `id` externo. |
+| `DGrid-Timestamp` | Marca de tiempo Unix en segundos, como cadena. |
+| `DGrid-Signature` | `sha256=` seguido del HMAC hexadecimal en minúsculas. |
+| `DGrid-Signature-Version` | `v1`, versión del protocolo de firma, no de la clave. |
+
+Los nombres de encabezados no distinguen mayúsculas. No hay un encabezado separado de versión de clave.
+
+El Signing Secret mostrado por **Rotate Secret** es una clave de 32 bytes codificada en base64url sin relleno. Decodifíquela a bytes antes de calcular el HMAC; no use directamente el texto mostrado como clave.
+
+```text
+key = base64url_decode(Signing Secret)
+message = UTF8(DGrid-Timestamp + ".") + exact raw request body bytes
+expected = "sha256=" + lowercase_hex(HMAC_SHA256(key, message))
+```
+
+Conserve los bytes exactos del cuerpo original y verifique la firma antes de analizar el JSON. Analizar y volver a serializar el JSON puede cambiar los bytes e invalidar la verificación.
+
+Compare la firma esperada con `DGrid-Signature` en tiempo constante y exija la versión `v1`. Se recomienda una ventana de cinco minutos para limitar ataques de repetición; sincronice el reloj del receptor. Tras verificar, analice el JSON y compruebe que `DGrid-Event-Id` coincide con `id`.
+
+## Responder a las entregas
+
+Guarde de forma duradera la notificación verificada y devuelva cualquier HTTP `2xx` en **menos de cinco segundos**. Por ejemplo, persístala en una cola y devuelva:
+
+```http
+HTTP/1.1 204 No Content
+```
+
+No se requiere cuerpo JSON ni envoltorio. DGrid usa el estado HTTP para determinar la aceptación: incluso un HTTP `200` cuyo JSON describa un error se considera aceptado.
+
+Las respuestas no `2xx`, fallos de red y tiempos de espera agotados provocan reintentos, hasta **cinco intentos en total**, incluido el primero. No se siguen redirecciones. Realice el procesamiento lento después de guardar la notificación de forma duradera.
+
+Puede haber duplicados y no se garantiza el orden. Elimine los duplicados mediante el `id` externo, que se mantiene en los reintentos. Devuelva `2xx` a un duplicado ya aceptado sin repetir sus efectos. Las marcas de tiempo, firmas y bytes originales pueden cambiar; no los use, ni `createdAt`, para deduplicar o establecer el orden de los eventos de negocio.
+
+## Cambios de URL, rotación del secreto y desactivación
+
+Las entregas en cola conservan la URL y clave de firma que tenían al entrar. Tras cambiar la URL o rotar el secreto, mantenga el receptor anterior accesible y conserve su clave de verificación hasta terminar las entregas pendientes.
+
+Desactivar Webhook no cancela las entregas ya en cola. Su receptor todavía puede recibirlas y debe procesarlas.

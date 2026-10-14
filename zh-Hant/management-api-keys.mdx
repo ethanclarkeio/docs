@@ -1,12 +1,12 @@
 ---
 title: "管理 API 金鑰"
 sidebarTitle: "管理 API 金鑰"
-description: "透過 Management API 以程式化方式建立、輪替、列出與撤銷 DGrid Model API 金鑰，全面管理憑證、權限範圍、使用量配額與團隊存取權限，確保 API 金鑰整個生命週期的安全性、稽核可追溯性、營運合規性與多人協作的權限隔離需求，並附上 SDK 範例、CLI 用法與 CI/CD 整合的最佳實踐。"
+description: "以程式化方式建立與管理模型 API 金鑰，並使用管理 API 金鑰查詢帳戶餘額。"
 ---
 
 管理 API 金鑰提供一種以程式化方式管理模型 API 金鑰完整生命週期的方法。它專為企業團隊、SaaS 平台與自動化系統設計，使其無需依賴手動控制台操作即可建立、分發、輪換、啟用、停用或撤銷金鑰。
 
-管理 API 金鑰是管理憑證，僅限於金鑰管理操作。它們無法用於呼叫模型推論或補全端點。
+管理 API 金鑰是用於模型 API 金鑰管理與帳戶餘額查詢的管理憑證，無法用於呼叫模型推論或補全端點。
 
 ## 1. 概覽
 
@@ -26,16 +26,19 @@ description: "透過 Management API 以程式化方式建立、輪替、列出�
 
 ## 2. API 介面與驗證邊界
 
-金鑰管理分為兩個 API 介面，各自擁有獨立的驗證模式：
+管理操作使用以下 API 介面與驗證模式：
 
 | API 介面 | 用途 | 驗證方式 |
 | --- | --- | --- |
 | `/v1/management-keys` | 管理「管理 API 金鑰」 | `JWT` |
 | `/api/v1/model-router/keys` | 使用「管理 API 金鑰」來管理「模型 API 金鑰」 | `Authorization: Bearer <management_key>` |
+| `/v1/management/balance` | 使用管理 API 金鑰查詢帳戶餘額 | `Authorization: Bearer <management_key>` |
+
+總餘額、訂閱餘額與儲值餘額的查詢方式，請參閱[查詢帳戶餘額](/zh-Hant/api-reference/management/get-account-balance)。
 
 重要事項：
 
-- `管理 API 金鑰`僅可用於 `/api/v1/model-router/keys`
+- 管理 API 金鑰可用於 `/api/v1/model-router/keys` 與 `GET /v1/management/balance`
 - `管理 API 金鑰`無法用於 `/v1/management-keys`
 - `/v1/management-keys` 僅支援 `JWT` 驗證
 - 完整的金鑰密鑰僅在建立時回傳一次，之後無法再次取得
@@ -61,6 +64,7 @@ https://api.dgrid.ai
 ```text
 /v1/management-keys
 /api/v1/model-router/keys
+/v1/management
 ```
 
 ## 5. 建立管理 API 金鑰
@@ -90,6 +94,7 @@ https://api.dgrid.ai
 
 - `/v1/management-keys` 下的端點需要 `JWT`
 - `/api/v1/model-router/keys` 下的端點需要管理 API 金鑰
+- `GET /v1/management/balance` 需要管理 API 金鑰
 
 呼叫 `/api/v1/model-router/keys` 端點時請使用以下標頭：
 

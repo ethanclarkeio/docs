@@ -1,11 +1,11 @@
 ---
 title: "Management API Keys"
-description: "Programmatically create, rotate, list, and revoke DGrid Model API keys to manage the full lifecycle of credentials, scopes, and team access."
+description: "Create and manage Model API keys programmatically, and use your Management API Key to query account balances."
 ---
 
 Management API Keys provide a programmatic way to manage the full lifecycle of Model API Keys. They are designed for enterprise teams, SaaS platforms, and automation systems that need to create, distribute, rotate, enable, disable, or revoke keys without relying on manual console operations.
 
-Management API Keys are administrative credentials and are restricted to key management operations. They cannot be used to call model inference or completion endpoints.
+Management API Keys are administrative credentials for Model API key management and account balance queries. They cannot be used to call model inference or completion endpoints.
 
 ## 1. Overview
 
@@ -25,16 +25,19 @@ Core capabilities:
 
 ## 2. API Surfaces and Authentication Boundaries
 
-Key management is split into two API surfaces, each with its own authentication model:
+Management operations use the following API surfaces and authentication models:
 
 | API Surface | Purpose | Authentication |
 | --- | --- | --- |
 | `/v1/management-keys` | Manage Management API Keys | `JWT` |
 | `/api/v1/model-router/keys` | Manage Model API Keys using a Management API Key | `Authorization: Bearer <management_key>` |
+| `/v1/management/balance` | Query the account balance using a Management API Key | `Authorization: Bearer <management_key>` |
+
+For total, subscription, and recharge balances, see [Get account balance](/api-reference/management/get-account-balance).
 
 Important:
 
-- A `Management API Key` can only be used with `/api/v1/model-router/keys`
+- A `Management API Key` supports `/api/v1/model-router/keys` and `GET /v1/management/balance`
 - A `Management API Key` cannot be used with `/v1/management-keys`
 - `/v1/management-keys` only supports `JWT` authentication
 - The full secret is returned only once when a key is created and cannot be retrieved later
@@ -60,6 +63,7 @@ Route prefixes used in this document:
 ```text
 /v1/management-keys
 /api/v1/model-router/keys
+/v1/management
 ```
 
 ## 5. Create a Management API Key
@@ -89,6 +93,7 @@ This document covers two authentication modes:
 
 - Endpoints under `/v1/management-keys` require `JWT`
 - Endpoints under `/api/v1/model-router/keys` require a Management API Key
+- `GET /v1/management/balance` requires a Management API Key
 
 Use the following header when calling `/api/v1/model-router/keys` endpoints:
 

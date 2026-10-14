@@ -1,0 +1,102 @@
+---
+title: "알림 설정"
+sidebarTitle: "알림 설정"
+description: "충전 잔액과 Auto Deposit 이벤트에 대한 이메일, Lark, 사용자 지정 Webhook 알림을 설정합니다."
+---
+
+DGrid는 이메일 또는 Webhook으로 알림을 보낼 수 있습니다. 이벤트별로 한 채널 또는 두 채널을 선택하고 테스트 알림으로 전달을 확인하세요. [DGrid Settings](https://dgrid.ai/settings) → <strong>Notifications</strong>로 이동하세요.
+
+## 사용 가능한 이벤트
+
+| Settings의 이벤트 | 전송 시점 |
+| --- | --- |
+| <strong>Low balance</strong> | 충전 잔액이 처음으로 잔액 부족 기준 이하로 내려갈 때입니다. |
+| <strong>Balance depleted</strong> | 충전 잔액이 0 또는 음수일 때입니다. |
+| <strong>Auto deposit succeeded</strong> | Auto Deposit이 완료될 때입니다. |
+| <strong>Auto deposit failed</strong> | Auto Deposit이 실패할 때입니다. |
+
+충전 잔액(Deposit Balance)은 구독 잔액을 제외합니다.
+
+Email과 Webhook은 이벤트별로 독립적으로 설정할 수 있으며 둘 다 활성화할 수 있습니다. Webhook은 이메일 연결이 필요하지 않습니다. 기준값이나 이벤트 스위치를 변경한 후 이벤트 목록 아래의 <strong>Save</strong>를 클릭하세요.
+
+## 알림 채널 설정
+
+<Steps>
+
+<Step title="이메일 알림 설정">
+
+### 이메일 연결 및 인증
+
+1. [Settings](https://dgrid.ai/settings)에서 <strong>Email Binding</strong>을 찾으세요.
+2. <strong>Billing email</strong>에 알림을 받을 주소를 입력하고 <strong>Send Code</strong>를 클릭하세요.
+3. 메일로 받은 코드를 <strong>Verification code</strong>에 입력하고 <strong>Verify</strong>를 클릭하세요.
+4. 주소 옆에 <strong>Verified</strong>가 표시되고 <strong>Email delivery</strong>에 같은 인증된 주소가 표시되는지 확인하세요. 이 주소로 알림이 전송됩니다.
+
+이메일을 변경하려면 <strong>Billing email</strong>에 새 주소를 입력하고 <strong>Send Code</strong>를 클릭한 다음, 새 주소에서 받은 코드로 <strong>Verify</strong>를 다시 완료하세요. <strong>Verified</strong>가 표시된 후 새 주소로 알림이 전송됩니다. 인증되지 않은 주소는 이벤트 목록의 Email 스위치를 통해 알림을 받을 수 없습니다.
+
+### 이벤트 선택 및 테스트
+
+1. <strong>Notifications</strong>에서 <strong>Low balance threshold</strong>를 USDT 단위로 설정하세요. 10으로 설정하면 충전 잔액이 처음으로 10 USDT 이하가 될 때 알림이 발생할 수 있습니다.
+2. 원하는 이벤트의 <strong>Email</strong>을 켜세요.
+3. 이벤트 목록 아래의 <strong>Save</strong>를 클릭하세요.
+4. 활성화된 이벤트의 <strong>Send Test</strong> 열에서 <strong>Email</strong>을 클릭하세요. 전송 완료 안내 후 인증된 메일함과 스팸함을 확인하세요.
+
+테스트는 이메일 전달만 확인하며 DGrid 잔액을 변경하거나 Auto Deposit을 실행하지 않습니다.
+
+</Step>
+
+<Step title="Lark Webhook 알림 설정">
+
+DGrid는 Lark 그룹 사용자 지정 봇의 Webhook URL을 직접 지원합니다. 봇 생성은 Lark 공식 [사용자 지정 봇 가이드](https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot)를 참고하세요.
+
+### Lark Webhook URL 가져오기
+
+1. 알림을 받을 Lark 그룹의 설정에서 <strong>Bots</strong>를 열고 <strong>Custom bot</strong>을 추가하세요.
+2. 이름을 지정하고 Webhook URL을 복사하세요. 보통 `https://open.larksuite.com/open-apis/bot/v2/hook/`로 시작합니다.
+3. URL을 비공개로 보관하세요. URL을 가진 사람이 그룹에 메시지를 보낼 수 있으므로 문서나 소스 코드에 공개하지 마세요.
+
+봇에 서명 인증, 키워드, IP 허용 목록이 설정되어 있다면 DGrid 요청이 해당 조건을 충족하는지 확인하세요. 설정 방법은 위 공식 가이드를 참고하세요.
+
+### DGrid에 저장하고 활성화하기
+
+1. [Settings](https://dgrid.ai/settings)의 <strong>Notifications</strong>에서 <strong>Channel configuration → Webhook</strong>을 선택하세요.
+2. <strong>Endpoint URL</strong>에 Lark URL을 붙여 넣으세요. DGrid가 주소에 맞는 통합을 선택합니다. HTTPS가 필요합니다.
+3. Lark 봇에 서명 인증이 활성화되어 있으면 <strong>Signing secret</strong>에 봇의 키를 입력하세요. 그렇지 않으면 비워 두세요. 저장한 시크릿은 다시 표시되지 않으며 새 값을 입력하면 대체됩니다.
+4. <strong>Webhook</strong>을 켜고 채널 설정 영역의 <strong>Save</strong>를 클릭하세요. <strong>On / Ready</strong>인지 확인하세요.
+5. 위 이벤트 목록에서 원하는 이벤트의 <strong>Webhook</strong>을 켜고 이벤트 목록의 <strong>Save</strong>를 클릭하세요. URL만 저장해도 이벤트가 구독되지는 않습니다.
+6. 활성화된 이벤트 행에서 <strong>Send Test → Webhook</strong>을 클릭하고 Lark 그룹에 테스트 메시지가 도착하는지 확인하세요.
+
+채널 설정 아래의 <strong>Delivery history (last 30 days)</strong>에서 이벤트, 상태, 시도 횟수, 응답 코드, 마지막 시각을 확인하세요. 테스트 전달 기록도 연결 확인에 도움이 됩니다.
+
+</Step>
+
+<Step title="다른 플랫폼으로 전달">
+
+공개 HTTPS 수신 URL을 입력하고 Webhook을 켜세요. <strong>Rotate Secret</strong>으로 DGrid Signing Secret을 생성하고 수신 서버에서 서명 인증을 설정하세요. 원하는 이벤트를 켜고 저장한 후 테스트 알림을 보내세요.
+
+수신 서버 설정, 이벤트 데이터, 서명 인증, 전달 처리는 [Webhook 가이드](/ko/api-reference/webhooks/overview)를 참고하세요.
+
+<Note>
+Lark 봇의 서명 키는 Lark 통합에 사용됩니다. 사용자 지정 수신 서버에는 <strong>Rotate Secret</strong>으로 생성한 DGrid Signing Secret과 Webhook 가이드의 인증 프로토콜을 사용하세요.
+</Note>
+
+</Step>
+
+</Steps>
+
+## 문제 해결
+
+<AccordionGroup>
+<Accordion title="Email 테스트 버튼이 없거나 이메일이 도착하지 않나요?">
+청구 이메일을 먼저 인증하고 이벤트의 <strong>Email</strong>을 켠 후 저장하세요. 테스트 후 인증된 메일함과 스팸함을 확인하세요.
+</Accordion>
+<Accordion title="Webhook 테스트 버튼이 없거나 그룹 메시지가 도착하지 않나요?">
+URL이 저장되고 채널이 <strong>On / Ready</strong>인지, 이벤트의 <strong>Webhook</strong>이 켜지고 저장되었는지 확인하세요. <strong>Delivery history</strong>에서 상태와 응답 코드를 확인하세요. Lark 봇이 올바른 그룹에 있고 서명, 키워드, IP 설정이 요청을 허용하는지도 확인하세요.
+</Accordion>
+<Accordion title="두 채널을 함께 사용할 수 있나요?">
+네. 같은 이벤트의 <strong>Email</strong>과 <strong>Webhook</strong>을 켜고 저장하세요.
+</Accordion>
+<Accordion title="테스트 알림으로 요금이 청구되거나 충전되나요?">
+아니요. 테스트는 알림 전달만 확인합니다.
+</Accordion>
+</AccordionGroup>

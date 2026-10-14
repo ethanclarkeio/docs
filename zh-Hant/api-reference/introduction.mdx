@@ -1,7 +1,7 @@
 ---
 title: "簡介"
 sidebarTitle: "簡介"
-description: "DGrid 三大 API 介面總覽：用於模型推論的 Model API、管理金鑰的 Management API Keys，以及按次推論付費的 x402 API，完整說明驗證方式、基礎 URL、相容性、應用場景與請求流程，協助開發者快速選對適合產品需求的 API 介面。"
+description: "DGrid 的模型 API、管理 API 與 x402 API 總覽，包含驗證方式、基礎網址及 Webhook 整合資源。"
 ---
 
 DGrid API 參考文件分為三大 API 介面，每個介面都有各自的驗證方式與用途：
@@ -10,13 +10,17 @@ DGrid API 參考文件分為三大 API 介面，每個介面都有各自的驗�
   <Card title="模型 API" icon="brain" href="#model-api">
     相容 OpenAI、Claude 與 Gemini 的端點，支援聊天、文字補全、嵌入向量、圖像、音訊與內容審核。
   </Card>
-  <Card title="管理 API 金鑰" icon="key" href="/zh-Hant/management-api-keys">
-    以程式化方式管理模型 API 金鑰的完整生命週期——建立、輪換、限制、停用與撤銷。
+  <Card title="管理 API" icon="key" href="/zh-Hant/management-api-keys">
+    以程式化方式管理模型 API 金鑰，並使用管理 API 金鑰查詢帳戶餘額。
   </Card>
   <Card title="x402 API" icon="credit-card" href="/zh-Hant/x402/overview">
     使用 x402 支付協定，按次推論付費，無需預先儲值的帳戶餘額。
   </Card>
 </CardGroup>
+
+<Tip>
+使用自己的 HTTPS 接收端接收事件，請參閱 [Webhook 指南](/zh-Hant/api-reference/webhooks/overview)。電子郵件與 Lark 設定請參閱[通知設定](/zh-Hant/ai-gateway/notifications)。
+</Tip>
 
 <Note>
 每個模型 API 參考頁面都附有互動式試用工具：填入您的 API 金鑰與參數，然後按下<strong>「Send」</strong>，即可對 `https://api.dgrid.ai` 進行即時端點測試。
@@ -77,11 +81,11 @@ anthropic-version: 2023-06-01
 3. 僅在需要特定供應商的負載特性（例如 Gemini 多模態內容部分或 Claude 工具負載）時，才使用供應商原生格式。
 4. 確保請求與回應範例與您所使用的目標模型系列保持一致，因為 OpenAI、Claude 與 Gemini 風格之間的參數名稱有所不同。
 
-## 管理 API 金鑰
+## 管理 API
 
-管理 API 金鑰是用於管理模型 API 金鑰完整生命週期的管理憑證——包括建立、輪換、使用限制、停用與撤銷。這類金鑰僅限於金鑰管理操作，無法呼叫模型 API 的推論端點。
+管理 API 金鑰是用於模型 API 金鑰生命週期管理與帳戶餘額查詢的管理憑證，無法呼叫模型 API 的推論端點。
 
-請參閱[管理 API 金鑰](/zh-Hant/management-api-keys)，了解 API 介面、驗證邊界與端點參考文件。
+金鑰建立、驗證邊界與生命週期端點，請參閱[管理 API 金鑰](/zh-Hant/management-api-keys)。使用管理 API 金鑰查詢總餘額、訂閱餘額與儲值餘額，請參閱[查詢帳戶餘額](/zh-Hant/api-reference/management/get-account-balance)。
 
 ## x402 API
 
