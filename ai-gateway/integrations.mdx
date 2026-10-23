@@ -1,46 +1,60 @@
 ---
 title: "Integration Tutorials"
-description: "Step-by-step integration tutorials showing how to connect DGrid AI Gateway to popular developer tools, SDKs, frameworks, and AI coding assistants."
+sidebarTitle: "Overview"
+description: "Connect DGrid AI Gateway to Cursor, Claude Code, Codex, OpenClaw, Hermes Agent, and Vercel AI SDK with step-by-step tutorials."
 ---
 
-This page collects practical integration tutorials for using **DGrid AI Gateway** in common developer tools and SDKs.
+Choose your tool, configure DGrid AI Gateway, and verify your first model request.
 
-## Cursor (Override OpenAI Base URL)
+## Before you start
 
-1. Get your `DGRID_API_KEY` (see the prerequisite in [AI Gateway](/ai-gateway/overview)).
-2. Open **Cursor Settings** → **Models**.
-3. Under **API Keys**, enable **Override OpenAI Base URL**.
-4. Set the base URL to:
-   - `https://api.dgrid.ai/v1`
-5. Paste your `DGRID_API_KEY` into **OpenAI API Key**.
-6. Pick any supported model name using the DGrid format (for example: `openai/gpt-4o`).
+Have a [DGrid account](https://dgrid.ai/), available credits, and a [Model API Key](https://dgrid.ai/api-keys) with access to your chosen model. Use the complete model ID, including its provider prefix. Each guide lists the connection settings, environment requirements, and limitations for that tool.
 
-<Frame caption="Overriding the OpenAI base URL in Cursor settings">
-  <img src="/images/2_SJd0fdj09dfjKLDFk.png" alt="Cursor settings example" />
-</Frame>
+<Info>
+Use a Model API Key for model requests. Management API Keys are administrative credentials and cannot be used for these tutorials.
+</Info>
 
-Full tutorial: [How to Configure and Use DGrid AI Gateway in Cursor](https://blog.dgrid.ai/posts/2026-02-18/)
+## AI coding tools
 
-## OpenAI SDK (Node.js / Python)
+<CardGroup cols={2}>
+  <Card title="Cursor" href="/ai-gateway/integrations/cursor">
+    Connect Cursor to DGrid AI Gateway with your API key, a custom base URL, and a complete model ID.
+  </Card>
+  <Card title="Claude Code" href="/ai-gateway/integrations/claude-code">
+    Connect Claude Code CLI or the desktop Code tab to DGrid AI Gateway and verify your first response.
+  </Card>
+  <Card title="Codex" href="/ai-gateway/integrations/codex">
+    Configure Codex CLI or the desktop app to use DGrid AI Gateway through the Responses API.
+  </Card>
+</CardGroup>
 
-- See: [AI Gateway Quickstart](/ai-gateway/overview#quickstart)
+## Agent tools
 
-## OpenClaw
+<CardGroup cols={2}>
+  <Card title="OpenClaw" href="/ai-gateway/integrations/openclaw">
+    Install OpenClaw, configure DGrid as a custom provider, and send your first message in the dashboard.
+  </Card>
+  <Card title="Hermes Agent" href="/ai-gateway/integrations/hermes-agent">
+    Configure a custom provider in Hermes Agent and use DGrid models through Chat Completions.
+  </Card>
+</CardGroup>
 
-You can configure OpenClaw to route requests through **DGrid AI Gateway** using the OpenAI-compatible endpoint.
+## SDKs and application development
 
-1. Open your OpenClaw model/provider settings.
-2. Set the API base URL to `https://api.dgrid.ai/v1`.
-3. Paste your `DGRID_API_KEY` into the API key field.
-4. Select a supported DGrid model ID.
-5. Save the configuration and run a quick test request.
+<CardGroup cols={2}>
+  <Card title="Vercel AI SDK" href="/ai-gateway/integrations/vercel-ai-sdk">
+    Call DGrid from a Node.js script using Vercel AI SDK and its OpenAI-compatible provider.
+  </Card>
+  <Card title="OpenAI SDK (Node.js / Python)" href="/ai-gateway/overview#quickstart">
+    Use the Node.js and Python examples in the AI Gateway quickstart.
+  </Card>
+</CardGroup>
 
-<video controls preload="metadata" style={{ width: "100%", borderRadius: "12px", marginTop: "12px" }}>
-  <source src="/images/dgrid-openclaw-demo.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+## More integration resources
 
-## Blog integration tutorials (collected)
+Browse the existing blog tutorials for other tools and additional background. For the six tools above, start with the standalone documentation guides.
+
+<span id="blog-integration-tutorials-collected" />
 
 - **AI as Workspace (AIaW)**: [Step-by-Step Guide: Configure DGrid AI Gateway in AI as Workspace (AIaW)](https://blog.dgrid.ai/posts/2026-03-10/)
 - **AnythingLLM**: [Tutorial: Using DGrid AI Gateway with AnythingLLM](https://blog.dgrid.ai/posts/2026-01-30/)
@@ -54,3 +68,5 @@ You can configure OpenClaw to route requests through **DGrid AI Gateway** using 
 - **OpenClaw (agent platform)**: [Supercharging OpenClaw with DGrid: The Ultimate AI Agent Setup](https://blog.dgrid.ai/posts/2026-02-02/)
 - **OpenClaw (no-code)**: [Step-by-Step Guide: OpenClaw Installation & DGrid AI Gateway Setup (No Code Required)](https://blog.dgrid.ai/posts/2026-02-27/)
 - **Vercel AI SDK**: [How to Use DGrid AI Gateway with the Vercel AI SDK](https://blog.dgrid.ai/posts/2026-03-26/)
+
+- [Cursor: configure and use DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-02-18/)

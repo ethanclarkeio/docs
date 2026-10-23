@@ -1,57 +1,72 @@
 ---
 title: "통합 가이드"
-sidebarTitle: "통합 가이드"
-description: "DGrid AI Gateway를 OpenAI SDK, LangChain, LlamaIndex, Cursor, Continue 같은 주요 개발자 도구, SDK, 프레임워크, AI 코딩 어시스턴트에 연결하는 방법을 보여 주는 실전 단계별 통합 튜토리얼과 코드 예제 모음입니다."
+sidebarTitle: "개요"
+description: "단계별 가이드를 따라 DGrid AI Gateway를 Cursor, Claude Code, Codex, OpenClaw, Hermes Agent 및 Vercel AI SDK에 연결합니다."
 ---
 
-이 페이지는 일반적인 개발자 도구 및 SDK에서 <strong>DGrid AI Gateway</strong>를 사용하기 위한 실용적인 통합 가이드를 모아 둔 곳입니다.
+도구를 선택하고 DGrid AI Gateway를 설정한 다음 첫 모델 요청을 확인하세요.
 
-## Cursor (OpenAI Base URL 재정의)
+## 시작하기 전에
 
-1. `DGRID_API_KEY`를 발급받습니다 ([AI Gateway](/ko/ai-gateway/overview)의 사전 준비 사항 참고).
-2. **Cursor Settings** → <strong>Models</strong>로 이동합니다.
-3. <strong>API Keys</strong>에서 <strong>Override OpenAI Base URL</strong>을 활성화합니다.
-4. Base URL을 다음으로 설정합니다.
-   - `https://api.dgrid.ai/v1`
-5. **OpenAI API Key** 항목에 `DGRID_API_KEY`를 붙여넣습니다.
-6. DGrid 형식(예: `openai/gpt-4o`)을 사용하여 지원되는 모델 이름을 선택합니다.
+사용 가능한 잔액과 선택한 모델에 대한 접근 권한이 있는 [DGrid 계정](https://dgrid.ai/) 및 [Model API Key](https://dgrid.ai/api-keys)를 준비하세요. 공급자 접두사가 포함된 전체 모델 ID를 사용하세요. 각 가이드에서 연결 설정, 환경 요구 사항 및 제한 사항을 안내합니다.
 
-<Frame caption="Cursor 설정에서 OpenAI Base URL 재정의하기">
-  <img src="/images/2_SJd0fdj09dfjKLDFk.png" alt="Cursor settings example" />
-</Frame>
+<Info>
+모델 요청에는 Model API Key를 사용하세요. Management API Key는 관리용 자격 증명이므로 이 가이드의 모델 요청에 사용할 수 없습니다.
+</Info>
 
-전체 가이드: [How to Configure and Use DGrid AI Gateway in Cursor](https://blog.dgrid.ai/posts/2026-02-18/)
+## AI 코딩 도구
 
-## OpenAI SDK (Node.js / Python)
+<CardGroup cols={2}>
+  <Card title="Cursor" href="/ko/ai-gateway/integrations/cursor">
+    API 키, 사용자 지정 Base URL 및 전체 모델 ID로 Cursor를 DGrid AI Gateway에 연결합니다.
+  </Card>
+  <Card title="Claude Code" href="/ko/ai-gateway/integrations/claude-code">
+    Claude Code CLI 또는 데스크톱 앱의 Code 탭을 DGrid AI Gateway에 연결하고 첫 응답을 확인합니다.
+  </Card>
+  <Card title="Codex" href="/ko/ai-gateway/integrations/codex">
+    Codex CLI 또는 데스크톱 앱이 Responses API를 통해 DGrid AI Gateway를 사용하도록 설정합니다.
+  </Card>
+</CardGroup>
 
-- 참고: [AI Gateway 빠른 시작](/ko/ai-gateway/overview#quickstart)
+## 에이전트 도구
 
-## OpenClaw
+<CardGroup cols={2}>
+  <Card title="OpenClaw" href="/ko/ai-gateway/integrations/openclaw">
+    OpenClaw를 설치하고 DGrid를 사용자 지정 공급자로 설정한 다음 대시보드에서 첫 메시지를 보냅니다.
+  </Card>
+  <Card title="Hermes Agent" href="/ko/ai-gateway/integrations/hermes-agent">
+    Hermes Agent에서 사용자 지정 공급자를 설정하고 Chat Completions로 DGrid 모델을 사용합니다.
+  </Card>
+</CardGroup>
 
-OpenAI 호환 엔드포인트를 사용하여 <strong>DGrid AI Gateway</strong>를 통해 요청을 라우팅하도록 OpenClaw를 설정할 수 있습니다.
+## SDK 및 애플리케이션 개발
 
-1. OpenClaw의 모델/제공자 설정을 엽니다.
-2. API base URL을 `https://api.dgrid.ai/v1`로 설정합니다.
-3. API 키 필드에 `DGRID_API_KEY`를 붙여넣습니다.
-4. 지원되는 DGrid 모델 ID를 선택합니다.
-5. 설정을 저장하고 간단한 테스트 요청을 실행합니다.
+<CardGroup cols={2}>
+  <Card title="Vercel AI SDK" href="/ko/ai-gateway/integrations/vercel-ai-sdk">
+    Vercel AI SDK와 OpenAI 호환 공급자로 Node.js 스크립트에서 DGrid를 호출합니다.
+  </Card>
+  <Card title="OpenAI SDK (Node.js / Python)" href="/ko/ai-gateway/overview#빠른-시작">
+    AI Gateway 빠른 시작의 Node.js 및 Python 예제를 사용하세요.
+  </Card>
+</CardGroup>
 
-<video controls preload="metadata" style={{ width: "100%", borderRadius: "12px", marginTop: "12px" }}>
-  <source src="/images/dgrid-openclaw-demo.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+## 추가 통합 자료
 
-## 블로그 통합 가이드 모음
+다른 도구와 추가 설명은 기존 블로그 가이드를 참고하세요. 위의 여섯 도구는 먼저 해당 문서의 개별 가이드를 확인하세요.
 
-- **AI as Workspace (AIaW)**: [Step-by-Step Guide: Configure DGrid AI Gateway in AI as Workspace (AIaW)](https://blog.dgrid.ai/posts/2026-03-10/)
-- **AnythingLLM**: [Tutorial: Using DGrid AI Gateway with AnythingLLM](https://blog.dgrid.ai/posts/2026-01-30/)
-- **Chatbox**: [Step-by-Step Guide: Configure DGrid AI Gateway in Chatbox](https://blog.dgrid.ai/posts/2026-03-09/)
-- **Claude Code**: [Use Claude Code with DGrid](https://blog.dgrid.ai/posts/2026-03-12/)
-- **Codex CLI**: [Using Codex CLI with DGrid: A Complete Guide](https://blog.dgrid.ai/posts/2026-03-23/)
-- **Junie CLI**: [Step-by-Step Guide: Integrate DGrid with Junie CLI](https://blog.dgrid.ai/posts/2026-04-13/)
-- **LibreChat**: [Using DGrid with LibreChat: A Step-by-Step Guide](https://blog.dgrid.ai/posts/2026-01-28/)
-- **LobeChat**: [Configuring and Utilizing DGrid AI Gateway in LobeChat: A Full Guide](https://blog.dgrid.ai/posts/2026-02-09/)
-- **Open WebUI**: [Using DGrid AI Gateway with Open WebUI: A Comprehensive Guide](https://blog.dgrid.ai/posts/2026-01-22_2/)
-- **OpenClaw (agent platform)**: [Supercharging OpenClaw with DGrid: The Ultimate AI Agent Setup](https://blog.dgrid.ai/posts/2026-02-02/)
-- **OpenClaw (no-code)**: [Step-by-Step Guide: OpenClaw Installation & DGrid AI Gateway Setup (No Code Required)](https://blog.dgrid.ai/posts/2026-02-27/)
-- **Vercel AI SDK**: [How to Use DGrid AI Gateway with the Vercel AI SDK](https://blog.dgrid.ai/posts/2026-03-26/)
+<span id="blog-integration-tutorials-collected" />
+
+- <strong>AI as Workspace (AIaW)</strong>: [AIaW에서 DGrid AI Gateway 설정하기](https://blog.dgrid.ai/posts/2026-03-10/)
+- <strong>AnythingLLM</strong>: [AnythingLLM에서 DGrid AI Gateway 사용하기](https://blog.dgrid.ai/posts/2026-01-30/)
+- <strong>Chatbox</strong>: [Chatbox에서 DGrid AI Gateway 설정하기](https://blog.dgrid.ai/posts/2026-03-09/)
+- <strong>Claude Code</strong>: [DGrid로 Claude Code 사용하기](https://blog.dgrid.ai/posts/2026-03-12/)
+- <strong>Codex CLI</strong>: [DGrid로 Codex CLI 사용하기](https://blog.dgrid.ai/posts/2026-03-23/)
+- <strong>Junie CLI</strong>: [Junie CLI에 DGrid 연결하기](https://blog.dgrid.ai/posts/2026-04-13/)
+- <strong>LibreChat</strong>: [LibreChat에서 DGrid 사용하기](https://blog.dgrid.ai/posts/2026-01-28/)
+- <strong>LobeChat</strong>: [LobeChat에서 DGrid AI Gateway 설정 및 사용하기](https://blog.dgrid.ai/posts/2026-02-09/)
+- <strong>Open WebUI</strong>: [Open WebUI에서 DGrid AI Gateway 사용하기](https://blog.dgrid.ai/posts/2026-01-22_2/)
+- <strong>OpenClaw(에이전트 플랫폼)</strong>: [DGrid로 OpenClaw 에이전트 설정하기](https://blog.dgrid.ai/posts/2026-02-02/)
+- <strong>OpenClaw(노코드)</strong>: [OpenClaw 설치 및 코드 없이 DGrid AI Gateway 설정하기](https://blog.dgrid.ai/posts/2026-02-27/)
+- <strong>Vercel AI SDK</strong>: [Vercel AI SDK에서 DGrid AI Gateway 사용하기](https://blog.dgrid.ai/posts/2026-03-26/)
+
+- [Cursor: DGrid AI Gateway 설정 및 사용하기](https://blog.dgrid.ai/posts/2026-02-18/)

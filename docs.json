@@ -335,7 +335,18 @@
                   "ai-gateway/auto-deposit",
                   "ai-gateway/notifications",
                   "ai-gateway/free-models-router",
-                  "ai-gateway/integrations",
+                  {
+                    "group": "Integration Tutorials",
+                    "pages": [
+                      "ai-gateway/integrations",
+                      "ai-gateway/integrations/cursor",
+                      "ai-gateway/integrations/claude-code",
+                      "ai-gateway/integrations/codex",
+                      "ai-gateway/integrations/openclaw",
+                      "ai-gateway/integrations/hermes-agent",
+                      "ai-gateway/integrations/vercel-ai-sdk"
+                    ]
+                  },
                   "ai-gateway/supported-regions"
                 ]
               },
@@ -520,7 +531,18 @@
                   "zh-Hant/ai-gateway/auto-deposit",
                   "zh-Hant/ai-gateway/notifications",
                   "zh-Hant/ai-gateway/free-models-router",
-                  "zh-Hant/ai-gateway/integrations",
+                  {
+                    "group": "整合教學",
+                    "pages": [
+                      "zh-Hant/ai-gateway/integrations",
+                      "zh-Hant/ai-gateway/integrations/cursor",
+                      "zh-Hant/ai-gateway/integrations/claude-code",
+                      "zh-Hant/ai-gateway/integrations/codex",
+                      "zh-Hant/ai-gateway/integrations/openclaw",
+                      "zh-Hant/ai-gateway/integrations/hermes-agent",
+                      "zh-Hant/ai-gateway/integrations/vercel-ai-sdk"
+                    ]
+                  },
                   "zh-Hant/ai-gateway/supported-regions"
                 ]
               },
@@ -722,7 +744,18 @@
                   "ko/ai-gateway/auto-deposit",
                   "ko/ai-gateway/notifications",
                   "ko/ai-gateway/free-models-router",
-                  "ko/ai-gateway/integrations",
+                  {
+                    "group": "통합 가이드",
+                    "pages": [
+                      "ko/ai-gateway/integrations",
+                      "ko/ai-gateway/integrations/cursor",
+                      "ko/ai-gateway/integrations/claude-code",
+                      "ko/ai-gateway/integrations/codex",
+                      "ko/ai-gateway/integrations/openclaw",
+                      "ko/ai-gateway/integrations/hermes-agent",
+                      "ko/ai-gateway/integrations/vercel-ai-sdk"
+                    ]
+                  },
                   "ko/ai-gateway/supported-regions"
                 ]
               },
@@ -924,7 +957,18 @@
                   "fr/ai-gateway/auto-deposit",
                   "fr/ai-gateway/notifications",
                   "fr/ai-gateway/free-models-router",
-                  "fr/ai-gateway/integrations",
+                  {
+                    "group": "Tutoriels d'intégration",
+                    "pages": [
+                      "fr/ai-gateway/integrations",
+                      "fr/ai-gateway/integrations/cursor",
+                      "fr/ai-gateway/integrations/claude-code",
+                      "fr/ai-gateway/integrations/codex",
+                      "fr/ai-gateway/integrations/openclaw",
+                      "fr/ai-gateway/integrations/hermes-agent",
+                      "fr/ai-gateway/integrations/vercel-ai-sdk"
+                    ]
+                  },
                   "fr/ai-gateway/supported-regions"
                 ]
               },
@@ -1126,7 +1170,18 @@
                   "es/ai-gateway/auto-deposit",
                   "es/ai-gateway/notifications",
                   "es/ai-gateway/free-models-router",
-                  "es/ai-gateway/integrations",
+                  {
+                    "group": "Tutoriales de integración",
+                    "pages": [
+                      "es/ai-gateway/integrations",
+                      "es/ai-gateway/integrations/cursor",
+                      "es/ai-gateway/integrations/claude-code",
+                      "es/ai-gateway/integrations/codex",
+                      "es/ai-gateway/integrations/openclaw",
+                      "es/ai-gateway/integrations/hermes-agent",
+                      "es/ai-gateway/integrations/vercel-ai-sdk"
+                    ]
+                  },
                   "es/ai-gateway/supported-regions"
                 ]
               },

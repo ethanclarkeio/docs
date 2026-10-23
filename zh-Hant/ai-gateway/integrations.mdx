@@ -1,57 +1,72 @@
 ---
 title: "整合教學"
-sidebarTitle: "整合教學"
-description: "逐步整合教學說明如何將 DGrid AI Gateway 串接至 OpenAI SDK、LangChain、LlamaIndex、Cursor、Continue 等常用開發工具、SDK、框架與 AI 程式設計助理，並提供完整程式碼範例，協助加速產品開發、節省多模型管理成本與切換時間。"
+sidebarTitle: "總覽"
+description: "將 DGrid AI Gateway 串接至 Cursor、Claude Code、Codex、OpenClaw、Hermes Agent 與 Vercel AI SDK 的逐步教學，以及更多整合資源。"
 ---
 
-本頁收錄了在常見開發者工具與 SDK 中使用 **DGrid AI Gateway** 的實用整合教學。
+選擇您使用的工具，依照教學設定 DGrid AI Gateway，並驗證第一筆模型請求。
 
-## Cursor（覆寫 OpenAI Base URL）
+## 開始之前
 
-1. 取得您的 `DGRID_API_KEY`（請參閱 [AI Gateway](/zh-Hant/ai-gateway/overview) 中的前置需求）。
-2. 開啟 **Cursor Settings** → **Models**。
-3. 在 **API Keys** 中，啟用 **Override OpenAI Base URL**。
-4. 將 base URL 設定為：
-   - `https://api.dgrid.ai/v1`
-5. 將您的 `DGRID_API_KEY` 貼到 **OpenAI API Key**。
-6. 使用 DGrid 格式選擇任何支援的模型名稱（例如：`openai/gpt-4o`）。
+準備好 [DGrid 帳號](https://dgrid.ai/)、可用餘額，以及可存取目標模型的 [Model API Key](https://dgrid.ai/api-keys)。請使用完整模型 ID，包含供應商前綴；每篇教學會列出該工具所需的連線參數、環境與限制。
 
-<Frame caption="在 Cursor 設定中覆寫 OpenAI base URL">
-  <img src="/images/2_SJd0fdj09dfjKLDFk.png" alt="Cursor 設定範例" />
-</Frame>
+<Info>
+Model API Key 用於呼叫模型。Management API Key 僅用於管理操作，無法用於這些教學的模型請求。
+</Info>
 
-完整教學：[如何在 Cursor 中設定並使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-02-18/)
+## AI 程式開發工具
 
-## OpenAI SDK（Node.js / Python）
+<CardGroup cols={2}>
+  <Card title="Cursor" href="/zh-Hant/ai-gateway/integrations/cursor">
+    使用 API 金鑰、自訂 Base URL 與完整模型 ID，將 Cursor 串接至 DGrid AI Gateway。
+  </Card>
+  <Card title="Claude Code" href="/zh-Hant/ai-gateway/integrations/claude-code">
+    將 Claude Code CLI 或桌面版 Code 分頁串接至 DGrid AI Gateway，並驗證首次回應。
+  </Card>
+  <Card title="Codex" href="/zh-Hant/ai-gateway/integrations/codex">
+    設定 Codex CLI 或桌面應用程式，透過 Responses API 使用 DGrid AI Gateway。
+  </Card>
+</CardGroup>
 
-- 請參閱：[AI Gateway 快速入門](/zh-Hant/ai-gateway/overview#quickstart)
+## Agent 工具
 
-## OpenClaw
+<CardGroup cols={2}>
+  <Card title="OpenClaw" href="/zh-Hant/ai-gateway/integrations/openclaw">
+    安裝 OpenClaw、將 DGrid 設為自訂供應商，並在控制台傳送第一則訊息。
+  </Card>
+  <Card title="Hermes Agent" href="/zh-Hant/ai-gateway/integrations/hermes-agent">
+    在 Hermes Agent 設定自訂供應商，透過 Chat Completions 使用 DGrid 模型。
+  </Card>
+</CardGroup>
 
-您可以設定 OpenClaw，透過相容 OpenAI 的端點，將請求路由至 **DGrid AI Gateway**。
+## SDK 與程式整合
 
-1. 開啟您的 OpenClaw 模型／供應商設定。
-2. 將 API base URL 設定為 `https://api.dgrid.ai/v1`。
-3. 將您的 `DGRID_API_KEY` 貼到 API 金鑰欄位。
-4. 選擇支援的 DGrid 模型 ID。
-5. 儲存設定並執行一次快速測試請求。
+<CardGroup cols={2}>
+  <Card title="Vercel AI SDK" href="/zh-Hant/ai-gateway/integrations/vercel-ai-sdk">
+    使用 Vercel AI SDK 與 OpenAI 相容介接套件，在 Node.js 腳本中呼叫 DGrid。
+  </Card>
+  <Card title="OpenAI SDK (Node.js / Python)" href="/zh-Hant/ai-gateway/overview#快速入門">
+    使用現有 AI Gateway 快速入門中的 Node.js 與 Python 範例。
+  </Card>
+</CardGroup>
 
-<video controls preload="metadata" style={{ width: "100%", borderRadius: "12px", marginTop: "12px" }}>
-  <source src="/images/dgrid-openclaw-demo.mp4" type="video/mp4" />
-  您的瀏覽器不支援 video 標籤。
-</video>
+## 更多整合資源
 
-## 部落格整合教學（精選）
+以下保留原有部落格教學，涵蓋其他工具及上述整合的延伸內容。上述六種工具的設定步驟，請優先參閱站內獨立教學。
 
-- **AI as Workspace (AIaW)**：[逐步指南：在 AI as Workspace (AIaW) 中設定 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-10/)
-- **AnythingLLM**：[教學：搭配 AnythingLLM 使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-01-30/)
-- **Chatbox**：[逐步指南：在 Chatbox 中設定 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-09/)
-- **Claude Code**：[搭配 DGrid 使用 Claude Code](https://blog.dgrid.ai/posts/2026-03-12/)
-- **Codex CLI**：[搭配 DGrid 使用 Codex CLI：完整指南](https://blog.dgrid.ai/posts/2026-03-23/)
-- **Junie CLI**：[逐步指南：將 DGrid 整合至 Junie CLI](https://blog.dgrid.ai/posts/2026-04-13/)
-- **LibreChat**：[搭配 LibreChat 使用 DGrid：逐步指南](https://blog.dgrid.ai/posts/2026-01-28/)
-- **LobeChat**：[在 LobeChat 中設定並使用 DGrid AI Gateway：完整指南](https://blog.dgrid.ai/posts/2026-02-09/)
-- **Open WebUI**：[搭配 Open WebUI 使用 DGrid AI Gateway：完整指南](https://blog.dgrid.ai/posts/2026-01-22_2/)
-- **OpenClaw（Agent 平台）**：[使用 DGrid 強化 OpenClaw：終極 AI Agent 設定指南](https://blog.dgrid.ai/posts/2026-02-02/)
-- **OpenClaw（無程式碼）**：[逐步指南：OpenClaw 安裝與 DGrid AI Gateway 設定（無需寫程式）](https://blog.dgrid.ai/posts/2026-02-27/)
-- **Vercel AI SDK**：[如何搭配 Vercel AI SDK 使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-26/)
+<span id="部落格整合教學精選" />
+
+- <strong>AI as Workspace (AIaW)</strong>：[逐步指南：在 AI as Workspace (AIaW) 中設定 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-10/)
+- <strong>AnythingLLM</strong>：[教學：搭配 AnythingLLM 使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-01-30/)
+- <strong>Chatbox</strong>：[逐步指南：在 Chatbox 中設定 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-09/)
+- <strong>Claude Code</strong>：[搭配 DGrid 使用 Claude Code](https://blog.dgrid.ai/posts/2026-03-12/)
+- <strong>Codex CLI</strong>：[搭配 DGrid 使用 Codex CLI：完整指南](https://blog.dgrid.ai/posts/2026-03-23/)
+- <strong>Junie CLI</strong>：[逐步指南：將 DGrid 整合至 Junie CLI](https://blog.dgrid.ai/posts/2026-04-13/)
+- <strong>LibreChat</strong>：[搭配 LibreChat 使用 DGrid：逐步指南](https://blog.dgrid.ai/posts/2026-01-28/)
+- <strong>LobeChat</strong>：[在 LobeChat 中設定並使用 DGrid AI Gateway：完整指南](https://blog.dgrid.ai/posts/2026-02-09/)
+- <strong>Open WebUI</strong>：[搭配 Open WebUI 使用 DGrid AI Gateway：完整指南](https://blog.dgrid.ai/posts/2026-01-22_2/)
+- <strong>OpenClaw（Agent 平台）</strong>：[使用 DGrid 強化 OpenClaw：終極 AI Agent 設定指南](https://blog.dgrid.ai/posts/2026-02-02/)
+- <strong>OpenClaw（無程式碼）</strong>：[逐步指南：OpenClaw 安裝與 DGrid AI Gateway 設定（無需寫程式）](https://blog.dgrid.ai/posts/2026-02-27/)
+- <strong>Vercel AI SDK</strong>：[如何搭配 Vercel AI SDK 使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-03-26/)
+
+- [Cursor：設定與使用 DGrid AI Gateway](https://blog.dgrid.ai/posts/2026-02-18/)
