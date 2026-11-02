@@ -1,11 +1,14 @@
 ---
 title: "學術研究"
 sidebarTitle: "學術研究"
-description: "彙整經過同行評審的學術論文、白皮書與外部研究文獻，從密碼學、分散式系統、博弈論與機器學習等多個不同角度，全面驗證 DGrid 去中心化 AI 推論架構與 Proof of Quality（PoQ）共識機制的理論基礎、實作可行性、整體安全性與長期可擴展性等核心面向。"
+description: "彙整探討去中心化 AI 推論、Proof of Quality（PoQ）、SFT 資料採購與交易代理評估的學術論文。"
 ---
 
-上述 PoQ 機制的設計邏輯、技術可行性與效能優勢，已透過專門的學術研究獲得驗證。詳細內容請參閱以下論文：
+以下論文探討去中心化 AI 推論、Proof of Quality（PoQ）、監督式微調（SFT）資料採購，以及交易代理的行為一致性：
 
 1. [*Design and Evaluation of Cost-Aware PoQ for Decentralized LLM Inference*](https://arxiv.org/abs/2512.16317)：提出一套成本感知（cost-aware）的 PoQ 框架，將效率指標整合進激勵機制中。透過統一的評估流程，在品質與成本之間取得動態平衡，驗證了多維度評估系統的實用性與經濟可持續性。
 2. [*Optimistic TEE-Rollups: A Hybrid Architecture for Scalable and Verifiable Generative AI Inference on Blockchain*](https://arxiv.org/abs/2512.20176)：提出一套混合驗證協定，為鏈上可驗證證明提供底層架構。透過結合可信任執行環境（TEE）與零知識抽樣檢查，解決了去中心化推論中可驗證性的三難困境，進一步提升 PoQ 證明的安全性與效率。
 3. [*Adaptive and Robust Cost-Aware Proof of Quality for Decentralized LLM Inference Networks*](https://arxiv.org/html/2601.21189v1)：在成本感知 PoQ 機制的基礎上，加入具抗對抗能力的共識形成機制，整合穩健聚合規則（中位數、截尾平均數）以及根據偏差訊號動態更新評估者權重的自適應信任加權共識策略。透過在問答與摘要任務上，以四種對抗攻擊策略進行的實驗，驗證了穩健聚合能提升共識分數與真實基準之間的一致性，並降低對雜訊與策略性攻擊的敏感度，同時也釐清了評估者抽樣規模、穩健性、獎勵變異度與評估開銷之間的操作性權衡，為在對抗風險與資源限制下部署 PoQ 提供了實務指引。
+4. [*PoQ-Judge: A Multi-Architecture Evaluation Framework for Cost-Aware Proof-of-Quality in Decentralized LLM Inference*](https://arxiv.org/abs/2606.11196)：採用 TextCNN、MiniLM 與 DeBERTa 評估模型，實現無須參考答案的 PoQ 評估。串級評估在品質僅小幅下降的情況下，降低 72.7% 的成本；問答任務的結果優於摘要任務。
+5. [*SFGA: A Statistics-First Gating Architecture with Adjudicative Escalation for Trustworthy SFT Data Procurement*](https://arxiv.org/abs/2607.18960)：透過多樣性、效用與冗餘度估計來評估 SFT 資料採購，並將不確定的案例交由支持採購與反對採購的評估者辯論。研究以受控合成基準測試路由效能，並揭露評估者偏誤；外部效度仍待後續驗證。
+6. [*FIDES-Live: Evaluating Behavioral Concordance in Sequential Trading Agents*](https://arxiv.org/abs/2610.36476)：將 FIDES 延伸至循序交易軌跡稽核，分別檢查決策有效性、承諾遵循、帳務核對，以及以執行憑證為依據的報告。實驗採用真實市場觀測資料與本機模擬交易；行為一致性並不代表長期交易能力，也不能證明解釋忠實反映決策。
